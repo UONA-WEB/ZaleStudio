@@ -1,6 +1,6 @@
 // NailBoard by ZALESYA — service worker
 // Al cambiar archivos, sube el número de versión para forzar la actualización.
-const CACHE = 'nailboard-v2';
+const CACHE = 'nailboard-v3';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

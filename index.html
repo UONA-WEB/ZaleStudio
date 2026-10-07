@@ -42,6 +42,15 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 #selbar.show{display:flex}
 #toast{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:var(--panel2);color:var(--txt);padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
 #toast.show{opacity:1}
+#home{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#24212b 0%,var(--bg) 70%);z-index:5;padding:20px}
+#home.show{display:flex}
+#app.is-empty footer{opacity:.35;pointer-events:none}
+.homebox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.homelogo{width:120px;height:120px;border-radius:28px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.homebox h1{margin:14px 0 0;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:34px;color:var(--txt)}
+.homebox p{margin:0 0 18px;color:var(--acc);letter-spacing:.2em;font-size:12px;text-transform:uppercase}
+.homebtns{display:flex;flex-direction:column;gap:10px;width:min(320px,80vw)}
+.pill.big{padding:16px;font-size:16px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
 .modal.show{display:flex}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;width:min(560px,100%);max-height:90vh;display:flex;flex-direction:column;gap:12px}
@@ -76,6 +85,8 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
     <span class="sep"></span>
     <button class="btn" id="bSave"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Guardar imagen</button>
     <button class="btn" id="bShare"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>Compartir</button>
+    <span class="sep"></span>
+    <button class="btn" id="bExit"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Salir</button>
   </header>
 
   <div id="stage">
@@ -89,6 +100,18 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
       <button class="btn" id="sOk"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Listo</button>
     </div>
     <div id="toast"></div>
+    <div id="home">
+      <div class="homebox">
+        <img src="icon-192.png" alt="" class="homelogo">
+        <h1>NailBoard</h1>
+        <p>by ZALESYA</p>
+        <div class="homebtns">
+          <button class="pill pri big" id="hOpen">Abrir foto</button>
+          <button class="pill big" id="hBlank">Lienzo en blanco</button>
+          <button class="pill big" id="hProjects">Mis trabajos</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -169,6 +192,7 @@ const STROKES = ['pen','marker','hl','eraser'];
 const MAX_SIDE = 2560;
 const DRAG_START = 6;     // px que hay que arrastrar antes de mover/deformar (evita cambios al tocar)
 const HANDLE_HIT = 20;    // radio de toque de los puntos de la forma (px)
+const ROT_TYPES = ['rect', 'ellipse', 'text'];   // formas que guardan su propio ángulo
 
 const S = {
   docW: 2000, docH: 1250,
@@ -181,7 +205,8 @@ const S = {
   pressure: true,
   sel: [],               // objetos seleccionados
   projectId: null,
-  projectName: ''
+  projectName: '',
+  empty: true            // pantalla de inicio (sin trabajo abierto)
 };
 
 let draft = null;          // objeto en construcción
@@ -214,7 +239,7 @@ function fileStamp() {
   const d = new Date(), p = n => String(n).padStart(2, '0');
   return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
-const hasWork = () => !!S.bg || S.objects.length > 0;
+const hasWork = () => !S.empty && (!!S.bg || S.objects.length > 0);
 
 /* ---------- vista: mover, ampliar y girar ---------- */
 function resize() {
@@ -252,6 +277,7 @@ function req() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render()
 function render() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, cv.width, cv.height);
+  if (S.empty) return;
   setT(ctx);
   ctx.imageSmoothingQuality = 'high';
   ctx.fillStyle = '#ffffff';
@@ -282,6 +308,7 @@ function drawObj(c, o) {
   c.save();
   c.lineCap = 'round'; c.lineJoin = 'round';
   c.strokeStyle = o.color; c.fillStyle = o.color; c.lineWidth = o.w || 1;
+  if (o.rot && ROT_TYPES.includes(o.t)) { const k = centerOf(o); c.translate(k.x, k.y); c.rotate(o.rot); c.translate(-k.x, -k.y); }
   switch (o.t) {
     case 'pen': case 'marker': case 'hl': case 'eraser':
       drawStroke(c, o); break;
@@ -341,14 +368,22 @@ function drawStroke(c, o) {
 }
 
 /* ---------- selección ---------- */
+function rotPt(x, y, cx, cy, ang) {
+  const c = Math.cos(ang), n = Math.sin(ang), dx = x - cx, dy = y - cy;
+  return { x: cx + dx * c - dy * n, y: cy + dx * n + dy * c };
+}
 function handlesOf(o) {
   if (!o) return [];
   if (o.t === 'arc') return [['a', o.a], ['b', o.b], ['m', o.m]];
+  if ((o.t === 'rect' || o.t === 'ellipse') && o.rot) {
+    const k = centerOf(o), A = rotPt(o.a[0], o.a[1], k.x, k.y, o.rot), B = rotPt(o.b[0], o.b[1], k.x, k.y, o.rot);
+    return [['a', [A.x, A.y]], ['b', [B.x, B.y]]];
+  }
   if (SHAPES.includes(o.t)) return [['a', o.a], ['b', o.b]];
   return [];
 }
 function single() { return S.sel.length === 1 ? S.sel[0] : null; }
-function bboxOf(o) {
+function localBox(o) { // caja sin girar
   if (STROKES.includes(o.t)) {
     let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
     for (let i = 0; i < o.p.length; i += 3) { x1 = Math.min(x1, o.p[i]); y1 = Math.min(y1, o.p[i+1]); x2 = Math.max(x2, o.p[i]); y2 = Math.max(y2, o.p[i+1]); }
@@ -366,6 +401,44 @@ function bboxOf(o) {
   const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), h = o.w / 2;
   return { x1: Math.min(...xs) - h, y1: Math.min(...ys) - h, x2: Math.max(...xs) + h, y2: Math.max(...ys) + h };
 }
+function centerOf(o) { const b = localBox(o); return { x: (b.x1 + b.x2) / 2, y: (b.y1 + b.y2) / 2 }; }
+function quadOf(o, pad = 0) { // las 4 esquinas reales del elemento (con su giro), en la imagen
+  const b = localBox(o);
+  let q = [[b.x1 - pad, b.y1 - pad], [b.x2 + pad, b.y1 - pad], [b.x2 + pad, b.y2 + pad], [b.x1 - pad, b.y2 + pad]];
+  if (o.rot && ROT_TYPES.includes(o.t)) {
+    const k = centerOf(o);
+    q = q.map(([x, y]) => { const r = rotPt(x, y, k.x, k.y, o.rot); return [r.x, r.y]; });
+  }
+  return q;
+}
+function bboxOf(o) {
+  const q = quadOf(o), xs = q.map(p => p[0]), ys = q.map(p => p[1]);
+  return { x1: Math.min(...xs), y1: Math.min(...ys), x2: Math.max(...xs), y2: Math.max(...ys) };
+}
+function selFrame() { // marco de la selección (para el tirador de girar)
+  const one = single(), pad = 8 / S.view.s;
+  if (one) return { quad: quadOf(one, pad), pivot: centerOf(one) };
+  let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+  for (const o of S.sel) { const b = bboxOf(o); x1 = Math.min(x1, b.x1); y1 = Math.min(y1, b.y1); x2 = Math.max(x2, b.x2); y2 = Math.max(y2, b.y2); }
+  return { quad: [[x1 - pad, y1 - pad], [x2 + pad, y1 - pad], [x2 + pad, y2 + pad], [x1 - pad, y2 + pad]], pivot: { x: (x1 + x2) / 2, y: (y1 + y2) / 2 } };
+}
+function rotHandlePos() { // posición en pantalla del tirador de girar
+  if (!S.sel.length) return null;
+  const f = selFrame(), q = f.quad.map(p => toScreen(p[0], p[1])), c = toScreen(f.pivot.x, f.pivot.y);
+  const mx = (q[0].x + q[1].x) / 2, my = (q[0].y + q[1].y) / 2;
+  let dx = mx - c.x, dy = my - c.y; const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
+  return { x: mx + dx * 38, y: my + dy * 38, bx: mx, by: my };
+}
+function rotateObj(o, cx, cy, ang) {
+  if (ROT_TYPES.includes(o.t)) {
+    const k = centerOf(o), n = rotPt(k.x, k.y, cx, cy, ang);
+    translate(o, n.x - k.x, n.y - k.y);
+    o.rot = (o.rot || 0) + ang;
+    return;
+  }
+  if (o.p) for (let i = 0; i < o.p.length; i += 3) { const r = rotPt(o.p[i], o.p[i+1], cx, cy, ang); o.p[i] = r.x; o.p[i+1] = r.y; }
+  for (const k of ['a', 'b', 'm']) if (o[k]) { const r = rotPt(o[k][0], o[k][1], cx, cy, ang); o[k] = [r.x, r.y]; }
+}
 function screenQuad(b, pad) { // las 4 esquinas de una caja, en pantalla (sirve también con la vista girada)
   const p = pad / S.view.s;
   return [[b.x1 - p, b.y1 - p], [b.x2 + p, b.y1 - p], [b.x2 + p, b.y2 + p], [b.x1 - p, b.y2 + p]].map(q => toScreen(q[0], q[1]));
@@ -374,11 +447,22 @@ function drawSelection() {
   if (!S.sel.length) return;
   ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5; ctx.strokeStyle = '#c9a84c';
+  const pad = 6 / S.view.s;
   for (const o of S.sel) {
-    const q = screenQuad(bboxOf(o), 6);
+    const q = quadOf(o, pad).map(p => toScreen(p[0], p[1]));
     ctx.beginPath(); ctx.moveTo(q[0].x, q[0].y); for (let i = 1; i < 4; i++) ctx.lineTo(q[i].x, q[i].y); ctx.closePath(); ctx.stroke();
   }
   ctx.setLineDash([]);
+  // tirador de girar
+  const r = rotHandlePos();
+  if (r) {
+    ctx.beginPath(); ctx.moveTo(r.bx, r.by); ctx.lineTo(r.x, r.y); ctx.lineWidth = 1.5; ctx.strokeStyle = '#c9a84c'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(r.x, r.y, 15, 0, Math.PI * 2); ctx.fillStyle = '#c9a84c'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#141318'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(r.x, r.y, 7, -Math.PI * 0.9, Math.PI * 0.55); ctx.stroke();
+    const ex = r.x + 7 * Math.cos(Math.PI * 0.55), ey = r.y + 7 * Math.sin(Math.PI * 0.55);
+    ctx.beginPath(); ctx.moveTo(ex - 4, ey - 1); ctx.lineTo(ex, ey); ctx.lineTo(ex + 1, ey - 4); ctx.stroke();
+  }
   for (const [k, pt] of handlesOf(single())) {
     const s = toScreen(pt[0], pt[1]);
     ctx.beginPath(); ctx.arc(s.x, s.y, k === 'm' ? 11 : 9, 0, Math.PI * 2);
@@ -387,6 +471,7 @@ function drawSelection() {
   }
   ctx.restore();
 }
+function hitRotHandle(sx, sy) { const r = rotHandlePos(); return r && dist(r.x, r.y, sx, sy) < 24; }
 function drawMarquee() {
   if (!marquee) return;
   const x = Math.min(marquee.x1, marquee.x2), y = Math.min(marquee.y1, marquee.y2);
@@ -411,6 +496,7 @@ function segDist(px, py, ax, ay, bx, by) {
 function hitsObj(o, x, y, tolPx) {
   const tol = tolPx / S.view.s, r = tol + (o.w || 0) / 2;
   if (o.t === 'eraser') return false;
+  if (o.rot && ROT_TYPES.includes(o.t)) { const k = centerOf(o), q = rotPt(x, y, k.x, k.y, -o.rot); x = q.x; y = q.y; }
   if (o.t === 'pen' || o.t === 'marker' || o.t === 'hl') {
     const p = o.p;
     if (p.length === 3) return dist(x, y, p[0], p[1]) < r;
@@ -443,7 +529,7 @@ function hitsObj(o, x, y, tolPx) {
     }
     return false;
   }
-  const b = bboxOf(o);
+  const b = localBox(o);
   return x > b.x1 - tol && x < b.x2 + tol && y > b.y1 - tol && y < b.y2 + tol;
 }
 function hitObject(x, y, tolPx = 16) {
@@ -564,7 +650,7 @@ function movePinch() {
 }
 
 stage.addEventListener('pointerdown', e => {
-  if (e.target !== cv) return;   // los botones flotantes funcionan normal
+  if (e.target !== cv || S.empty) return;   // los botones flotantes funcionan normal
   e.preventDefault();
   if (e.pointerType === 'pen' && !penSeen) { penSeen = true; syncSize(); toast('Lápiz activo detectado: presión activada y la palma se ignora'); }
   try { stage.setPointerCapture(e.pointerId); } catch (_) {}
@@ -621,6 +707,10 @@ function startTool(e, sx, sy) {
 
   // 1) Lo que ya está seleccionado tiene prioridad (con cualquier herramienta salvo los pinceles)
   if (S.sel.length && !STROKES.includes(t)) {
+    if (hitRotHandle(sx, sy)) {
+      const pv = selFrame().pivot;
+      act = { ...base, kind: 'rotate', pivot: pv, last: Math.atan2(pt.y - pv.y, pt.x - pv.x), total: 0 }; return;
+    }
     const h = hitHandle(sx, sy);
     if (h) { act = { ...base, kind: 'handle', h }; return; }
     if (hitSelection(pt.x, pt.y)) { act = { ...base, kind: 'move', lx: pt.x, ly: pt.y }; return; }
@@ -684,9 +774,27 @@ function moveAct(e) {
     }
     req(); return;
   }
+  if (act.kind === 'rotate') {
+    const ang = Math.atan2(pt.y - act.pivot.y, pt.x - act.pivot.x);
+    let d = ang - act.last; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+    act.last = ang; act.total += d;
+    for (const o of S.sel) rotateObj(o, act.pivot.x, act.pivot.y, d);
+    let deg = Math.round(act.total * 180 / Math.PI) % 360; if (deg > 180) deg -= 360; if (deg < -180) deg += 360;
+    toast(`Girando ${deg}°`, 700);
+    req(); return;
+  }
   if (act.kind === 'handle') {
     const o = single(), h = act.h;
     if (!o) return;
+    if ((o.t === 'rect' || o.t === 'ellipse') && o.rot) {
+      // forma girada: la esquina contraria se queda fija
+      const k = centerOf(o), other = h === 'a' ? 'b' : 'a';
+      const W2 = rotPt(o[other][0], o[other][1], k.x, k.y, o.rot);
+      const nc = { x: (W2.x + pt.x) / 2, y: (W2.y + pt.y) / 2 };
+      const A = rotPt(pt.x, pt.y, nc.x, nc.y, -o.rot), B = rotPt(W2.x, W2.y, nc.x, nc.y, -o.rot);
+      o[h] = [A.x, A.y]; o[other] = [B.x, B.y];
+      req(); return;
+    }
     if (o.t === 'arc' && h !== 'm') {
       const old = o[h].slice(); o[h] = [pt.x, pt.y];
       o.m[0] += (pt.x - old[0]) / 2; o.m[1] += (pt.y - old[1]) / 2;   // la curva acompaña
@@ -730,6 +838,7 @@ function finishAct(e) {
     if (!found.length) toast('No hay nada dentro del recuadro');
     return;
   }
+  if (a.kind === 'rotate') { if (a.started) commit(); req(); return; }
   if (a.kind === 'handle' || a.kind === 'move') {
     if (a.started) { commit(); return; }
     // toque sin arrastrar
@@ -750,7 +859,7 @@ function finishAct(e) {
   req();
 }
 function cancelAct() {
-  if (act && (act.kind === 'move' || act.kind === 'handle') && act.started) {
+  if (act && (act.kind === 'move' || act.kind === 'handle' || act.kind === 'rotate') && act.started) {
     S.objects = JSON.parse(hist[hIdx]); select(null);
   }
   act = null; draft = null; marquee = null; req();
@@ -848,8 +957,22 @@ $('#bBlank').onclick = async () => {
   newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null);
   toast('Lienzo en blanco');
 };
+function setEmpty(v) {
+  S.empty = v;
+  $('#home').classList.toggle('show', v);
+  $('#app').classList.toggle('is-empty', v);
+  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare']) $('#' + id).disabled = v;
+  if (!v) updUndo();
+}
+function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en Trabajos)
+  clearTimeout(saveT); dirty = false;
+  if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
+  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = '';
+  select(null); resetHist(); setEmpty(true); render();
+}
 function newDoc(w, h, bg, blob) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
+  setEmpty(false);
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
   S.objects = []; S.projectId = null; S.projectName = nowName();
   select(null); resetHist(); fit(); scheduleSave();
@@ -879,13 +1002,16 @@ function renderDoc(scale) {
 }
 function pngBlob() { return new Promise(r => renderDoc(1).toBlob(r, 'image/png')); }
 $('#bSave').onclick = async () => {
+  if (S.empty) return;
   select(null);
   const blob = await pngBlob();
+  await saveNow(true);                         // también queda en Trabajos
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = `nailboard-${fileStamp()}.png`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  toast('Imagen guardada en Descargas');
+  goHome();
+  toast('Imagen guardada en Descargas. El trabajo queda en "Mis trabajos"', 3200);
 };
 $('#bShare').onclick = async () => {
   select(null);
@@ -922,9 +1048,9 @@ const DB = {
 };
 let saveT = 0, dirty = false;
 function scheduleSave() { dirty = true; clearTimeout(saveT); saveT = setTimeout(saveNow, 1200); }
-async function saveNow() {
+async function saveNow(force) {
   clearTimeout(saveT);
-  if (!dirty) return;
+  if (!dirty && !force) return;
   dirty = false;
   if (!hasWork()) return;
   try {
@@ -942,7 +1068,7 @@ async function openProject(id, keepView) {
   S.docW = p.docW; S.docH = p.docH; S.bgBlob = p.bg || null;
   S.bg = p.bg ? await loadImg(URL.createObjectURL(p.bg)) : null;
   S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name;
-  select(null); resetHist();
+  setEmpty(false); select(null); resetHist();
   if (keepView && p.view) { S.view = { r: 0, ...p.view }; render(); } else fit();
   localStorage.setItem('nailboard-last', p.id);
   return true;
@@ -964,7 +1090,7 @@ async function showProjects() {
     d.querySelector('.pill.dan').onclick = async () => {
       if (!(await confirmBox('Borrar trabajo', `Se borrará "${p.name}" de esta tablet. No se puede deshacer.`, 'Borrar'))) return;
       await DB.del(p.id);
-      if (p.id === S.projectId) { S.projectId = null; S.projectName = nowName(); dirty = false; }
+      if (p.id === S.projectId) goHome();
       showProjects();
     };
     box.appendChild(d);
@@ -973,6 +1099,17 @@ async function showProjects() {
 }
 $('#bProjects').onclick = showProjects;
 $('#pClose').onclick = () => $('#mProjects').classList.remove('show');
+
+$('#hOpen').onclick = () => $('#file').click();
+$('#hBlank').onclick = () => { newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null); toast('Lienzo en blanco'); };
+$('#hProjects').onclick = showProjects;
+$('#bExit').onclick = async () => {
+  select(null);
+  if (hasWork()) await saveNow(true);
+  goHome();
+  window.close();   // en Android, si el sistema no deja cerrar desde la app, se queda en la pantalla de inicio
+  setTimeout(() => toast('Trabajo guardado. Para cerrar del todo, desliza la app hacia arriba', 3500), 300);
+};
 
 /* guardar al salir o pasar a segundo plano */
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); });
@@ -985,14 +1122,7 @@ window.addEventListener('resize', () => { const had = W; resize(); if (!had) fit
 resize();
 setTool('pen');
 $('#bPressure').classList.toggle('on', S.pressure);
-(async () => {
-  let ok = false;
-  try {
-    const last = localStorage.getItem('nailboard-last');
-    if (last) ok = await openProject(last, true);
-  } catch (_) {}
-  if (!ok) { S.docH = Math.round(2000 * (H / W || 0.625)); S.projectName = nowName(); resetHist(); fit(); }
-})();
+goHome();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
