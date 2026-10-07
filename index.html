@@ -49,6 +49,24 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 #toast.show{opacity:1}
 #home{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#24212b 0%,var(--bg) 70%);z-index:5;padding:20px}
 #home.show{display:flex}
+.side{position:absolute;top:0;bottom:0;width:min(300px,84vw);background:var(--panel);z-index:7;overflow-y:auto;touch-action:pan-y;
+  visibility:hidden;transition:transform .22s ease,visibility 0s linear .22s;box-shadow:0 0 30px rgba(0,0,0,.55);padding:0 12px 16px;-webkit-overflow-scrolling:touch}
+.side.left{left:0;transform:translateX(-106%);border-right:1px solid var(--line)}
+.side.right{right:0;transform:translateX(106%);border-left:1px solid var(--line)}
+.side.open{transform:none;visibility:visible;transition:transform .22s ease}
+.sidehd{position:sticky;top:0;background:var(--panel);display:flex;align-items:center;justify-content:space-between;padding:12px 0 10px;z-index:1}
+.sidehd b{font-family:"Playfair Display",Georgia,serif;font-size:18px;color:var(--acc2);font-weight:600}
+.sidehd .x{border:0;background:var(--panel2);color:var(--txt);width:40px;height:40px;border-radius:10px;font-size:18px;cursor:pointer}
+.tplgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tpl{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:flex;flex-direction:column;font:inherit}
+.tpl img{width:100%;aspect-ratio:3/4;object-fit:contain;background:#fff;display:block}
+.tpl span{display:block;background:var(--bg);color:var(--txt);font-size:11.5px;padding:6px 4px;text-align:center;line-height:1.25}
+.tpl:active{outline:3px solid var(--acc)}
+.side h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:16px 0 8px}
+.side .hint{font-size:12px;color:var(--mut);margin:0 0 4px;line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--panel2);color:var(--txt);border-radius:999px;padding:9px 13px;font:inherit;font-size:13px;cursor:pointer}
+.chip:active{background:var(--acc);color:#141318}
 #app.is-empty footer{opacity:.35;pointer-events:none}
 .homebox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
 .homelogo{width:120px;height:120px;border-radius:28px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
@@ -80,6 +98,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
   <header>
     <span class="brand">ZALESTUDIO</span>
     <button class="btn" id="bOpen"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Abrir foto</button>
+    <button class="btn" id="bTpl"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/><rect x="14" y="15" width="7" height="6" rx="1.5"/></svg>Plantillas</button>
     <button class="btn" id="bBlank"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="M13 11v6M10 14h6"/></svg>Lienzo</button>
     <button class="btn" id="bProjects"><svg viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></svg>Trabajos</button>
     <span class="sep"></span>
@@ -112,11 +131,22 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
         <p>Nail Training · by ZALESYA</p>
         <div class="homebtns">
           <button class="pill pri big" id="hOpen">Abrir foto</button>
+          <button class="pill big" id="hTpl">Plantillas</button>
           <button class="pill big" id="hBlank">Lienzo en blanco</button>
           <button class="pill big" id="hProjects">Mis trabajos</button>
         </div>
       </div>
     </div>
+    <aside class="side left" id="pTpl">
+      <div class="sidehd"><b>Plantillas</b><button class="x" data-close="pTpl" aria-label="Cerrar">✕</button></div>
+      <div class="tplgrid" id="tplGrid"></div>
+    </aside>
+    <aside class="side right" id="pLbl">
+      <div class="sidehd"><b>Etiquetas</b><button class="x" data-close="pLbl" aria-label="Cerrar">✕</button></div>
+      <p class="hint">Toca un nombre para ponerlo sobre la imagen. Arrastra la caja para moverla y el punto de la flecha para señalar la zona.</p>
+      <h3>Anatomía</h3><div class="chips" id="lblA"></div>
+      <h3>Estructura</h3><div class="chips" id="lblE"></div>
+    </aside>
   </div>
 
   <footer>
@@ -136,6 +166,8 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
       <button class="btn" data-tool="ellipse"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="7"/></svg>Círculo</button>
       <button class="btn" data-tool="rect"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1"/></svg>Rectángulo</button>
       <button class="btn" data-tool="text"><svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>Texto</button>
+      <span class="sep"></span>
+      <button class="btn" id="bLbl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="13" height="8" rx="2"/><path d="M11 11l7 8M18 19l-4-.5M18 19l-.6-4"/></svg>Etiquetas</button>
     </div>
     <div class="props">
       <div id="colors" style="display:flex;gap:8px;align-items:center"></div>
@@ -180,7 +212,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.3)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.4)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -201,6 +233,10 @@ const PRESETS = {   // 4 tamaños por herramienta: fino, medio, grueso, muy grue
   text: [18, 28, 44, 68]
 };
 const SIZE_NAMES = ['Fino', 'Medio', 'Grueso', 'Muy grueso'];
+const TEMPLATES = [{"f": "plantilla-01-ovalada-larga.jpg", "n": "Ovalada larga"}, {"f": "plantilla-02-ovalada.jpg", "n": "Ovalada"}, {"f": "plantilla-03-ovalada-extension.jpg", "n": "Ovalada con extensión"}, {"f": "plantilla-04-perfil-natural.jpg", "n": "Perfil natural"}, {"f": "plantilla-05-perfil-almendra.jpg", "n": "Perfil almendra"}, {"f": "plantilla-06-natural-corta.jpg", "n": "Natural corta"}, {"f": "plantilla-07-squoval.jpg", "n": "Squoval"}, {"f": "plantilla-08-cuadrada.jpg", "n": "Cuadrada"}, {"f": "plantilla-09-cuadrada-extension.jpg", "n": "Cuadrada con extensión"}, {"f": "plantilla-10-tip-cuadrado.jpg", "n": "Tip cuadrado (curva C)"}, {"f": "plantilla-11-stiletto.jpg", "n": "Stiletto"}, {"f": "plantilla-12-stiletto-perfil.jpg", "n": "Stiletto perfil"}, {"f": "plantilla-13-coffin.jpg", "n": "Coffin"}, {"f": "plantilla-14-formas.jpg", "n": "Formas de uña"}, {"f": "plantilla-15-onicofagia.jpg", "n": "Onicofagia"}, {"f": "plantilla-16-mano.jpg", "n": "Mano"}];
+const LABELS_ANAT = ['Cutícula','Eponiquio','Pterigión ungueal','Placa ungueal','Lecho','Matriz','Luna o lúnula','Hiponiquio','Paroniquio','Pliegue ungueal','Borde libre','Pliegue proximal','Sinus ungueal','Sonrisa (smile line)','Banda onicodérmica'];
+const LABELS_EST = ['Laterales','Sonrisa (smile line)','Curva C','Cóncavo','Convexo','Ápex','Hair line','Zona de estrés'];
+const TXT_TYPES = ['text', 'label'];
 let cursor = null;   // círculo que muestra dónde borra
 
 const S = {
@@ -351,6 +387,7 @@ function drawObj(c, o) {
       const rx = Math.abs(o.b[0] - o.a[0]) / 2, ry = Math.abs(o.b[1] - o.a[1]) / 2;
       c.beginPath(); c.ellipse(cx, cy, Math.max(rx, .1), Math.max(ry, .1), 0, 0, Math.PI * 2); c.stroke(); break;
     }
+    case 'label': drawLabel(c, o); break;
     case 'text': {
       c.font = `600 ${o.size}px Montserrat, system-ui, sans-serif`;
       c.textBaseline = 'top';
@@ -359,6 +396,59 @@ function drawObj(c, o) {
     }
   }
   c.restore();
+}
+
+function labelBox(o) {
+  ictx.save(); ictx.setTransform(1, 0, 0, 1, 0, 0);
+  ictx.font = `600 ${o.size}px Montserrat, system-ui, sans-serif`;
+  const lines = o.text.split('\n'); let w = 0;
+  for (const l of lines) w = Math.max(w, ictx.measureText(l).width);
+  ictx.restore();
+  const px = o.size * 0.55, py = o.size * 0.38, h = lines.length * o.size * 1.2;
+  return { x1: o.x - w / 2 - px, x2: o.x + w / 2 + px, y1: o.y - h / 2 - py, y2: o.y + h / 2 + py, lines };
+}
+function boxEdge(b, tx, ty) { // punto del borde de la caja en dirección a la punta
+  const cx = (b.x1 + b.x2) / 2, cy = (b.y1 + b.y2) / 2, dx = tx - cx, dy = ty - cy;
+  if (tx > b.x1 && tx < b.x2 && ty > b.y1 && ty < b.y2) return null;
+  const t = Math.min(dx ? (b.x2 - cx) / Math.abs(dx) : Infinity, dy ? (b.y2 - cy) / Math.abs(dy) : Infinity);
+  return { x: cx + dx * t, y: cy + dy * t };
+}
+function isLight(hex) {
+  const n = parseInt((hex || '#000').slice(1), 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255;
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.75;
+}
+function drawLabel(c, o) {
+  const b = labelBox(o), lw = Math.max(1.5, o.size * 0.09), e = boxEdge(b, o.tip[0], o.tip[1]);
+  if (e) {
+    const ang = Math.atan2(o.tip[1] - e.y, o.tip[0] - e.x), L = Math.max(lw * 4.5, o.size * 0.5);
+    c.lineWidth = lw; c.beginPath(); c.moveTo(e.x, e.y);
+    c.lineTo(o.tip[0] - Math.cos(ang) * L * 0.6, o.tip[1] - Math.sin(ang) * L * 0.6); c.stroke();
+    c.beginPath(); c.moveTo(o.tip[0], o.tip[1]);
+    c.lineTo(o.tip[0] - L * Math.cos(ang - 0.42), o.tip[1] - L * Math.sin(ang - 0.42));
+    c.lineTo(o.tip[0] - L * Math.cos(ang + 0.42), o.tip[1] - L * Math.sin(ang + 0.42));
+    c.closePath(); c.fill();
+  }
+  const r = Math.min(o.size * 0.35, (b.y2 - b.y1) / 2);
+  c.beginPath();
+  c.moveTo(b.x1 + r, b.y1); c.lineTo(b.x2 - r, b.y1); c.quadraticCurveTo(b.x2, b.y1, b.x2, b.y1 + r);
+  c.lineTo(b.x2, b.y2 - r); c.quadraticCurveTo(b.x2, b.y2, b.x2 - r, b.y2);
+  c.lineTo(b.x1 + r, b.y2); c.quadraticCurveTo(b.x1, b.y2, b.x1, b.y2 - r);
+  c.lineTo(b.x1, b.y1 + r); c.quadraticCurveTo(b.x1, b.y1, b.x1 + r, b.y1); c.closePath();
+  c.fillStyle = isLight(o.color) ? 'rgba(20,19,24,.88)' : 'rgba(255,255,255,.93)'; c.fill();
+  c.lineWidth = lw; c.strokeStyle = o.color; c.stroke();
+  c.fillStyle = o.color; c.font = `600 ${o.size}px Montserrat, system-ui, sans-serif`;
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  const lh = o.size * 1.2, y0 = o.y - (b.lines.length - 1) * lh / 2;
+  b.lines.forEach((ln, i) => c.fillText(ln, o.x, y0 + i * lh));
+}
+function addLabel(text) {
+  if (S.empty) { toast('Abre primero una foto o una plantilla'); return; }
+  const c = toDocS(W / 2, H / 2), s = S.view.s, n = (addLabel.n = ((addLabel.n || 0) + 1) % 6);
+  const off = (n * 34) / s;
+  const o = { t: 'label', text, color: S.color, size: 22 / s,
+              x: c.x - 70 / s + off, y: c.y - 80 / s + off, tip: [c.x + 70 / s + off, c.y + 40 / s + off] };
+  S.objects.push(o); commit(); setTool('select'); select(o);
+  toast('Arrastra la caja y el punto de la flecha');
 }
 
 function drawStroke(c, o) {
@@ -391,6 +481,7 @@ function rotPt(x, y, cx, cy, ang) {
 function handlesOf(o) {
   if (!o) return [];
   if (o.t === 'arc') return [['a', o.a], ['b', o.b], ['m', o.m]];
+  if (o.t === 'label') return [['tip', o.tip]];
   if ((o.t === 'rect' || o.t === 'ellipse') && o.rot) {
     const k = centerOf(o), A = rotPt(o.a[0], o.a[1], k.x, k.y, o.rot), B = rotPt(o.b[0], o.b[1], k.x, k.y, o.rot);
     return [['a', [A.x, A.y]], ['b', [B.x, B.y]]];
@@ -404,6 +495,10 @@ function localBox(o) { // caja sin girar
     let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
     for (let i = 0; i < o.p.length; i += 3) { x1 = Math.min(x1, o.p[i]); y1 = Math.min(y1, o.p[i+1]); x2 = Math.max(x2, o.p[i]); y2 = Math.max(y2, o.p[i+1]); }
     const h = o.w / 2; return { x1: x1 - h, y1: y1 - h, x2: x2 + h, y2: y2 + h };
+  }
+  if (o.t === 'label') {
+    const b = labelBox(o), m = o.size * 0.3;
+    return { x1: Math.min(b.x1, o.tip[0] - m), y1: Math.min(b.y1, o.tip[1] - m), x2: Math.max(b.x2, o.tip[0] + m), y2: Math.max(b.y2, o.tip[1] + m) };
   }
   if (o.t === 'text') {
     ictx.save(); ictx.setTransform(1, 0, 0, 1, 0, 0);
@@ -446,6 +541,10 @@ function rotHandlePos() { // posición en pantalla del tirador de girar
   return { x: mx + dx * 38, y: my + dy * 38, bx: mx, by: my };
 }
 function rotateObj(o, cx, cy, ang) {
+  if (o.t === 'label') { // la caja gira de sitio, pero el texto sigue recto
+    const c = rotPt(o.x, o.y, cx, cy, ang), t = rotPt(o.tip[0], o.tip[1], cx, cy, ang);
+    o.x = c.x; o.y = c.y; o.tip = [t.x, t.y]; return;
+  }
   if (ROT_TYPES.includes(o.t)) {
     const k = centerOf(o), n = rotPt(k.x, k.y, cx, cy, ang);
     translate(o, n.x - k.x, n.y - k.y);
@@ -513,6 +612,11 @@ function hitsObj(o, x, y, tolPx) {
   const tol = tolPx / S.view.s, r = tol + (o.w || 0) / 2;
   if (o.t === 'eraser') return false;
   if (o.rot && ROT_TYPES.includes(o.t)) { const k = centerOf(o), q = rotPt(x, y, k.x, k.y, -o.rot); x = q.x; y = q.y; }
+  if (o.t === 'label') {
+    const b = labelBox(o), e = boxEdge(b, o.tip[0], o.tip[1]);
+    if (x > b.x1 - tol && x < b.x2 + tol && y > b.y1 - tol && y < b.y2 + tol) return true;
+    return !!e && segDist(x, y, e.x, e.y, o.tip[0], o.tip[1]) < tol + o.size * 0.15;
+  }
   if (o.t === 'pen' || o.t === 'marker' || o.t === 'hl') {
     const p = o.p;
     if (p.length === 3) return dist(x, y, p[0], p[1]) < r;
@@ -560,15 +664,15 @@ function hitSelection(x, y) { // ¿se ha tocado lo que ya está seleccionado?
 }
 function translate(o, dx, dy) {
   if (o.p) for (let i = 0; i < o.p.length; i += 3) { o.p[i] += dx; o.p[i+1] += dy; }
-  for (const k of ['a', 'b', 'm']) if (o[k]) { o[k][0] += dx; o[k][1] += dy; }
-  if (o.t === 'text') { o.x += dx; o.y += dy; }
+  for (const k of ['a', 'b', 'm', 'tip']) if (o[k]) { o[k][0] += dx; o[k][1] += dy; }
+  if (TXT_TYPES.includes(o.t)) { o.x += dx; o.y += dy; }
 }
 function select(list) {
   S.sel = list ? (Array.isArray(list) ? list : [list]) : [];
   const one = single();
   $('#selbar').classList.toggle('show', S.sel.length > 0);
   $('#sFlip').style.display = one && one.t === 'arc' ? '' : 'none';
-  $('#sEdit').style.display = one && one.t === 'text' ? '' : 'none';
+  $('#sEdit').style.display = one && TXT_TYPES.includes(one.t) ? '' : 'none';
   $('#selN').textContent = S.sel.length > 1 ? `${S.sel.length} elementos` : '';
   $('#selN').style.display = S.sel.length > 1 ? '' : 'none';
   syncSize();
@@ -598,13 +702,13 @@ function setTool(t) {
 }
 function sizeTarget() { // a qué herramienta se aplican los botones de tamaño
   const one = single();
-  if (one) return one.t === 'text' ? 'text' : (PRESETS[one.t] ? one.t : 'pen');
-  if (S.sel.length) return S.sel.every(o => o.t === 'text') ? 'text' : 'pen';
+  if (one) return TXT_TYPES.includes(one.t) ? 'text' : (PRESETS[one.t] ? one.t : 'pen');
+  if (S.sel.length) return S.sel.every(o => TXT_TYPES.includes(o.t)) ? 'text' : 'pen';
   return PRESETS[S.tool] ? S.tool : 'pen';
 }
 function currentSize(k) {
   const one = single();
-  if (one) return (one.t === 'text' ? one.size : one.w) * S.view.s;
+  if (one) return (TXT_TYPES.includes(one.t) ? one.size / (one.t === 'label' ? 0.8 : 1) : one.w) * S.view.s;
   return S.sizes[k];
 }
 function syncSize() {
@@ -629,7 +733,7 @@ function syncSize() {
 function applySize(k, v) {
   if (S.sel.length) {
     for (const o of S.sel) {
-      if (o.t === 'text') { if (k === 'text') o.size = v / S.view.s; }
+      if (TXT_TYPES.includes(o.t)) { if (k === 'text') o.size = v / S.view.s * (o.t === 'label' ? 0.8 : 1); }
       else if (k !== 'text') o.w = v / S.view.s;
     }
     commit();
@@ -729,6 +833,7 @@ stage.addEventListener('pointerup', e => endPointer(e, false));
 stage.addEventListener('pointercancel', e => endPointer(e, true));
 stage.addEventListener('contextmenu', e => e.preventDefault());
 stage.addEventListener('wheel', e => {   // ordenador: rueda = zoom, Mayús + rueda = girar
+  if (e.target !== cv || S.empty) return;
   e.preventDefault();
   const p = stageXY(e.clientX, e.clientY);
   if (e.shiftKey) rotateAt(p.x, p.y, e.deltaY * 0.002);
@@ -770,7 +875,7 @@ function startTool(e, sx, sy) {
   }
   if (t === 'text') {
     const hit = hitObject(pt.x, pt.y);
-    if (hit && hit.t === 'text') { select(hit); act = { ...base, kind: 'move', lx: pt.x, ly: pt.y, fresh: true }; return; }
+    if (hit && TXT_TYPES.includes(hit.t)) { select(hit); act = { ...base, kind: 'move', lx: pt.x, ly: pt.y, fresh: true }; return; }
     act = { ...base, kind: 'textTap', pt, hadSel: S.sel.length > 0 }; return;
   }
   if (t === 'select') {
@@ -852,7 +957,9 @@ function moveAct(e) {
     req(); return;
   }
   if (act.kind === 'move') {
-    for (const o of S.sel) translate(o, pt.x - act.lx, pt.y - act.ly);
+    const one = single();
+    if (one && one.t === 'label') { one.x += pt.x - act.lx; one.y += pt.y - act.ly; }   // la caja se mueve, la punta sigue señalando
+    else for (const o of S.sel) translate(o, pt.x - act.lx, pt.y - act.ly);
     act.lx = pt.x; act.ly = pt.y; req(); return;
   }
 }
@@ -897,7 +1004,7 @@ function finishAct(e) {
     if (a.started) { commit(); return; }
     // toque sin arrastrar
     const one = single();
-    if (a.kind === 'move' && one && one.t === 'text') {
+    if (a.kind === 'move' && one && TXT_TYPES.includes(one.t)) {
       const now = performance.now();
       if (!a.fresh && lastTap.o === one && now - lastTap.t < 450) { lastTap = { o: null, t: 0 }; editText(one); return; }
       lastTap = { o: one, t: now };
@@ -957,7 +1064,7 @@ $('#tOk').onclick = () => {
 /* ---------- barra de selección ---------- */
 $('#sDel').onclick = () => { if (!S.sel.length) return; const del = new Set(S.sel); S.objects = S.objects.filter(o => !del.has(o)); select(null); commit(); };
 $('#sOk').onclick = () => select(null);
-$('#sEdit').onclick = () => { const o = single(); if (o && o.t === 'text') editText(o); };
+$('#sEdit').onclick = () => { const o = single(); if (o && TXT_TYPES.includes(o.t)) editText(o); };
 $('#sFlip').onclick = () => {
   const o = single(); if (!o || o.t !== 'arc') return;
   const mx = (o.a[0] + o.b[0]) / 2, my = (o.a[1] + o.b[1]) / 2;
@@ -1155,6 +1262,48 @@ $('#pClose').onclick = () => $('#mProjects').classList.remove('show');
 $('#hOpen').onclick = () => $('#file').click();
 $('#hBlank').onclick = () => { newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null); toast('Lienzo en blanco'); };
 $('#hProjects').onclick = showProjects;
+
+/* ---------- paneles laterales: plantillas (izquierda) y etiquetas (derecha) ---------- */
+const narrow = () => window.innerWidth < 900;
+stage.addEventListener('scroll', () => { stage.scrollTop = 0; stage.scrollLeft = 0; });   // el lienzo nunca se desplaza solo
+function setPanel(id, open) {
+  const p = $('#' + id); p.classList.toggle('open', open);
+  $(id === 'pTpl' ? '#bTpl' : '#bLbl').classList.toggle('on', open);
+  if (open && narrow()) setPanel(id === 'pTpl' ? 'pLbl' : 'pTpl', false);   // en el móvil, solo uno a la vez
+}
+function togglePanel(id) { setPanel(id, !$('#' + id).classList.contains('open')); }
+$('#bTpl').onclick = () => togglePanel('pTpl');
+$('#hTpl').onclick = () => setPanel('pTpl', true);
+$('#bLbl').onclick = () => togglePanel('pLbl');
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => setPanel(b.dataset.close, false));
+(function buildPanels() {
+  const g = $('#tplGrid');
+  TEMPLATES.forEach(t => {
+    const b = document.createElement('button'); b.className = 'tpl';
+    b.innerHTML = `<img loading="lazy" alt=""><span></span>`;
+    b.querySelector('img').src = t.f; b.querySelector('span').textContent = t.n;
+    b.onclick = () => openTemplate(t); g.appendChild(b);
+  });
+  const mk = (list, box) => list.forEach(txt => {
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = txt;
+    b.onclick = () => { addLabel(txt); if (narrow()) setPanel('pLbl', false); };
+    $(box).appendChild(b);
+  });
+  mk(LABELS_ANAT, '#lblA'); mk(LABELS_EST, '#lblE');
+})();
+async function openTemplate(t) {
+  setPanel('pTpl', false);
+  if (!(await askNew('Abrir plantilla'))) return;
+  try {
+    toast('Cargando plantilla…');
+    await saveNow();
+    const r = await fetch(t.f); if (!r.ok) throw new Error(r.status);
+    const blob = await r.blob(), img = await loadImg(URL.createObjectURL(blob));
+    newDoc(img.naturalWidth, img.naturalHeight, img, blob);
+    S.projectName = t.n; scheduleSave();
+    toast(t.n);
+  } catch (err) { console.error(err); toast('No se pudo abrir la plantilla'); }
+}
 $('#bExit').onclick = async () => {
   select(null);
   if (hasWork()) await saveNow(true);
