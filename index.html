@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>NailBoard by ZALESYA</title>
+<title>ZaleStudio · Nail Training</title>
 <style>
 :root{--bg:#141318;--panel:#1f1d24;--panel2:#2b2932;--line:#3a3742;--txt:#FAF7F1;--mut:#a39f9a;--acc:#c9a84c;--acc2:#e6b95f}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -32,6 +32,11 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 .sw.on{outline:3px solid var(--acc);outline-offset:2px}
 .sw.custom{position:relative;background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);overflow:hidden}
 .sw.custom input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:0;padding:0;cursor:pointer}
+.sizes{display:flex;align-items:center;gap:6px;flex:0 0 auto;margin-left:10px;padding-left:12px;border-left:1px solid var(--line)}
+.szb{flex:0 0 auto;width:48px;height:48px;border-radius:12px;border:2px solid transparent;background:var(--panel2);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;color:var(--txt)}
+.szb.on{border-color:var(--acc);background:#3a3527}
+.szb i{display:block;border-radius:50%}
+.szb b{font-weight:700;line-height:1}
 .sizebox{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:6px}
 .sizebox label{font-size:11px;color:var(--mut)}
 #size{width:170px;accent-color:var(--acc)}
@@ -73,7 +78,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 <body>
 <div id="app">
   <header>
-    <span class="brand">NAILBOARD</span>
+    <span class="brand">ZALESTUDIO</span>
     <button class="btn" id="bOpen"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Abrir foto</button>
     <button class="btn" id="bBlank"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="M13 11v6M10 14h6"/></svg>Lienzo</button>
     <button class="btn" id="bProjects"><svg viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></svg>Trabajos</button>
@@ -103,8 +108,8 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
     <div id="home">
       <div class="homebox">
         <img src="icon-192.png" alt="" class="homelogo">
-        <h1>NailBoard</h1>
-        <p>by ZALESYA</p>
+        <h1>ZaleStudio</h1>
+        <p>Nail Training · by ZALESYA</p>
         <div class="homebtns">
           <button class="pill pri big" id="hOpen">Abrir foto</button>
           <button class="pill big" id="hBlank">Lienzo en blanco</button>
@@ -122,7 +127,8 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
       <button class="btn" data-tool="pen"><svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg>Bolígrafo</button>
       <button class="btn" data-tool="marker"><svg viewBox="0 0 24 24"><path d="M9 15l-4 5h5l2-3"/><path d="M9 15l3 3 8-8-3-3z"/></svg>Rotulador</button>
       <button class="btn" data-tool="hl"><svg viewBox="0 0 24 24"><path d="M4 21h8"/><path d="M8 17l-2 2 3 1 1-2"/><path d="M8 17l4 4 8-8-4-4z"/></svg>Subrayador</button>
-      <button class="btn" data-tool="eraser"><svg viewBox="0 0 24 24"><path d="M8 20h12"/><path d="M4 15l9-9 6 6-8 8H8z"/><path d="M9 10l6 6"/></svg>Borrador</button>
+      <button class="btn" data-tool="erase"><svg viewBox="0 0 24 24"><path d="M8 20h12"/><path d="M4 15l9-9 6 6-8 8H8z"/><path d="M9 10l6 6"/></svg>Borrador</button>
+      <button class="btn" data-tool="eraser"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Borrar zona</button>
       <span class="sep"></span>
       <button class="btn" data-tool="line"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg>Línea</button>
       <button class="btn" data-tool="arrow"><svg viewBox="0 0 24 24"><path d="M5 19L19 5M10 5h9v9"/></svg>Flecha</button>
@@ -133,12 +139,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
     </div>
     <div class="props">
       <div id="colors" style="display:flex;gap:8px;align-items:center"></div>
-      <div class="sizebox">
-        <label for="size" id="sizeL">Grosor</label>
-        <input type="range" id="size" min="1" max="60" value="4">
-        <span id="sizeV">4</span>
-        <div id="dot"><i></i></div>
-      </div>
+      <div class="sizes" id="sizes"></div>
       <button class="btn" id="bPressure" style="display:none"><svg viewBox="0 0 24 24"><path d="M3 16c3 0 3-8 6-8s3 8 6 8 3-4 6-4"/></svg>Presión</button>
     </div>
   </footer>
@@ -179,7 +180,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 <script>
 'use strict';
 /* =========================================================
-   NailBoard by ZALESYA — anotación sobre imágenes de uñas (v1.1)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.3)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -193,6 +194,14 @@ const MAX_SIDE = 2560;
 const DRAG_START = 6;     // px que hay que arrastrar antes de mover/deformar (evita cambios al tocar)
 const HANDLE_HIT = 20;    // radio de toque de los puntos de la forma (px)
 const ROT_TYPES = ['rect', 'ellipse', 'text'];   // formas que guardan su propio ángulo
+const LINE_P = [2, 4, 7, 12];
+const PRESETS = {   // 4 tamaños por herramienta: fino, medio, grueso, muy grueso
+  pen: LINE_P, line: LINE_P, arrow: LINE_P, arc: LINE_P, ellipse: LINE_P, rect: LINE_P,
+  marker: [8, 12, 18, 26], hl: [16, 26, 40, 60], eraser: [14, 28, 50, 80], erase: [14, 28, 50, 80],
+  text: [18, 28, 44, 68]
+};
+const SIZE_NAMES = ['Fino', 'Medio', 'Grueso', 'Muy grueso'];
+let cursor = null;   // círculo que muestra dónde borra
 
 const S = {
   docW: 2000, docH: 1250,
@@ -201,7 +210,7 @@ const S = {
   view: { x: 0, y: 0, s: 1, r: 0 },   // r = giro en radianes
   tool: 'pen',
   color: '#e53935',
-  sizes: { pen: 4, marker: 10, hl: 26, eraser: 30, line: 4, arrow: 4, arc: 4, ellipse: 4, rect: 4, text: 32 },
+  sizes: { pen: 4, marker: 12, hl: 26, eraser: 28, erase: 28, line: 4, arrow: 4, arc: 4, ellipse: 4, rect: 4, text: 28 },
   pressure: true,
   sel: [],               // objetos seleccionados
   projectId: null,
@@ -297,6 +306,13 @@ function render() {
   ctx.drawImage(ink, 0, 0);
   drawSelection();
   drawMarquee();
+  if (cursor) {
+    ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.beginPath(); ctx.arc(cursor.x, cursor.y, Math.max(cursor.r, 4), 0, Math.PI * 2);
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.45)'; ctx.stroke();
+    ctx.lineWidth = 1.5; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function press(v) { return 0.25 + 0.95 * clamp(v, 0, 1); }
@@ -580,27 +596,45 @@ function setTool(t) {
   if (t !== 'select') select(null);   // al cambiar de herramienta se suelta la selección
   syncSize();
 }
-function sizeTarget() { // qué grosor muestra el deslizador
+function sizeTarget() { // a qué herramienta se aplican los botones de tamaño
   const one = single();
-  if (one) return one.t === 'text' ? 'text' : (S.sizes[one.t] != null ? one.t : 'pen');
-  if (S.tool === 'text') return 'text';
-  return S.sizes[S.tool] != null ? S.tool : 'pen';
+  if (one) return one.t === 'text' ? 'text' : (PRESETS[one.t] ? one.t : 'pen');
+  if (S.sel.length) return S.sel.every(o => o.t === 'text') ? 'text' : 'pen';
+  return PRESETS[S.tool] ? S.tool : 'pen';
+}
+function currentSize(k) {
+  const one = single();
+  if (one) return (one.t === 'text' ? one.size : one.w) * S.view.s;
+  return S.sizes[k];
 }
 function syncSize() {
-  const k = sizeTarget(), inp = $('#size'), isText = k === 'text';
-  inp.min = isText ? 10 : 1; inp.max = isText ? 150 : (k === 'eraser' || k === 'hl' ? 100 : 60);
-  $('#sizeL').textContent = isText ? 'Tamaño' : 'Grosor';
-  const one = single();
-  inp.value = one ? Math.round((one.t === 'text' ? one.size : one.w) * S.view.s) : S.sizes[k];
+  const k = sizeTarget(), list = PRESETS[k], cur = currentSize(k), box = $('#sizes');
+  let best = 0; list.forEach((v, i) => { if (Math.abs(v - cur) < Math.abs(list[best] - cur)) best = i; });
+  const isText = k === 'text', erasing = k === 'eraser' || k === 'erase';
+  box.innerHTML = '';
+  list.forEach((v, i) => {
+    const b = document.createElement('button');
+    b.className = 'szb' + (i === best && (cur != null) ? ' on' : '');
+    b.title = SIZE_NAMES[i];
+    if (isText) b.innerHTML = `<b style="font-size:${[13,17,22,28][i]}px;color:${S.color}">A</b>`;
+    else {
+      const d = [4, 8, 14, 22][i];
+      b.innerHTML = `<i style="width:${d}px;height:${d}px;background:${erasing ? '#ffffff' : S.color};${erasing ? 'border:1px dashed #888;background:transparent;' : ''}opacity:${k === 'hl' ? .5 : 1}"></i>`;
+    }
+    b.onclick = () => applySize(k, v);
+    box.appendChild(b);
+  });
   $('#bPressure').style.display = penSeen ? '' : 'none';
-  updDot();
 }
-function updDot() {
-  const v = +$('#size').value; $('#sizeV').textContent = v;
-  const i = $('#dot i'), d = clamp(sizeTarget() === 'text' ? v / 3 : v, 3, 44);
-  i.style.width = i.style.height = d + 'px';
-  i.style.background = S.tool === 'eraser' ? '#ffffff' : S.color;
-  i.style.opacity = S.tool === 'hl' ? .45 : 1;
+function applySize(k, v) {
+  if (S.sel.length) {
+    for (const o of S.sel) {
+      if (o.t === 'text') { if (k === 'text') o.size = v / S.view.s; }
+      else if (k !== 'text') o.w = v / S.view.s;
+    }
+    commit();
+  } else S.sizes[k] = v;
+  syncSize();
 }
 function buildColors() {
   const box = $('#colors');
@@ -618,7 +652,7 @@ function buildColors() {
 }
 function markColor() { document.querySelectorAll('.sw[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === S.color)); }
 function setColor(c, live) {
-  S.color = c; markColor(); updDot();
+  S.color = c; markColor(); syncSize();
   if (S.sel.length) { S.sel.forEach(o => { o.color = c; }); live ? req() : commit(); }
 }
 
@@ -706,7 +740,7 @@ function startTool(e, sx, sy) {
   const base = { id: e.pointerId, ptype: e.pointerType, t0: performance.now(), sx, sy, started: false };
 
   // 1) Lo que ya está seleccionado tiene prioridad (con cualquier herramienta salvo los pinceles)
-  if (S.sel.length && !STROKES.includes(t)) {
+  if (S.sel.length && !STROKES.includes(t) && t !== 'erase') {
     if (hitRotHandle(sx, sy)) {
       const pv = selFrame().pivot;
       act = { ...base, kind: 'rotate', pivot: pv, last: Math.atan2(pt.y - pv.y, pt.x - pv.x), total: 0 }; return;
@@ -717,8 +751,14 @@ function startTool(e, sx, sy) {
   }
 
   // 2) Herramienta activa
+  if (t === 'erase') {
+    select(null);
+    act = { ...base, kind: 'erase', removed: 0 };
+    eraseAt(pt.x, pt.y, sx, sy); return;
+  }
   if (STROKES.includes(t)) {
     select(null);
+    if (t === 'eraser') cursor = { x: sx, y: sy, r: S.sizes.eraser / 2 };
     const usePr = (t === 'pen' || t === 'marker') && S.pressure && e.pointerType === 'pen';
     draft = { t, color: S.color, w: S.sizes[t] / s, pr: usePr, p: [pt.x, pt.y, e.pressure || 0.5] };
     act = { ...base, kind: 'draw' }; req(); return;
@@ -747,14 +787,24 @@ function moveAct(e) {
     S.view.x += e.clientX - act.lx; S.view.y += e.clientY - act.ly;
     act.lx = e.clientX; act.ly = e.clientY; req(); return;
   }
+  const evs = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
+  if (act.kind === 'erase') {
+    for (const ev of evs) { const q = stageXY(ev.clientX, ev.clientY), d = toDocS(q.x, q.y); eraseAt(d.x, d.y, q.x, q.y); }
+    return;
+  }
   if (act.kind === 'draw') {
-    const evs = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
-    const minD = 0.8 / S.view.s, p = draft.p;
+    // suavizado: el trazo sigue al lápiz con un poco de "inercia" para que la letra no tiemble
+    const k = act.ptype === 'pen' ? 0.25 : 0.45, minD = 0.8 / S.view.s, p = draft.p;
+    if (!act.sm) act.sm = { x: p[0], y: p[1] };
     for (const ev of evs) {
-      const pt = toDoc(ev.clientX, ev.clientY), n = p.length;
-      if (dist(pt.x, pt.y, p[n-3], p[n-2]) < minD) continue;
-      p.push(pt.x, pt.y, ev.pressure || 0.5);
+      const raw = toDoc(ev.clientX, ev.clientY);
+      act.raw = { x: raw.x, y: raw.y, pr: ev.pressure || 0.5 };
+      act.sm.x += (raw.x - act.sm.x) * (1 - k); act.sm.y += (raw.y - act.sm.y) * (1 - k);
+      const n = p.length;
+      if (dist(act.sm.x, act.sm.y, p[n-3], p[n-2]) < minD) continue;
+      p.push(act.sm.x, act.sm.y, ev.pressure || 0.5);
     }
+    if (draft.t === 'eraser') cursor = { x: sp.x, y: sp.y, r: S.sizes.eraser / 2 };
     req(); return;
   }
   // el resto solo empieza tras arrastrar unos píxeles: un toque no cambia nada
@@ -809,7 +859,11 @@ function moveAct(e) {
 
 function finishAct(e) {
   const a = act; act = null;
-  if (a.kind === 'draw') { S.objects.push(draft); draft = null; commit(); return; }
+  if (a.kind === 'draw') {
+    if (a.raw) { const p = draft.p, n = p.length; if (dist(a.raw.x, a.raw.y, p[n-3], p[n-2]) > 0.3 / S.view.s) p.push(a.raw.x, a.raw.y, a.raw.pr); }
+    cursor = null; S.objects.push(draft); draft = null; commit(); return;
+  }
+  if (a.kind === 'erase') { cursor = null; if (a.removed) commit(); req(); return; }
 
   if (a.kind === 'shape') {
     const o = draft; draft = null;
@@ -862,7 +916,17 @@ function cancelAct() {
   if (act && (act.kind === 'move' || act.kind === 'handle' || act.kind === 'rotate') && act.started) {
     S.objects = JSON.parse(hist[hIdx]); select(null);
   }
-  act = null; draft = null; marquee = null; req();
+  if (act && act.kind === 'erase' && act.removed) { S.objects = JSON.parse(hist[hIdx]); select(null); }
+  act = null; draft = null; marquee = null; cursor = null; req();
+}
+
+function eraseAt(x, y, sx, sy) { // borra los elementos enteros que toca
+  const rPx = S.sizes.erase / 2;
+  cursor = { x: sx, y: sy, r: rPx };
+  const before = S.objects.length;
+  S.objects = S.objects.filter(o => o.t === 'eraser' || !hitsObj(o, x, y, rPx));
+  if (S.objects.length !== before) act.removed += before - S.objects.length;
+  req();
 }
 
 /* ---------- texto ---------- */
@@ -906,18 +970,6 @@ $('#sDup').onclick = () => {
 };
 
 /* ---------- grosor ---------- */
-$('#size').addEventListener('input', () => {
-  const v = +$('#size').value;
-  if (S.sel.length) {
-    for (const o of S.sel) {
-      if (o.t === 'text') { if (single()) o.size = v / S.view.s; }   // con varios elementos, el texto conserva su tamaño
-      else o.w = v / S.view.s;
-    }
-    req();
-  } else S.sizes[sizeTarget()] = v;
-  updDot();
-});
-$('#size').addEventListener('change', () => { if (S.sel.length) commit(); });
 $('#bPressure').onclick = () => {
   S.pressure = !S.pressure; $('#bPressure').classList.toggle('on', S.pressure);
   toast(S.pressure ? 'Presión activada' : 'Presión desactivada');
@@ -1007,7 +1059,7 @@ $('#bSave').onclick = async () => {
   const blob = await pngBlob();
   await saveNow(true);                         // también queda en Trabajos
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = `nailboard-${fileStamp()}.png`;
+  a.href = URL.createObjectURL(blob); a.download = `zalestudio-${fileStamp()}.png`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   goHome();
@@ -1016,9 +1068,9 @@ $('#bSave').onclick = async () => {
 $('#bShare').onclick = async () => {
   select(null);
   const blob = await pngBlob();
-  const file = new File([blob], `nailboard-${fileStamp()}.png`, { type: 'image/png' });
+  const file = new File([blob], `zalestudio-${fileStamp()}.png`, { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: 'NailBoard' }); } catch (_) {}
+    try { await navigator.share({ files: [file], title: 'ZaleStudio' }); } catch (_) {}
   } else toast('Este navegador no permite compartir. Usa "Guardar imagen"');
 };
 
@@ -1028,7 +1080,7 @@ const DB = {
   open() {
     if (this.db) return Promise.resolve(this.db);
     return new Promise((res, rej) => {
-      const r = indexedDB.open('nailboard', 1);
+      const r = indexedDB.open('zalestudio', 1);
       r.onupgradeneeded = () => r.result.createObjectStore('projects', { keyPath: 'id' });
       r.onsuccess = () => res(this.db = r.result);
       r.onerror = () => rej(r.error);
@@ -1059,7 +1111,7 @@ async function saveNow(force) {
     const thumb = renderDoc(sc).toDataURL('image/jpeg', 0.75);
     await DB.put({ id: S.projectId, name: S.projectName || nowName(), updated: Date.now(),
                    docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view } });
-    localStorage.setItem('nailboard-last', S.projectId);
+    localStorage.setItem('zalestudio-last', S.projectId);
   } catch (err) { console.error(err); toast('No se pudo guardar el trabajo'); }
 }
 async function openProject(id, keepView) {
@@ -1070,7 +1122,7 @@ async function openProject(id, keepView) {
   S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name;
   setEmpty(false); select(null); resetHist();
   if (keepView && p.view) { S.view = { r: 0, ...p.view }; render(); } else fit();
-  localStorage.setItem('nailboard-last', p.id);
+  localStorage.setItem('zalestudio-last', p.id);
   return true;
 }
 async function showProjects() {
