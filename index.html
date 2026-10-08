@@ -197,6 +197,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
       <span class="sep"></span>
       <button class="btn" data-tool="angle"><svg viewBox="0 0 24 24"><path d="M4 20h16M4 20L15 5"/><path d="M10 20a6 6 0 0 0-2.4-4.8"/></svg>Ángulo</button>
       <button class="btn" data-tool="ratio"><svg viewBox="0 0 24 24"><path d="M3 12h18M3 8v8M14 9v6M21 8v8"/></svg>Proporción</button>
+      <button class="btn" data-tool="ratio2"><svg viewBox="0 0 24 24"><path d="M7 3v11M4 3h6M4 14h6M16 10v11M13 10h6M13 21h6"/></svg>Almendra</button>
       <button class="btn" id="bSym"><svg viewBox="0 0 24 24"><path d="M12 3v18" stroke-dasharray="2 2"/><path d="M9 7L4 12l5 5M15 7l5 5-5 5"/></svg>Simetría</button>
 
     </div>
@@ -243,7 +244,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.0)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.1)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -251,7 +252,7 @@ const ink = document.createElement('canvas'), ictx = ink.getContext('2d');
 let dpr = 1, W = 0, H = 0;
 
 const COLORS = ['#111111','#ffffff','#e53935','#ff9800','#fdd835','#43a047','#1e88e5','#8e24aa','#ec407a','#795548'];
-const SHAPES = ['line','arrow','arc','ellipse','rect','angle','ratio'];
+const SHAPES = ['line','arrow','arc','ellipse','rect','angle','ratio','ratio2'];
 const STAMPS = ['ok','ko'];
 const MIRRORABLE = ['pen','marker','hl','eraser','line','arrow','arc','ellipse','rect'];
 const STROKES = ['pen','marker','hl','eraser'];
@@ -261,7 +262,7 @@ const HANDLE_HIT = 20;    // radio de toque de los puntos de la forma (px)
 const ROT_TYPES = ['rect', 'ellipse', 'text', 'overlay'];   // formas que guardan su propio ángulo
 const LINE_P = [2, 4, 7, 12];
 const PRESETS = {   // 4 tamaños por herramienta: fino, medio, grueso, muy grueso
-  pen: LINE_P, line: LINE_P, arrow: LINE_P, arc: LINE_P, ellipse: LINE_P, rect: LINE_P, angle: LINE_P, ratio: LINE_P,
+  pen: LINE_P, line: LINE_P, arrow: LINE_P, arc: LINE_P, ellipse: LINE_P, rect: LINE_P, angle: LINE_P, ratio: LINE_P, ratio2: LINE_P,
   ok: [28, 40, 56, 80], ko: [28, 40, 56, 80], stamp: [28, 40, 56, 80],
   marker: [8, 12, 18, 26], hl: [16, 26, 40, 60], eraser: [14, 28, 50, 80], erase: [14, 28, 50, 80],
   text: [18, 28, 44, 68]
@@ -280,7 +281,7 @@ const S = {
   view: { x: 0, y: 0, s: 1, r: 0 },   // r = giro en radianes
   tool: 'pen',
   color: '#e53935',
-  sizes: { pen: 4, marker: 12, hl: 26, eraser: 28, erase: 28, line: 4, arrow: 4, arc: 4, ellipse: 4, rect: 4, text: 28, angle: 3, ratio: 3, ok: 40, ko: 40 },
+  sizes: { pen: 4, marker: 12, hl: 26, eraser: 28, erase: 28, line: 4, arrow: 4, arc: 4, ellipse: 4, rect: 4, text: 28, angle: 3, ratio: 3, ratio2: 3, ok: 40, ko: 40 },
   pressure: true,
   sel: [],               // objetos seleccionados
   projectId: null,
@@ -492,6 +493,7 @@ function drawObj(c, o) {
     }
     case 'angle': drawAngle(c, o); break;
     case 'ratio': drawRatio(c, o); break;
+    case 'ratio2': drawRatio2(c, o); break;
     case 'axis': {
       if (EXPORTING) break;
       const dx = o.b[0] - o.a[0], dy = o.b[1] - o.a[1], L = Math.hypot(dx, dy) || 1, E = 1e5;
@@ -584,14 +586,7 @@ function drawAngle(c, o) {
   drawTag(c, tx, ty, ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`, fs, o.color);
 }
 const FRACS = [[1, 4], [1, 3], [1, 2], [2, 3], [3, 4], [1, 1], [4, 3], [3, 2], [2, 1]];
-function ratioText(q) {
-  let best = null;
-  for (const [n, d] of FRACS) { const e = Math.abs(q - n / d) / (n / d); if (e < 0.05 && (!best || e < best.e)) best = { n, d, e }; }
-  const pct = Math.round(q * 100);
-  if (!best) return `Borde libre = ${pct} % del lecho`;
-  if (best.n === best.d) return `Borde libre = ${pct} % del lecho\n≈ igual que el lecho`;
-  return `Borde libre = ${pct} % del lecho\n≈ ${best.n}/${best.d} del lecho`;
-}
+function ratioText(q) { return `Borde libre = ${Math.round(q * 100)} % del lecho`; }
 function drawRatio(c, o) {
   c.lineWidth = o.w;
   c.beginPath(); c.moveTo(o.a[0], o.a[1]); c.lineTo(o.m[0], o.m[1]); c.lineTo(o.b[0], o.b[1]); c.stroke();
@@ -602,6 +597,25 @@ function drawRatio(c, o) {
   drawTag(c, (o.a[0] + o.m[0]) / 2 + nx * off, (o.a[1] + o.m[1]) / 2 + ny * off, 'Lecho', small, o.color);
   drawTag(c, (o.m[0] + o.b[0]) / 2 + nx * off, (o.m[1] + o.b[1]) / 2 + ny * off, 'Borde libre', small, o.color);
   if (L1 > 0) drawTag(c, o.b[0] + ux / L * o.fs * 2.6, o.b[1] + uy / L * o.fs * 2.6, ratioText(L2 / L1), o.fs, o.color);   // resultado más allá de la punta
+}
+function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde libre (punto alto de la sonrisa → punta)
+  c.lineWidth = o.w;
+  const seg = (p, q, name, other) => {
+    c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
+    const L = dist(p[0], p[1], q[0], q[1]) || 1, nx = -(q[1] - p[1]) / L, ny = (q[0] - p[0]) / L, tk = Math.max(o.w * 4, o.fs * 0.6);
+    for (const r of [p, q]) { c.beginPath(); c.moveTo(r[0] - nx * tk, r[1] - ny * tk); c.lineTo(r[0] + nx * tk, r[1] + ny * tk); c.stroke(); }
+    const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+    const side = other ? -(Math.sign((other[0] - mx) * nx + (other[1] - my) * ny) || 1) : -1;   // la etiqueta, por fuera
+    drawTag(c, mx + nx * o.fs * 1.9 * side, my + ny * o.fs * 1.9 * side, name, o.fs * 0.75, o.color);
+    return { L };
+  };
+  const m2 = o.c ? [(o.c[0] + o.d[0]) / 2, (o.c[1] + o.d[1]) / 2] : null, m1 = [(o.a[0] + o.b[0]) / 2, (o.a[1] + o.b[1]) / 2];
+  const s1 = seg(o.a, o.b, 'Almendra', m2);
+  if (!o.c) return;
+  const s2 = seg(o.c, o.d, 'Borde libre', m1);
+  const T = s1.L + s2.L, p1 = Math.round(s1.L / T * 100), p2 = 100 - p1;
+  const ux = (o.d[0] - o.c[0]) / s2.L, uy = (o.d[1] - o.c[1]) / s2.L;
+  drawTag(c, o.d[0] + ux * o.fs * 2.6, o.d[1] + uy * o.fs * 2.6, `Almendra ${p1} % · Borde libre ${p2} %`, o.fs, o.color);
 }
 /* ---------- simetría ---------- */
 function axisObj() { return S.objects.find(o => o.t === 'axis') || null; }
@@ -709,7 +723,7 @@ function handlesOf(o) {
   if (!o) return [];
   if (o.t === 'arc') return [['a', o.a], ['b', o.b], ['m', o.m], ['q', arcShoulder(o)]];
   if (o.t === 'label') return [['tip', o.tip]];
-  if (o.t === 'angle') return o.c ? [['a', o.a], ['b', o.b], ['c', o.c], ['d', o.d]] : [['a', o.a], ['b', o.b]];
+  if (o.t === 'angle' || o.t === 'ratio2') return o.c ? [['a', o.a], ['b', o.b], ['c', o.c], ['d', o.d]] : [['a', o.a], ['b', o.b]];
   if (o.t === 'ratio') return [['a', o.a], ['m', o.m], ['b', o.b]];
   if (o.t === 'axis') return [['a', o.a], ['b', o.b]];
   if (o.t === 'overlay') {
@@ -746,7 +760,7 @@ function localBox(o) { // caja sin girar
     ictx.restore();
     return { x1: o.x, y1: o.y, x2: o.x + w, y2: o.y + lines.length * o.size * 1.2 };
   }
-  const pts = o.t === 'arc' ? arcPoints(o, 36) : o.t === 'angle' ? [o.a, o.b, o.c, o.d].filter(Boolean) : o.t === 'ratio' ? [o.a, o.m, o.b] : [o.a, o.b];
+  const pts = o.t === 'arc' ? arcPoints(o, 36) : (o.t === 'angle' || o.t === 'ratio2') ? [o.a, o.b, o.c, o.d].filter(Boolean) : o.t === 'ratio' ? [o.a, o.m, o.b] : [o.a, o.b];
   const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), h = o.w / 2;
   return { x1: Math.min(...xs) - h, y1: Math.min(...ys) - h, x2: Math.max(...xs) + h, y2: Math.max(...ys) + h };
 }
@@ -875,7 +889,7 @@ function hitsObj(o, x, y, tolPx) {
     const dx = o.b[0] - o.a[0], dy = o.b[1] - o.a[1], L = Math.hypot(dx, dy) || 1, E = 1e5;
     return segDist(x, y, o.a[0] - dx / L * E, o.a[1] - dy / L * E, o.b[0] + dx / L * E, o.b[1] + dy / L * E) < tol;
   }
-  if (o.t === 'angle') return segDist(x, y, o.a[0], o.a[1], o.b[0], o.b[1]) < r || (!!o.c && segDist(x, y, o.c[0], o.c[1], o.d[0], o.d[1]) < r);
+  if (o.t === 'angle' || o.t === 'ratio2') return segDist(x, y, o.a[0], o.a[1], o.b[0], o.b[1]) < r || (!!o.c && segDist(x, y, o.c[0], o.c[1], o.d[0], o.d[1]) < r);
   if (o.t === 'ratio') return segDist(x, y, o.a[0], o.a[1], o.m[0], o.m[1]) < r || segDist(x, y, o.m[0], o.m[1], o.b[0], o.b[1]) < r;
   if (o.t === 'pen' || o.t === 'marker' || o.t === 'hl') {
     const p = o.p;
@@ -1135,7 +1149,7 @@ function startTool(e, sx, sy) {
   }
   if (SHAPES.includes(t)) {
     draft = { t, color: S.color, w: S.sizes[t] / s, a: [pt.x, pt.y], b: [pt.x, pt.y] };
-    if (t === 'angle' || t === 'ratio') draft.fs = 18 / s;
+    if (t === 'angle' || t === 'ratio' || t === 'ratio2') draft.fs = 18 / s;
     if (t === 'ratio') draft.m = [pt.x, pt.y];
     if (t === 'arc') draft.m = [pt.x, pt.y];
     act = { ...base, kind: 'shape', hadSel: S.sel.length > 0 }; return;
@@ -1269,6 +1283,11 @@ function finishAct(e) {
       const L = dist(o.a[0], o.a[1], o.b[0], o.b[1]) || 1, off = 60 / S.view.s;
       const nx = -(o.b[1] - o.a[1]) / L * off, ny = (o.b[0] - o.a[0]) / L * off;
       o.c = [o.a[0] + nx, o.a[1] + ny]; o.d = [o.b[0] + nx, o.b[1] + ny];
+    }
+    if (o.t === 'ratio2') {   // borde libre: al lado, empezando a la altura de la sonrisa y siguiendo hacia la punta
+      const ux = o.b[0] - o.a[0], uy = o.b[1] - o.a[1], L = Math.hypot(ux, uy) || 1, off = 50 / S.view.s;
+      const nx = -uy / L * off, ny = ux / L * off;
+      o.c = [o.a[0] + ux * 0.75 + nx, o.a[1] + uy * 0.75 + ny]; o.d = [o.b[0] + ux * 0.75 + nx, o.b[1] + uy * 0.75 + ny];
     }
     S.objects.push(o);
     const ax = axisObj(); if (ax) { const md = mirrorObj(o, ax); if (md) S.objects.push(md); }
