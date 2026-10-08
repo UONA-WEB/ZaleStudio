@@ -85,9 +85,9 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 .pill{border:0;border-radius:10px;padding:11px 18px;font:inherit;font-size:14px;font-weight:600;background:var(--panel2);color:var(--txt);cursor:pointer}
 .pill.pri{background:var(--acc);color:#141318}
 .pill.dan{background:#5a2328;color:#ffd9dc}
-#plist{overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.pj{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
-.pj img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#fff;display:block;cursor:pointer}
+#plist{overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));grid-auto-rows:max-content;align-content:start;gap:10px;min-height:0;flex:1 1 auto}
+.pj{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.pj img{width:100%;height:120px;object-fit:cover;background:#fff;display:block;cursor:pointer;flex:0 0 auto}
 .pj .meta{padding:6px 8px;font-size:11px;color:var(--mut)}
 .pj .row{display:flex;gap:4px;padding:0 6px 6px}
 .pj .row button{flex:1;padding:7px 4px;font-size:12px}
@@ -120,6 +120,9 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
     <canvas id="cv"></canvas>
     <div id="selbar">
       <span id="selN" style="display:none;align-self:center;font-size:12px;color:var(--acc);padding:0 8px"></span>
+      <button class="btn arcp" data-pct="30"><b style="font-size:15px">30%</b>Curva C</button>
+      <button class="btn arcp" data-pct="40"><b style="font-size:15px">40%</b>Curva C</button>
+      <button class="btn arcp" data-pct="50"><b style="font-size:15px">50%</b>Curva C</button>
       <button class="btn" id="sFlip"><svg viewBox="0 0 24 24"><path d="M4 9Q12 1 20 9"/><path d="M4 15Q12 23 20 15" stroke-dasharray="2 3"/></svg>Invertir</button>
       <button class="btn" id="sSmaller"><svg viewBox="0 0 24 24"><path d="M3 18l5-12 5 12M5 14h6"/><path d="M15 12h6"/></svg>Reducir</button>
       <button class="btn" id="sBigger"><svg viewBox="0 0 24 24"><path d="M3 18l5-12 5 12M5 14h6"/><path d="M15 12h6M18 9v6"/></svg>Ampliar</button>
@@ -216,7 +219,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.6)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.7)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -356,8 +359,39 @@ function render() {
 }
 
 function press(v) { return 0.25 + 0.95 * clamp(v, 0, 1); }
-function arcCtrl(o) { // punto de control a partir del punto "m", que está sobre la curva
-  return { x: 2 * o.m[0] - (o.a[0] + o.b[0]) / 2, y: 2 * o.m[1] - (o.a[1] + o.b[1]) / 2 };
+/* Arco = trozo de círculo que pasa por a, m y b (m = punto central de la curva).
+   La curva C se mide en % de círculo: 50 % = medio círculo. */
+function arcInfo(o) {
+  const ax = o.a[0], ay = o.a[1], bx = o.b[0], by = o.b[1];
+  const L = dist(ax, ay, bx, by), mx = (ax + bx) / 2, my = (ay + by) / 2;
+  if (L < 1e-6) return null;
+  const nx = -(by - ay) / L, ny = (bx - ax) / L;          // normal a la cuerda
+  const sag = (o.m[0] - mx) * nx + (o.m[1] - my) * ny;     // flecha (con signo)
+  return { L, mx, my, nx, ny, sag, pct: 4 * Math.atan(2 * Math.abs(sag) / L) / (2 * Math.PI) };
+}
+function arcGeom(o) { // centro, radio y ángulos del círculo
+  const g = arcInfo(o); if (!g || Math.abs(g.sag) < g.L * 1e-3) return null;
+  const s = g.sag, h = g.L / 2, r = (h * h + s * s) / (2 * Math.abs(s));
+  const d = r - Math.abs(s), sg = Math.sign(s);
+  const cx = g.mx - g.nx * sg * d, cy = g.my - g.ny * sg * d;   // el centro queda al otro lado de la flecha
+  const a0 = Math.atan2(o.a[1] - cy, o.a[0] - cx), a1 = Math.atan2(o.b[1] - cy, o.b[0] - cx);
+  const am = Math.atan2(o.m[1] - cy, o.m[0] - cx);
+  const norm = v => ((v % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  const ccw = !(norm(am - a0) < norm(a1 - a0));               // sentido que pasa por m
+  return { cx, cy, r, a0, a1, ccw };
+}
+function arcPoints(o, n = 48) {
+  const G = arcGeom(o); if (!G) return [o.a, o.b];
+  const norm = v => ((v % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  const span = G.ccw ? -norm(G.a0 - G.a1) : norm(G.a1 - G.a0), out = [];
+  for (let i = 0; i <= n; i++) { const t = G.a0 + span * i / n; out.push([G.cx + G.r * Math.cos(t), G.cy + G.r * Math.sin(t)]); }
+  return out;
+}
+function setArcPct(o, pct, side) { // coloca m para un % de círculo (simétrico)
+  const g = arcInfo(o); if (!g) return;
+  const sgn = side || Math.sign(g.sag) || 1, th = clamp(pct, 0.01, 0.9) * 2 * Math.PI;
+  const sag = sgn * (g.L / 2) * Math.tan(th / 4);
+  o.m = [g.mx + g.nx * sag, g.my + g.ny * sag];
 }
 
 function drawObj(c, o) {
@@ -379,8 +413,10 @@ function drawObj(c, o) {
       c.stroke(); break;
     }
     case 'arc': {
-      const k = arcCtrl(o);
-      c.beginPath(); c.moveTo(o.a[0], o.a[1]); c.quadraticCurveTo(k.x, k.y, o.b[0], o.b[1]); c.stroke(); break;
+      const G = arcGeom(o);
+      c.beginPath();
+      if (G) c.arc(G.cx, G.cy, G.r, G.a0, G.a1, G.ccw); else { c.moveTo(o.a[0], o.a[1]); c.lineTo(o.b[0], o.b[1]); }
+      c.stroke(); break;
     }
     case 'rect': {
       const x = Math.min(o.a[0], o.b[0]), y = Math.min(o.a[1], o.b[1]);
@@ -517,7 +553,7 @@ function localBox(o) { // caja sin girar
     ictx.restore();
     return { x1: o.x, y1: o.y, x2: o.x + w, y2: o.y + lines.length * o.size * 1.2 };
   }
-  const pts = [o.a, o.b]; if (o.t === 'arc') pts.push(o.m);
+  const pts = o.t === 'arc' ? arcPoints(o, 36) : [o.a, o.b];
   const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), h = o.w / 2;
   return { x1: Math.min(...xs) - h, y1: Math.min(...ys) - h, x2: Math.max(...xs) + h, y2: Math.max(...ys) + h };
 }
@@ -587,6 +623,17 @@ function drawSelection() {
     const ex = r.x + 7 * Math.cos(Math.PI * 0.55), ey = r.y + 7 * Math.sin(Math.PI * 0.55);
     ctx.beginPath(); ctx.moveTo(ex - 4, ey - 1); ctx.lineTo(ex, ey); ctx.lineTo(ex + 1, ey - 4); ctx.stroke();
   }
+  const one = single();
+  if (one && one.t === 'arc') {
+    const g = arcInfo(one);
+    if (g) {
+      const s = toScreen(one.m[0], one.m[1]), txt = `Curva C ${Math.round(g.pct * 100)} %`;
+      ctx.font = '600 13px Montserrat, system-ui, sans-serif'; const tw = ctx.measureText(txt).width;
+      const bx = s.x + 18, by = s.y - 30;
+      ctx.fillStyle = 'rgba(20,19,24,.85)'; ctx.fillRect(bx, by, tw + 14, 22);
+      ctx.fillStyle = '#e6b95f'; ctx.textBaseline = 'middle'; ctx.fillText(txt, bx + 7, by + 11);
+    }
+  }
   for (const [k, pt] of handlesOf(single())) {
     const s = toScreen(pt[0], pt[1]);
     ctx.beginPath(); ctx.arc(s.x, s.y, k === 'm' ? 11 : 9, 0, Math.PI * 2);
@@ -634,13 +681,8 @@ function hitsObj(o, x, y, tolPx) {
   }
   if (o.t === 'line' || o.t === 'arrow') return segDist(x, y, o.a[0], o.a[1], o.b[0], o.b[1]) < r;
   if (o.t === 'arc') {
-    const k = arcCtrl(o); let px = o.a[0], py = o.a[1];
-    for (let j = 1; j <= 30; j++) {
-      const t = j / 30, u = 1 - t;
-      const qx = u*u*o.a[0] + 2*u*t*k.x + t*t*o.b[0], qy = u*u*o.a[1] + 2*u*t*k.y + t*t*o.b[1];
-      if (segDist(x, y, px, py, qx, qy) < r) return true;
-      px = qx; py = qy;
-    }
+    const P = arcPoints(o, 48);
+    for (let j = 1; j < P.length; j++) if (segDist(x, y, P[j-1][0], P[j-1][1], P[j][0], P[j][1]) < r) return true;
     return false;
   }
   if (o.t === 'rect') {
@@ -681,6 +723,7 @@ function select(list) {
   const one = single();
   $('#selbar').classList.toggle('show', S.sel.length > 0);
   $('#sFlip').style.display = one && one.t === 'arc' ? '' : 'none';
+  document.querySelectorAll('.arcp').forEach(b => b.style.display = one && one.t === 'arc' ? '' : 'none');
   const txtSel = S.sel.length > 0 && S.sel.every(o => TXT_TYPES.includes(o.t));
   $('#sSmaller').style.display = $('#sBigger').style.display = txtSel ? '' : 'none';
   $('#sEdit').style.display = one && TXT_TYPES.includes(one.t) ? '' : 'none';
@@ -933,11 +976,7 @@ function moveAct(e) {
   if (act.kind === 'marquee') { marquee.x2 = sp.x; marquee.y2 = sp.y; req(); return; }
   if (act.kind === 'shape') {
     draft.b = [pt.x, pt.y];
-    if (draft.t === 'arc') {
-      const ax = draft.a[0], ay = draft.a[1], bx = pt.x, by = pt.y, L = dist(ax, ay, bx, by);
-      const nx = L ? -(by - ay) / L : 0, ny = L ? (bx - ax) / L : 0;
-      draft.m = [(ax + bx) / 2 + nx * L * 0.25, (ay + by) / 2 + ny * L * 0.25];
-    }
+    if (draft.t === 'arc') { draft.m = draft.m || [pt.x, pt.y]; draft.m = [(draft.a[0] + pt.x) / 2, (draft.a[1] + pt.y) / 2]; setArcPct(draft, 0.3, 1); }
     req(); return;
   }
   if (act.kind === 'rotate') {
@@ -961,9 +1000,16 @@ function moveAct(e) {
       o[h] = [A.x, A.y]; o[other] = [B.x, B.y];
       req(); return;
     }
-    if (o.t === 'arc' && h !== 'm') {
-      const old = o[h].slice(); o[h] = [pt.x, pt.y];
-      o.m[0] += (pt.x - old[0]) / 2; o.m[1] += (pt.y - old[1]) / 2;   // la curva acompaña
+    if (o.t === 'arc') {
+      const g0 = arcInfo(o);
+      if (h !== 'm') { const pct = g0 ? g0.pct : 0.3, side = g0 ? Math.sign(g0.sag) || 1 : 1; o[h] = [pt.x, pt.y]; setArcPct(o, pct, side); }
+      else if (g0) {
+        let sag = (pt.x - g0.mx) * g0.nx + (pt.y - g0.my) * g0.ny;
+        const lim = (g0.L / 2) * Math.tan(0.9 * 2 * Math.PI / 4); sag = clamp(sag, -lim, lim);
+        const pct = 4 * Math.atan(2 * Math.abs(sag) / g0.L) / (2 * Math.PI), near = Math.round(pct * 20) / 20;
+        if (Math.abs(pct - near) < 0.012) { setArcPct(o, near, Math.sign(sag) || 1); }   // se engancha en 5 %, 10 %… 30 %, 40 %, 50 %
+        else o.m = [g0.mx + g0.nx * sag, g0.my + g0.ny * sag];
+      }
     } else o[h] = [pt.x, pt.y];
     req(); return;
   }
@@ -1081,6 +1127,10 @@ $('#sFlip').onclick = () => {
   const mx = (o.a[0] + o.b[0]) / 2, my = (o.a[1] + o.b[1]) / 2;
   o.m = [2 * mx - o.m[0], 2 * my - o.m[1]]; commit();
 };
+document.querySelectorAll('[data-pct]').forEach(b => b.onclick = () => {
+  const o = single(); if (!o || o.t !== 'arc') return;
+  setArcPct(o, +b.dataset.pct / 100); commit();
+});
 function scaleText(f) {   // cambia el tamaño del texto o la etiqueta seleccionada, sin límite de pasos
   const list = S.sel.filter(o => TXT_TYPES.includes(o.t)); if (!list.length) return;
   for (const o of list) {
