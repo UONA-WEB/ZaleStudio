@@ -219,7 +219,7 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.7)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v1.10)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -240,7 +240,7 @@ const PRESETS = {   // 4 tamaños por herramienta: fino, medio, grueso, muy grue
   text: [18, 28, 44, 68]
 };
 const SIZE_NAMES = ['Fino', 'Medio', 'Grueso', 'Muy grueso'];
-const TEMPLATES = [{"f": "plantilla-02-ovalada.jpg", "n": "Oval"}, {"f": "plantilla-03-ovalada-extension.jpg", "n": "Oval larga"}, {"f": "plantilla-04-perfil-natural.jpg", "n": "Perfil natural"}, {"f": "plantilla-05-perfil-almendra.jpg", "n": "Perfil oval"}, {"f": "plantilla-06-natural-corta.jpg", "n": "Natural corta"}, {"f": "plantilla-07-squoval.jpg", "n": "Squoval"}, {"f": "plantilla-08-cuadrada.jpg", "n": "Cuadrada"}, {"f": "plantilla-09-cuadrada-extension.jpg", "n": "Cuadrada larga"}, {"f": "plantilla-10-tip-cuadrado.jpg", "n": "Curva C"}, {"f": "plantilla-11-stiletto.jpg", "n": "Almond"}, {"f": "plantilla-17-stiletto.jpg", "n": "Stiletto"}, {"f": "plantilla-12-stiletto-perfil.jpg", "n": "Stiletto perfil"}, {"f": "plantilla-13-coffin.jpg", "n": "Coffin"}, {"f": "plantilla-14-formas.jpg", "n": "Formas de uña"}, {"f": "plantilla-15-onicofagia.jpg", "n": "Onicofagia"}, {"f": "plantilla-16-mano.jpg", "n": "Mano"}];
+const TEMPLATES = [{"f": "plantilla-02-ovalada.jpg", "n": "Oval"}, {"f": "plantilla-03-ovalada-extension.jpg", "n": "Oval larga"}, {"f": "plantilla-04-perfil-natural.jpg", "n": "Perfil natural"}, {"f": "plantilla-05-perfil-almendra.jpg", "n": "Perfil oval"}, {"f": "plantilla-06-natural-corta.jpg", "n": "Natural corta"}, {"f": "plantilla-07-squoval.jpg", "n": "Squoval"}, {"f": "plantilla-08-cuadrada.jpg", "n": "Cuadrada"}, {"f": "plantilla-09-cuadrada-extension.jpg", "n": "Cuadrada larga"}, {"f": "plantilla-18-curva-c-30.jpg", "n": "Curva C 30 %"}, {"f": "plantilla-19-curva-c-40.jpg", "n": "Curva C 40 %"}, {"f": "plantilla-20-curva-c-50.jpg", "n": "Curva C 50 %"}, {"f": "plantilla-21-smile-line.jpg", "n": "Smile line"}, {"f": "plantilla-11-stiletto.jpg", "n": "Almond"}, {"f": "plantilla-17-stiletto.jpg", "n": "Stiletto"}, {"f": "plantilla-12-stiletto-perfil.jpg", "n": "Stiletto perfil"}, {"f": "plantilla-13-coffin.jpg", "n": "Coffin"}, {"f": "plantilla-14-formas.jpg", "n": "Formas de uña"}, {"f": "plantilla-15-onicofagia.jpg", "n": "Onicofagia"}, {"f": "plantilla-16-mano.jpg", "n": "Mano"}];
 const LABELS_ANAT = ['Cutícula','Eponiquio','Pterigión ungueal','Placa ungueal','Lecho','Matriz','Luna o lúnula','Hiponiquio','Paroniquio','Pliegue ungueal','Borde libre','Pliegue proximal','Sinus ungueal','Sonrisa (smile line)','Banda onicodérmica'];
 const LABELS_EST = ['Laterales','Sonrisa (smile line)','Curva C','Cóncavo','Convexo','Ápex','Hair line','Zona de estrés'];
 const TXT_TYPES = ['text', 'label'];
@@ -361,36 +361,57 @@ function render() {
 function press(v) { return 0.25 + 0.95 * clamp(v, 0, 1); }
 /* Arco = trozo de círculo que pasa por a, m y b (m = punto central de la curva).
    La curva C se mide en % de círculo: 50 % = medio círculo. */
+/* Arco = trozo de círculo (curva C) que puede verse "aplastado" por la perspectiva de la foto.
+   a y b = extremos; m = punto central que se ve; o.k = cuánto se aplasta (1 = vista de frente).
+   El % es el de la curva real vista de frente: 50 % = medio círculo. */
+const ARC_U = 0.8;   // el punto de forma está al 80 % de la media cuerda
 function arcInfo(o) {
   const ax = o.a[0], ay = o.a[1], bx = o.b[0], by = o.b[1];
   const L = dist(ax, ay, bx, by), mx = (ax + bx) / 2, my = (ay + by) / 2;
   if (L < 1e-6) return null;
-  const nx = -(by - ay) / L, ny = (bx - ax) / L;          // normal a la cuerda
-  const sag = (o.m[0] - mx) * nx + (o.m[1] - my) * ny;     // flecha (con signo)
-  return { L, mx, my, nx, ny, sag, pct: 4 * Math.atan(2 * Math.abs(sag) / L) / (2 * Math.PI) };
+  const ux = (bx - ax) / L, uy = (by - ay) / L, nx = -uy, ny = ux;
+  const k = o.k || 1;
+  const sag = (o.m[0] - mx) * nx + (o.m[1] - my) * ny;     // flecha que se ve
+  const st = sag / k;                                        // flecha real (de frente)
+  return { L, h: L / 2, mx, my, ux, uy, nx, ny, k, sag, st, pct: 4 * Math.atan(2 * Math.abs(st) / L) / (2 * Math.PI) };
 }
-function arcGeom(o) { // centro, radio y ángulos del círculo
-  const g = arcInfo(o); if (!g || Math.abs(g.sag) < g.L * 1e-3) return null;
-  const s = g.sag, h = g.L / 2, r = (h * h + s * s) / (2 * Math.abs(s));
-  const d = r - Math.abs(s), sg = Math.sign(s);
-  const cx = g.mx - g.nx * sg * d, cy = g.my - g.ny * sg * d;   // el centro queda al otro lado de la flecha
-  const a0 = Math.atan2(o.a[1] - cy, o.a[0] - cx), a1 = Math.atan2(o.b[1] - cy, o.b[0] - cx);
-  const am = Math.atan2(o.m[1] - cy, o.m[0] - cx);
-  const norm = v => ((v % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-  const ccw = !(norm(am - a0) < norm(a1 - a0));               // sentido que pasa por m
-  return { cx, cy, r, a0, a1, ccw };
+function arcTrueV(g, u) { // altura de la curva real en la posición u de la cuerda
+  const S = g.st, h = g.h; if (Math.abs(S) < 1e-9) return 0;
+  const r = (h * h + S * S) / (2 * Math.abs(S)), sg = Math.sign(S), vc = S - sg * r;
+  return vc + sg * Math.sqrt(Math.max(0, r * r - u * u));
 }
-function arcPoints(o, n = 48) {
-  const G = arcGeom(o); if (!G) return [o.a, o.b];
+function arcPoints(o, n = 64) {
+  const g = arcInfo(o); if (!g || Math.abs(g.st) < g.L * 1e-3) return [o.a, o.b];
+  const S = g.st, h = g.h, r = (h * h + S * S) / (2 * Math.abs(S)), sg = Math.sign(S), vc = S - sg * r;
+  // ángulos en el plano de la curva real (u a lo largo de la cuerda, v hacia la flecha)
+  const fa = Math.atan2(0 - vc, -h), fb = Math.atan2(0 - vc, h), fm = Math.atan2(S - vc, 0);
   const norm = v => ((v % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-  const span = G.ccw ? -norm(G.a0 - G.a1) : norm(G.a1 - G.a0), out = [];
-  for (let i = 0; i <= n; i++) { const t = G.a0 + span * i / n; out.push([G.cx + G.r * Math.cos(t), G.cy + G.r * Math.sin(t)]); }
+  const ccw = norm(fm - fa) < norm(fb - fa), span = ccw ? norm(fb - fa) : -norm(fa - fb), out = [];
+  for (let i = 0; i <= n; i++) {
+    const t = fa + span * i / n, u = r * Math.cos(t), v = (vc + r * Math.sin(t)) * g.k;
+    out.push([g.mx + g.ux * u + g.nx * v, g.my + g.uy * u + g.ny * v]);
+  }
   return out;
 }
-function setArcPct(o, pct, side) { // coloca m para un % de círculo (simétrico)
+function arcShoulder(o) { // punto de forma (para ajustar la perspectiva)
+  const g = arcInfo(o); if (!g) return o.b;
+  const u = ARC_U * g.h, v = arcTrueV(g, u) * g.k;
+  return [g.mx + g.ux * u + g.nx * v, g.my + g.uy * u + g.ny * v];
+}
+function shoulderRatio(p) { // altura del punto de forma / altura central, según el % real
+  const S = Math.tan(Math.PI * p / 2), r = (1 + S * S) / (2 * S), vc = S - r;
+  return (vc + Math.sqrt(r * r - ARC_U * ARC_U)) / S;
+}
+function pctFromRatio(q) {
+  let lo = 0.005, hi = 0.9;
+  q = clamp(q, shoulderRatio(lo), shoulderRatio(hi));
+  for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (shoulderRatio(mid) < q) lo = mid; else hi = mid; }
+  return (lo + hi) / 2;
+}
+function setArcPct(o, pct, side) { // coloca m para un % real (simétrico), manteniendo la perspectiva
   const g = arcInfo(o); if (!g) return;
   const sgn = side || Math.sign(g.sag) || 1, th = clamp(pct, 0.01, 0.9) * 2 * Math.PI;
-  const sag = sgn * (g.L / 2) * Math.tan(th / 4);
+  const st = sgn * g.h * Math.tan(th / 4), sag = st * g.k;
   o.m = [g.mx + g.nx * sag, g.my + g.ny * sag];
 }
 
@@ -413,9 +434,9 @@ function drawObj(c, o) {
       c.stroke(); break;
     }
     case 'arc': {
-      const G = arcGeom(o);
-      c.beginPath();
-      if (G) c.arc(G.cx, G.cy, G.r, G.a0, G.a1, G.ccw); else { c.moveTo(o.a[0], o.a[1]); c.lineTo(o.b[0], o.b[1]); }
+      const P = arcPoints(o, 72);
+      c.beginPath(); c.moveTo(P[0][0], P[0][1]);
+      for (let i = 1; i < P.length; i++) c.lineTo(P[i][0], P[i][1]);
       c.stroke(); break;
     }
     case 'rect': {
@@ -523,7 +544,7 @@ function rotPt(x, y, cx, cy, ang) {
 }
 function handlesOf(o) {
   if (!o) return [];
-  if (o.t === 'arc') return [['a', o.a], ['b', o.b], ['m', o.m]];
+  if (o.t === 'arc') return [['a', o.a], ['b', o.b], ['m', o.m], ['q', arcShoulder(o)]];
   if (o.t === 'label') return [['tip', o.tip]];
   if ((o.t === 'rect' || o.t === 'ellipse') && o.rot) {
     const k = centerOf(o), A = rotPt(o.a[0], o.a[1], k.x, k.y, o.rot), B = rotPt(o.b[0], o.b[1], k.x, k.y, o.rot);
@@ -627,9 +648,12 @@ function drawSelection() {
   if (one && one.t === 'arc') {
     const g = arcInfo(one);
     if (g) {
-      const s = toScreen(one.m[0], one.m[1]), txt = `Curva C ${Math.round(g.pct * 100)} %`;
+      const persp = Math.abs(g.k - 1) > 0.03;
+      const s = toScreen(one.m[0], one.m[1]), txt = `Curva C ${Math.round(g.pct * 100)} %${persp ? ' · estimada' : ''}`;
       ctx.font = '600 13px Montserrat, system-ui, sans-serif'; const tw = ctx.measureText(txt).width;
-      const bx = s.x + 18, by = s.y - 30;
+      const sg = Math.sign(g.sag) || 1, off = 40 / S.view.s;   // la etiqueta va por fuera de la curva, sin tapar los puntos
+      const lp = toScreen(one.m[0] + g.nx * sg * off, one.m[1] + g.ny * sg * off);
+      const bx = lp.x - (tw + 14) / 2, by = lp.y - 11;
       ctx.fillStyle = 'rgba(20,19,24,.85)'; ctx.fillRect(bx, by, tw + 14, 22);
       ctx.fillStyle = '#e6b95f'; ctx.textBaseline = 'middle'; ctx.fillText(txt, bx + 7, by + 11);
     }
@@ -637,7 +661,7 @@ function drawSelection() {
   for (const [k, pt] of handlesOf(single())) {
     const s = toScreen(pt[0], pt[1]);
     ctx.beginPath(); ctx.arc(s.x, s.y, k === 'm' ? 11 : 9, 0, Math.PI * 2);
-    ctx.fillStyle = k === 'm' ? '#c9a84c' : '#ffffff'; ctx.fill();
+    ctx.fillStyle = k === 'm' ? '#c9a84c' : (k === 'q' ? '#7fd1c7' : '#ffffff'); ctx.fill();
     ctx.lineWidth = 2.5; ctx.strokeStyle = '#141318'; ctx.stroke();
   }
   ctx.restore();
@@ -1002,13 +1026,19 @@ function moveAct(e) {
     }
     if (o.t === 'arc') {
       const g0 = arcInfo(o);
-      if (h !== 'm') { const pct = g0 ? g0.pct : 0.3, side = g0 ? Math.sign(g0.sag) || 1 : 1; o[h] = [pt.x, pt.y]; setArcPct(o, pct, side); }
-      else if (g0) {
+      const snap = (pct) => { const near = Math.round(pct * 20) / 20; return Math.abs(pct - near) < 0.012 ? near : pct; };
+      if (h === 'a' || h === 'b') { const pct = g0 ? g0.pct : 0.3, side = g0 ? Math.sign(g0.sag) || 1 : 1; o[h] = [pt.x, pt.y]; setArcPct(o, pct, side); }
+      else if (g0 && h === 'm') {   // altura: cambia el % (la perspectiva se mantiene)
         let sag = (pt.x - g0.mx) * g0.nx + (pt.y - g0.my) * g0.ny;
-        const lim = (g0.L / 2) * Math.tan(0.9 * 2 * Math.PI / 4); sag = clamp(sag, -lim, lim);
-        const pct = 4 * Math.atan(2 * Math.abs(sag) / g0.L) / (2 * Math.PI), near = Math.round(pct * 20) / 20;
-        if (Math.abs(pct - near) < 0.012) { setArcPct(o, near, Math.sign(sag) || 1); }   // se engancha en 5 %, 10 %… 30 %, 40 %, 50 %
-        else o.m = [g0.mx + g0.nx * sag, g0.my + g0.ny * sag];
+        const lim = g0.k * g0.h * Math.tan(0.9 * Math.PI / 2); sag = clamp(sag, -lim, lim);
+        const pct = 4 * Math.atan(2 * Math.abs(sag / g0.k) / g0.L) / (2 * Math.PI), sn = snap(pct);
+        if (sn !== pct) setArcPct(o, sn, Math.sign(sag) || 1); else o.m = [g0.mx + g0.nx * sag, g0.my + g0.ny * sag];
+      }
+      else if (g0 && h === 'q' && Math.abs(g0.sag) > 2 / S.view.s) {   // forma: ajusta la perspectiva sin mover la altura
+        const v = (pt.x - g0.mx) * g0.nx + (pt.y - g0.my) * g0.ny;
+        const pct = snap(pctFromRatio(v / g0.sag));
+        const st = Math.sign(g0.sag) * g0.h * Math.tan(Math.PI * pct / 2);
+        o.k = clamp(g0.sag / st, 0.08, 12);
       }
     } else o[h] = [pt.x, pt.y];
     req(); return;
@@ -1129,7 +1159,7 @@ $('#sFlip').onclick = () => {
 };
 document.querySelectorAll('[data-pct]').forEach(b => b.onclick = () => {
   const o = single(); if (!o || o.t !== 'arc') return;
-  setArcPct(o, +b.dataset.pct / 100); commit();
+  o.k = 1; setArcPct(o, +b.dataset.pct / 100); commit();   // círculo exacto, vista de frente
 });
 function scaleText(f) {   // cambia el tamaño del texto o la etiqueta seleccionada, sin límite de pasos
   const list = S.sel.filter(o => TXT_TYPES.includes(o.t)); if (!list.length) return;
