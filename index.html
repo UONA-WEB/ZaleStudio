@@ -64,6 +64,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
 #selbar::-webkit-scrollbar{display:none}
 #toast{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:var(--panel2);color:var(--txt);padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
 #toast.show{opacity:1}
+#stage.selbottom #toast{bottom:84px}
 #home{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#24212b 0%,var(--bg) 70%);z-index:5;padding:20px}
 #home.show{display:flex}
 .side{position:absolute;top:0;bottom:0;width:min(300px,84vw);background:var(--panel);z-index:7;overflow-y:auto;touch-action:pan-y;
@@ -267,7 +268,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.2)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.3)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -393,7 +394,9 @@ function render() {
   setT(ictx);
   ictx.save();
   ictx.beginPath(); ictx.rect(0, 0, S.docW, S.docH); ictx.clip();
-  for (const o of S.objects) if (o.t !== 'overlay') drawObj(ictx, o);
+  TAG_LOG = [];
+  for (const o of S.objects) if (o.t !== 'overlay') { TAG_OWNER = [o]; drawObj(ictx, o); }
+  TAG_OWNER = null;
   if (draft) {
     drawObj(ictx, draft);
     const ax = axisObj(); if (ax) { const md = mirrorObj(draft, ax); if (md) drawObj(ictx, md); }
@@ -406,6 +409,7 @@ function render() {
   ctx.drawImage(ink, 0, 0);
   drawSelection();
   drawMarquee();
+  placeSelbar();
   if (cursor) {
     ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.beginPath(); ctx.arc(cursor.x, cursor.y, Math.max(cursor.r, 4), 0, Math.PI * 2);
@@ -415,6 +419,28 @@ function render() {
   }
 }
 
+let selPos = 0;
+function placeSelbar() {   // pone Duplicar/Eliminar/Listo en la esquina que menos tape lo seleccionado
+  const bar = $('#selbar');
+  if (!S.sel.length || document.body.classList.contains('present')) return;
+  if (ptrs.size) return;                     // mientras arrastras no se mueve
+  const W = stage.clientWidth, H = stage.clientHeight, bw = bar.offsetWidth, bh = bar.offsetHeight, m = 8;
+  const obs = [];
+  const f = selFrame(), q = f.quad.map(p => toScreen(p[0], p[1])), pad = 26;
+  obs.push({ x1: Math.min(...q.map(p => p.x)) - pad, y1: Math.min(...q.map(p => p.y)) - pad, x2: Math.max(...q.map(p => p.x)) + pad, y2: Math.max(...q.map(p => p.y)) + pad });
+  const rh = rotHandlePos(); if (rh) obs.push({ x1: rh.x - 30, y1: rh.y - 30, x2: rh.x + 30, y2: rh.y + 30, w: 8 });
+  const one = single();
+  if (one) for (const [, h] of handlesOf(one)) { const p = toScreen(h[0], h[1]); obs.push({ x1: p.x - 30, y1: p.y - 30, x2: p.x + 30, y2: p.y + 30, w: 8 }); }
+  for (const t of TAG_LOG || []) if (t.owner && t.owner.some(o => S.sel.includes(o))) obs.push({ x1: t.x1 - 6, y1: t.y1 - 6, x2: t.x2 + 6, y2: t.y2 + 6, w: 3 });
+  const L = m, C = (W - bw) / 2, R = W - bw - m, T = m, B = H - bh - m;
+  const cand = [[C, T], [C, B], [L, T], [R, T], [L, B], [R, B], [L, (H - bh) / 2], [R, (H - bh) / 2]];
+  const cost = ([x, y]) => obs.reduce((s, o) => s + (o.w || 1) * Math.max(0, Math.min(x + bw, o.x2) - Math.max(x, o.x1)) * Math.max(0, Math.min(y + bh, o.y2) - Math.max(y, o.y1)), 0);
+  let best = selPos, bc = cost(cand[selPos] || cand[0]);
+  cand.forEach((p, i) => { const k = cost(p); if (k < bc - 1) { bc = k; best = i; } });
+  selPos = best; const [x, y] = cand[best];
+  bar.style.left = Math.max(m, x) + 'px'; bar.style.top = Math.max(m, y) + 'px'; bar.style.transform = 'none';
+  stage.classList.toggle('selbottom', y > H / 2 && best !== 6 && best !== 7);   // el aviso sube para no chocar
+}
 function press(v) { return 0.25 + 0.95 * clamp(v, 0, 1); }
 /* Arco = trozo de círculo que pasa por a, m y b (m = punto central de la curva).
    La curva C se mide en % de círculo: 50 % = medio círculo. */
@@ -542,12 +568,36 @@ function tplImg(f) {
   return TPL_IMG[f];
 }
 const fmt1 = v => v.toFixed(1).replace('.', ',');
+let TAG_LOG = null, TAG_OWNER = null;
 function drawTag(c, x, y, text, fs, color, anchor) { // etiqueta de medida, siempre derecha en pantalla (con flecha al punto 'anchor')
   c.save(); c.setLineDash([]);
-  c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`;
-  const lines = text.split('\n'); let w = 0; for (const l of lines) w = Math.max(w, c.measureText(l).width);
-  const lh = fs * 1.25, pw = w + fs * 0.9, ph = lines.length * lh + fs * 0.5, r = fs * 0.35;
   const rot = EXPORTING ? 0 : -S.view.r, cs = Math.abs(Math.cos(rot)), sn = Math.abs(Math.sin(rot));
+  c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`;
+  // ancho disponible dentro de la imagen (la etiqueta va derecha en pantalla)
+  const room = h => Math.min(cs > 0.02 ? (S.docW * 0.94 - h * sn) / cs : Infinity, sn > 0.02 ? (S.docH * 0.94 - h * cs) / sn : Infinity);
+  const maxW = Math.max(fs * 3, room(fs * 3.2) - fs * 0.9);
+  const mw = l => c.measureText(l).width;
+  text = text.replace(/ (%|°)/g, '\u00a0$1');              // el número no se separa de su unidad
+  let parts = [];
+  for (const line of text.split('\n')) {
+    if (mw(line) <= maxW) parts.push(line);
+    else parts.push(...line.split(/(?<= =) | · /));        // primero corta por " · " y después de " = "
+  }
+  let pw0 = 0; for (const l of parts) pw0 = Math.max(pw0, mw(l));
+  if (pw0 > maxW && pw0 <= maxW * 1.3) { fs *= maxW / pw0; c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`; }  // si falta poco, letra algo menor
+  const maxW2 = maxW + 0.5;
+  let lines = [];
+  {
+    for (const part of parts) {
+      if (mw(part) <= maxW2) { lines.push(part); continue; }
+      let cur = '';
+      for (const wd of part.split(' ')) { const t = cur ? cur + ' ' + wd : wd; if (cur && mw(t) > maxW2) { lines.push(cur); cur = wd; } else cur = t; }
+      if (cur) lines.push(cur);
+    }
+  }
+  let w = 0; for (const l of lines) w = Math.max(w, mw(l));
+  if (w > maxW2) { fs *= maxW2 / w; w = maxW2; c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`; }
+  const lh = fs * 1.25, pw = w + fs * 0.9, ph = lines.length * lh + fs * 0.5, r = fs * 0.35;
   const ex = (pw * cs + ph * sn) / 2 + 2, ey = (pw * sn + ph * cs) / 2 + 2;   // la etiqueta nunca se sale de la imagen
   x = S.docW > 2 * ex ? clamp(x, ex, S.docW - ex) : S.docW / 2; y = S.docH > 2 * ey ? clamp(y, ey, S.docH - ey) : S.docH / 2;
   if (anchor) {   // línea fina con punto que une la etiqueta con lo que mide
@@ -560,6 +610,8 @@ function drawTag(c, x, y, text, fs, color, anchor) { // etiqueta de medida, siem
       c.beginPath(); c.arc(anchor[0], anchor[1], Math.max(1.5, fs * 0.18), 0, Math.PI * 2); c.fill();
     }
   }
+  if (!EXPORTING && TAG_LOG) { const sc = toScreen(x, y), hw = pw / 2 * S.view.s, hh = ph / 2 * S.view.s;
+    TAG_LOG.push({ owner: TAG_OWNER, x1: sc.x - hw, y1: sc.y - hh, x2: sc.x + hw, y2: sc.y + hh }); }
   c.translate(x, y); c.rotate(rot);
   c.beginPath(); c.moveTo(-pw / 2 + r, -ph / 2); c.lineTo(pw / 2 - r, -ph / 2); c.quadraticCurveTo(pw / 2, -ph / 2, pw / 2, -ph / 2 + r);
   c.lineTo(pw / 2, ph / 2 - r); c.quadraticCurveTo(pw / 2, ph / 2, pw / 2 - r, ph / 2); c.lineTo(-pw / 2 + r, ph / 2);
@@ -790,7 +842,7 @@ function drawPairs(c) {   // compara cada pareja reflejada: inclinación (°) y 
     for (const o of g) for (const pt of quadOf(o)) tmax = Math.max(tmax, along(pt));
     const tm = (along([cp.x, cp.y]) + along([cq.x, cq.y])) / 2, anc = [A.a[0] + ux * tm, A.a[1] + uy * tm];
     const tt = tmax + fs * 2.6, pos = [A.a[0] + ux * tt, A.a[1] + uy * tt];
-    drawTag(c, pos[0], pos[1], txt, fs, ok ? '#2e9e48' : '#00bcd4', anc);
+    TAG_OWNER = g; drawTag(c, pos[0], pos[1], txt, fs, ok ? '#2e9e48' : '#00bcd4', anc); TAG_OWNER = null;
   }
 }
 function reflectP(p, A) {
@@ -1115,6 +1167,7 @@ function select(list) {
   S.sel = list ? (Array.isArray(list) ? list : [list]) : [];
   const one = single();
   $('#selbar').classList.toggle('show', S.sel.length > 0);
+  if (!S.sel.length) stage.classList.remove('selbottom');
   $('#sFlip').style.display = one && one.t === 'arc' ? '' : 'none';
   document.querySelectorAll('.arcp').forEach(b => b.style.display = one && one.t === 'arc' ? '' : 'none');
   const txtSel = S.sel.length > 0 && S.sel.every(o => TXT_TYPES.includes(o.t));
@@ -1269,7 +1322,7 @@ stage.addEventListener('pointermove', e => {
 
 function endPointer(e, cancelled) {
   if (!ptrs.has(e.pointerId)) return;
-  ptrs.delete(e.pointerId);
+  ptrs.delete(e.pointerId); if (!ptrs.size && S.sel.length) req();
   if (pinch) {
     if (touchPts().length < 2) { pinch = null; blockTouch = touchPts().length > 0; scheduleSave(); }
     return;
