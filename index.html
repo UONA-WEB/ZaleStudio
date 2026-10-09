@@ -268,7 +268,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.3)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.4)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -394,7 +394,8 @@ function render() {
   setT(ictx);
   ictx.save();
   ictx.beginPath(); ictx.rect(0, 0, S.docW, S.docH); ictx.clip();
-  TAG_LOG = [];
+  TAG_LOG = []; TAG_PLACED = []; ALL_SEGS = [];
+  for (const o of S.objects) if (o.t !== 'overlay' && o.t !== 'axis') ALL_SEGS.push(...objSegs(o));
   for (const o of S.objects) if (o.t !== 'overlay') { TAG_OWNER = [o]; drawObj(ictx, o); }
   TAG_OWNER = null;
   if (draft) {
@@ -568,8 +569,32 @@ function tplImg(f) {
   return TPL_IMG[f];
 }
 const fmt1 = v => v.toFixed(1).replace('.', ',');
-let TAG_LOG = null, TAG_OWNER = null;
-function drawTag(c, x, y, text, fs, color, anchor) { // etiqueta de medida, siempre derecha en pantalla (con flecha al punto 'anchor')
+let TAG_LOG = null, TAG_OWNER = null, TAG_PLACED = null, ALL_SEGS = null;
+function objSegs(o) {   // tramos rectos de una forma (para que las etiquetas no los tapen)
+  const S2 = [];
+  if (['line', 'arrow', 'axis'].includes(o.t)) S2.push([o.a, o.b]);
+  else if (o.t === 'angle' || o.t === 'ratio2') { S2.push([o.a, o.b]); if (o.c) S2.push([o.c, o.d]); }
+  else if (o.t === 'ratio') S2.push([o.a, o.m], [o.m, o.b]);
+  else if (o.t === 'arc') { const P = arcPoints(o, 16); for (let i = 1; i < P.length; i++) S2.push([P[i - 1], P[i]]); }
+  else if (o.t === 'rect' || o.t === 'ellipse') { const q = quadOf(o); for (let i = 0; i < 4; i++) S2.push([q[i], q[(i + 1) % 4]]); }
+  return S2;
+}
+function segBox(x0, y0, x1, y1, hw, hh) {   // ¿el tramo toca la caja centrada (±hw, ±hh)?
+  let t0 = 0, t1 = 1; const dx = x1 - x0, dy = y1 - y0;
+  const P = [-dx, dx, -dy, dy], Q = [x0 + hw, hw - x0, y0 + hh, hh - y0];
+  for (let i = 0; i < 4; i++) {
+    if (P[i] === 0) { if (Q[i] < 0) return false; continue; }
+    const r = Q[i] / P[i];
+    if (P[i] < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+  }
+  return true;
+}
+function tagOpt(o, pref, extra) {
+  const pts = handlesOf(o).map(h => h[1]);
+  if (!EXPORTING && S.sel.includes(o)) { const r = rotHandlePos(); if (r) { const d = toDocS(r.x, r.y); pts.push([d.x, d.y]); } }   // el tirador de girar tampoco se tapa
+  return { segs: objSegs(o).concat(extra || []), pts, pref };
+}
+function drawTag(c, x, y, text, fs, color, anchor, opt) { // etiqueta de medida, siempre derecha en pantalla (con flecha al punto 'anchor')
   c.save(); c.setLineDash([]);
   const rot = EXPORTING ? 0 : -S.view.r, cs = Math.abs(Math.cos(rot)), sn = Math.abs(Math.sin(rot));
   c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`;
@@ -599,7 +624,37 @@ function drawTag(c, x, y, text, fs, color, anchor) { // etiqueta de medida, siem
   if (w > maxW2) { fs *= maxW2 / w; w = maxW2; c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`; }
   const lh = fs * 1.25, pw = w + fs * 0.9, ph = lines.length * lh + fs * 0.5, r = fs * 0.35;
   const ex = (pw * cs + ph * sn) / 2 + 2, ey = (pw * sn + ph * cs) / 2 + 2;   // la etiqueta nunca se sale de la imagen
-  x = S.docW > 2 * ex ? clamp(x, ex, S.docW - ex) : S.docW / 2; y = S.docH > 2 * ey ? clamp(y, ey, S.docH - ey) : S.docH / 2;
+  const cl = (px, py) => [S.docW > 2 * ex ? clamp(px, ex, S.docW - ex) : S.docW / 2, S.docH > 2 * ey ? clamp(py, ey, S.docH - ey) : S.docH / 2];
+  if (anchor && opt) {   // busca alrededor del punto un sitio que no tape líneas, puntos ni otras etiquetas
+    const mg = fs * 0.35, hw = pw / 2 + mg, hh = ph / 2 + mg, hr = 26 / S.view.s, cr = Math.cos(-rot), sr = Math.sin(-rot);
+    const loc = (p, cx, cy) => { const dx = p[0] - cx, dy = p[1] - cy; return [dx * cr - dy * sr, dx * sr + dy * cr]; };
+    const own = opt.segs || [], pts = (opt.pts || []).concat([anchor]), other = ALL_SEGS || [], placed = TAG_PLACED || [];
+    const cost = (cx, cy) => {
+      let k = 0;
+      for (const [p, q] of own) { const a = loc(p, cx, cy), b = loc(q, cx, cy); if (segBox(a[0], a[1], b[0], b[1], hw, hh)) k += 1000; }
+      for (const [p, q] of other) { const a = loc(p, cx, cy), b = loc(q, cx, cy); if (segBox(a[0], a[1], b[0], b[1], hw, hh)) k += 300; }
+      for (const p of pts) { const a = loc(p, cx, cy); if (Math.abs(a[0]) < hw + hr && Math.abs(a[1]) < hh + hr) k += 1000; }
+      for (const t of placed) { const a = loc([t.x, t.y], cx, cy); if (Math.abs(a[0]) < (pw + t.pw) / 2 + mg && Math.abs(a[1]) < (ph + t.ph) / 2 + mg) k += 800; }
+      if (!EXPORTING) {   // que se vea en pantalla (con la imagen ampliada)
+        const sc = toScreen(cx, cy), hx = pw / 2 * S.view.s, hy = ph / 2 * S.view.s, W = stage.clientWidth, H = stage.clientHeight;
+        const out = Math.max(0, hx - sc.x) + Math.max(0, sc.x + hx - W) + Math.max(0, hy - sc.y) + Math.max(0, sc.y + hy - H);
+        if (out > 0) k += 600 + out;
+      }
+      const dx = cx - anchor[0], dy = cy - anchor[1], d = Math.hypot(dx, dy) || 1;
+      k += d / fs * 4;
+      if (opt.pref) { const pl = Math.hypot(...opt.pref) || 1; k += (1 - (dx * opt.pref[0] + dy * opt.pref[1]) / (d * pl)) * 12; }
+      return k;
+    };
+    let best = cl(x, y), bc = cost(...best) - 2;
+    for (const kk of [0.8, 1.8, 3.2, 5, 7.5, 11]) for (let i = 0; i < 16; i++) {
+      const th = i * Math.PI / 8, ux = Math.cos(th), uy = Math.sin(th);
+      const lx = ux * cr - uy * sr, ly = ux * sr + uy * cr, sup = Math.abs(lx) * pw / 2 + Math.abs(ly) * ph / 2;
+      const p = cl(anchor[0] + ux * (kk * fs + sup), anchor[1] + uy * (kk * fs + sup)), k = cost(p[0], p[1]);
+      if (k < bc) { bc = k; best = p; }
+    }
+    [x, y] = best;
+  } else [x, y] = cl(x, y);
+  if (TAG_PLACED) TAG_PLACED.push({ x, y, pw, ph });
   if (anchor) {   // línea fina con punto que une la etiqueta con lo que mide
     const q = rotPt(anchor[0], anchor[1], x, y, -rot), lx = q.x - x, ly = q.y - y;
     const t = Math.min(lx ? (pw / 2) / Math.abs(lx) : Infinity, ly ? (ph / 2) / Math.abs(ly) : Infinity);
@@ -665,14 +720,15 @@ function drawAngle(c, o) {
     c.restore();
     const m1 = [(o.a[0] + o.b[0]) / 2 - X[0], (o.a[1] + o.b[1]) / 2 - X[1]], m2 = [(o.c[0] + o.d[0]) / 2 - X[0], (o.c[1] + o.d[1]) / 2 - X[1]];
     const bx = m1[0] / (Math.hypot(...m1) || 1) + m2[0] / (Math.hypot(...m2) || 1), by = m1[1] / (Math.hypot(...m1) || 1) + m2[1] / (Math.hypot(...m2) || 1);
-    const bl = Math.hypot(bx, by) || 1; tx = X[0] - bx / bl * fs * 4; ty = X[1] - by / bl * fs * 4; var anc = X;
+    const bl = Math.hypot(bx, by) || 1; tx = X[0] - bx / bl * fs * 4; ty = X[1] - by / bl * fs * 4; var anc = X, pref = [-bx, -by];
+    var ext = [[o.a, o.b], [o.c, o.d]].map(([p, q]) => [dist(p[0], p[1], X[0], X[1]) < dist(q[0], q[1], X[0], X[1]) ? p : q, X]);
   } else {   // casi paralelas: la etiqueta va más allá de las puntas, fuera de las líneas
     const L1 = dist(o.a[0], o.a[1], o.b[0], o.b[1]) || 1, ux = (o.b[0] - o.a[0]) / L1, uy = (o.b[1] - o.a[1]) / L1;
     const pts = [o.a, o.b, o.c, o.d].sort((p, q) => (q[0] * ux + q[1] * uy) - (p[0] * ux + p[1] * uy));
     const ex = [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2];
-    tx = ex[0] + ux * fs * 3.6; ty = ex[1] + uy * fs * 3.6; var anc = ex;
+    tx = ex[0] + ux * fs * 3.6; ty = ex[1] + uy * fs * 3.6; var anc = ex, pref = [ux, uy], ext = [];
   }
-  drawTag(c, tx, ty, ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`, fs, o.color, anc);
+  drawTag(c, tx, ty, ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`, fs, o.color, anc, tagOpt(o, pref, ext));
 }
 const FRACS = [[1, 4], [1, 3], [1, 2], [2, 3], [3, 4], [1, 1], [4, 3], [3, 2], [2, 1]];
 function ratioText(q) { return `Borde libre = ${Math.round(q * 100)} % del lecho`; }
@@ -684,28 +740,31 @@ function drawRatio(c, o) {
   const L1 = dist(o.a[0], o.a[1], o.m[0], o.m[1]), L2 = dist(o.m[0], o.m[1], o.b[0], o.b[1]);
   const off = o.fs * 3.4, small = o.fs * 0.75;
   const m1 = [(o.a[0] + o.m[0]) / 2, (o.a[1] + o.m[1]) / 2], m2 = [(o.m[0] + o.b[0]) / 2, (o.m[1] + o.b[1]) / 2];
-  drawTag(c, m1[0] + nx * off, m1[1] + ny * off, 'Lecho', small, o.color, m1);
-  drawTag(c, m2[0] + nx * off, m2[1] + ny * off, 'Borde libre', small, o.color, m2);
-  if (L1 > 0) drawTag(c, o.b[0] + ux / L * o.fs * 3.6, o.b[1] + uy / L * o.fs * 3.6, ratioText(L2 / L1), o.fs, o.color, o.b);   // resultado más allá de la punta
+  const ticks = [o.a, o.m, o.b].map(p => [[p[0] - nx * tk, p[1] - ny * tk], [p[0] + nx * tk, p[1] + ny * tk]]);
+  if (L1 > 0) drawTag(c, o.b[0] + ux / L * o.fs * 3.6, o.b[1] + uy / L * o.fs * 3.6, ratioText(L2 / L1), o.fs, o.color, o.b, tagOpt(o, [ux, uy], ticks));
+  drawTag(c, m1[0] + nx * off, m1[1] + ny * off, 'Lecho', small, o.color, m1, tagOpt(o, [nx, ny], ticks));
+  drawTag(c, m2[0] + nx * off, m2[1] + ny * off, 'Borde libre', small, o.color, m2, tagOpt(o, [nx, ny], ticks));   // resultado más allá de la punta
 }
 function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde libre (punto alto de la sonrisa → punta)
   c.lineWidth = o.w;
+  const later = [];
   const seg = (p, q, name, other) => {
     c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
     const L = dist(p[0], p[1], q[0], q[1]) || 1, nx = -(q[1] - p[1]) / L, ny = (q[0] - p[0]) / L, tk = Math.max(o.w * 4, o.fs * 0.6);
     for (const r of [p, q]) { c.beginPath(); c.moveTo(r[0] - nx * tk, r[1] - ny * tk); c.lineTo(r[0] + nx * tk, r[1] + ny * tk); c.stroke(); }
     const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
     const side = other ? -(Math.sign((other[0] - mx) * nx + (other[1] - my) * ny) || 1) : -1;   // la etiqueta, por fuera
-    drawTag(c, mx + nx * o.fs * 3.4 * side, my + ny * o.fs * 3.4 * side, name, o.fs * 0.75, o.color, [mx, my]);
+    later.push(() => drawTag(c, mx + nx * o.fs * 3.4 * side, my + ny * o.fs * 3.4 * side, name, o.fs * 0.75, o.color, [mx, my], tagOpt(o, [nx * side, ny * side])));
     return { L };
   };
   const m2 = o.c ? [(o.c[0] + o.d[0]) / 2, (o.c[1] + o.d[1]) / 2] : null, m1 = [(o.a[0] + o.b[0]) / 2, (o.a[1] + o.b[1]) / 2];
   const s1 = seg(o.a, o.b, 'Almendra', m2);
-  if (!o.c) return;
+  if (!o.c) { later.forEach(f => f()); return; }
   const s2 = seg(o.c, o.d, 'Borde libre', m1);
   const T = s1.L + s2.L, p1 = Math.round(s1.L / T * 100), p2 = 100 - p1;
   const ux = (o.d[0] - o.c[0]) / s2.L, uy = (o.d[1] - o.c[1]) / s2.L;
-  drawTag(c, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, `Almendra ${p1} % · Borde libre ${p2} %`, o.fs, o.color, o.d);
+  drawTag(c, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, `Almendra ${p1} % · Borde libre ${p2} %`, o.fs, o.color, o.d, tagOpt(o, [ux, uy]));
+  later.forEach(f => f());
 }
 /* ---------- ayuda: mantener pulsado un botón + guía ---------- */
 const MOVE_TIP = 'Para mover una forma, tócala y arrástrala sobre la línea de color, no sobre los puntos: los puntos sirven para cambiar la forma.';
@@ -842,7 +901,9 @@ function drawPairs(c) {   // compara cada pareja reflejada: inclinación (°) y 
     for (const o of g) for (const pt of quadOf(o)) tmax = Math.max(tmax, along(pt));
     const tm = (along([cp.x, cp.y]) + along([cq.x, cq.y])) / 2, anc = [A.a[0] + ux * tm, A.a[1] + uy * tm];
     const tt = tmax + fs * 2.6, pos = [A.a[0] + ux * tt, A.a[1] + uy * tt];
-    TAG_OWNER = g; drawTag(c, pos[0], pos[1], txt, fs, ok ? '#2e9e48' : '#00bcd4', anc); TAG_OWNER = null;
+    const op = { segs: [...objSegs(p), ...objSegs(q), [A.a, A.b]], pts: [...handlesOf(p), ...handlesOf(q), ...handlesOf(A)].map(h => h[1]), pref: [ux, uy] };
+    if (!EXPORTING && g.some(o => S.sel.includes(o))) { const r = rotHandlePos(); if (r) { const d = toDocS(r.x, r.y); op.pts.push([d.x, d.y]); } }
+    TAG_OWNER = g; drawTag(c, pos[0], pos[1], txt, fs, ok ? '#2e9e48' : '#00bcd4', anc, op); TAG_OWNER = null;
   }
 }
 function reflectP(p, A) {
@@ -1719,7 +1780,9 @@ function renderDoc(scale) {
   const k = document.createElement('canvas'); k.width = w; k.height = h;
   const kx = k.getContext('2d'); kx.setTransform(scale, 0, 0, scale, 0, 0);
   EXPORTING = true;
-  try { for (const o of S.objects) if (o.t !== 'overlay') drawObj(kx, o); drawPairs(kx); } finally { EXPORTING = false; }
+  const keep = [TAG_PLACED, ALL_SEGS, TAG_LOG]; TAG_PLACED = []; ALL_SEGS = []; TAG_LOG = null;
+  for (const o of S.objects) if (o.t !== 'overlay' && o.t !== 'axis') ALL_SEGS.push(...objSegs(o));
+  try { for (const o of S.objects) if (o.t !== 'overlay') drawObj(kx, o); drawPairs(kx); } finally { EXPORTING = false; [TAG_PLACED, ALL_SEGS, TAG_LOG] = keep; }
   x.drawImage(k, 0, 0);
   return c;
 }
