@@ -45,6 +45,14 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 #sizeV{font-size:12px;min-width:24px;text-align:right;color:var(--mut)}
 #selbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:none;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
 #selbar.show{display:flex}
+.btn{-webkit-touch-callout:none}
+.tipbox{background:#3a3527;border:1px solid var(--acc);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.45;margin:8px 0;color:var(--txt)}
+#gBody h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:16px 0 6px}
+.grow{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.grow .gi{flex:0 0 40px;height:40px;border-radius:10px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--txt)}
+.grow .gi svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.grow b{display:block;font-size:14px;margin-bottom:2px}
+.grow span{font-size:13px;color:var(--mut);line-height:1.4}
 body.present header, body.present footer, body.present .side{display:none!important}
 #presbar{position:absolute;top:10px;right:10px;display:none;gap:4px;z-index:6;background:rgba(31,29,36,.88);border:1px solid var(--line);border-radius:14px;padding:4px}
 body.present #presbar{display:flex}
@@ -122,6 +130,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
     <button class="btn" id="bShare"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>Compartir</button>
     <span class="sep"></span>
     <button class="btn" id="bPresent"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg>Presentar</button>
+    <button class="btn" id="bGuide"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17.2v.1"/></svg>Guía</button>
     <span class="sep"></span>
     <button class="btn" id="bExit"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Salir</button>
   </header>
@@ -145,7 +154,6 @@ body.present #selbar{top:10px;left:10px;transform:none}
     </div>
     <div id="toast"></div>
     <div id="presbar">
-      <button class="btn" id="pUndo"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>Deshacer</button>
       <button class="btn" id="pExit"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Salir</button>
     </div>
     <div id="home">
@@ -158,6 +166,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
           <button class="pill big" id="hTpl">Plantillas</button>
           <button class="pill big" id="hBlank">Lienzo en blanco</button>
           <button class="pill big" id="hProjects">Mis trabajos</button>
+          <button class="pill big" id="hGuide">Guía de uso</button>
         </div>
       </div>
     </div>
@@ -230,6 +239,20 @@ body.present #selbar{top:10px;left:10px;transform:none}
   </div>
 </div>
 
+<div class="modal" id="mHelp">
+  <div class="card">
+    <h2 id="hTitle"></h2>
+    <div id="hBody" style="font-size:15px;line-height:1.5;color:var(--txt)"></div>
+    <div class="actions"><button class="pill pri" id="hClose">Entendido</button></div>
+  </div>
+</div>
+<div class="modal" id="mGuide">
+  <div class="card" style="width:min(720px,100%)">
+    <h2>Guía de ZaleStudio</h2>
+    <div id="gBody" style="overflow-y:auto;min-height:0;flex:1 1 auto"></div>
+    <div class="actions"><button class="pill pri" id="gClose">Cerrar</button></div>
+  </div>
+</div>
 <div class="modal" id="mConfirm">
   <div class="card">
     <h2 id="cTitle">¿Seguro?</h2>
@@ -244,7 +267,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.1)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.2)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -375,6 +398,7 @@ function render() {
     drawObj(ictx, draft);
     const ax = axisObj(); if (ax) { const md = mirrorObj(draft, ax); if (md) drawObj(ictx, md); }
   }
+  drawPairs(ictx);
   $('#bSym').classList.toggle('on', !!axisObj());
   ictx.restore();
 
@@ -518,7 +542,7 @@ function tplImg(f) {
   return TPL_IMG[f];
 }
 const fmt1 = v => v.toFixed(1).replace('.', ',');
-function drawTag(c, x, y, text, fs, color) { // etiqueta de medida, siempre derecha en pantalla
+function drawTag(c, x, y, text, fs, color, anchor) { // etiqueta de medida, siempre derecha en pantalla (con flecha al punto 'anchor')
   c.save(); c.setLineDash([]);
   c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`;
   const lines = text.split('\n'); let w = 0; for (const l of lines) w = Math.max(w, c.measureText(l).width);
@@ -526,6 +550,16 @@ function drawTag(c, x, y, text, fs, color) { // etiqueta de medida, siempre dere
   const rot = EXPORTING ? 0 : -S.view.r, cs = Math.abs(Math.cos(rot)), sn = Math.abs(Math.sin(rot));
   const ex = (pw * cs + ph * sn) / 2 + 2, ey = (pw * sn + ph * cs) / 2 + 2;   // la etiqueta nunca se sale de la imagen
   x = S.docW > 2 * ex ? clamp(x, ex, S.docW - ex) : S.docW / 2; y = S.docH > 2 * ey ? clamp(y, ey, S.docH - ey) : S.docH / 2;
+  if (anchor) {   // línea fina con punto que une la etiqueta con lo que mide
+    const q = rotPt(anchor[0], anchor[1], x, y, -rot), lx = q.x - x, ly = q.y - y;
+    const t = Math.min(lx ? (pw / 2) / Math.abs(lx) : Infinity, ly ? (ph / 2) / Math.abs(ly) : Infinity);
+    if (t < 1) {
+      const e = rotPt(x + lx * t, y + ly * t, x, y, rot);
+      c.strokeStyle = color; c.fillStyle = color; c.lineWidth = Math.max(1, fs * 0.09);
+      c.beginPath(); c.moveTo(e.x, e.y); c.lineTo(anchor[0], anchor[1]); c.stroke();
+      c.beginPath(); c.arc(anchor[0], anchor[1], Math.max(1.5, fs * 0.18), 0, Math.PI * 2); c.fill();
+    }
+  }
   c.translate(x, y); c.rotate(rot);
   c.beginPath(); c.moveTo(-pw / 2 + r, -ph / 2); c.lineTo(pw / 2 - r, -ph / 2); c.quadraticCurveTo(pw / 2, -ph / 2, pw / 2, -ph / 2 + r);
   c.lineTo(pw / 2, ph / 2 - r); c.quadraticCurveTo(pw / 2, ph / 2, pw / 2 - r, ph / 2); c.lineTo(-pw / 2 + r, ph / 2);
@@ -579,11 +613,14 @@ function drawAngle(c, o) {
     c.restore();
     const m1 = [(o.a[0] + o.b[0]) / 2 - X[0], (o.a[1] + o.b[1]) / 2 - X[1]], m2 = [(o.c[0] + o.d[0]) / 2 - X[0], (o.c[1] + o.d[1]) / 2 - X[1]];
     const bx = m1[0] / (Math.hypot(...m1) || 1) + m2[0] / (Math.hypot(...m2) || 1), by = m1[1] / (Math.hypot(...m1) || 1) + m2[1] / (Math.hypot(...m2) || 1);
-    const bl = Math.hypot(bx, by) || 1; tx = X[0] - bx / bl * fs * 2.2; ty = X[1] - by / bl * fs * 2.2;
-  } else {
-    tx = (o.a[0] + o.b[0] + o.c[0] + o.d[0]) / 4; ty = (o.a[1] + o.b[1] + o.c[1] + o.d[1]) / 4;
+    const bl = Math.hypot(bx, by) || 1; tx = X[0] - bx / bl * fs * 4; ty = X[1] - by / bl * fs * 4; var anc = X;
+  } else {   // casi paralelas: la etiqueta va más allá de las puntas, fuera de las líneas
+    const L1 = dist(o.a[0], o.a[1], o.b[0], o.b[1]) || 1, ux = (o.b[0] - o.a[0]) / L1, uy = (o.b[1] - o.a[1]) / L1;
+    const pts = [o.a, o.b, o.c, o.d].sort((p, q) => (q[0] * ux + q[1] * uy) - (p[0] * ux + p[1] * uy));
+    const ex = [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2];
+    tx = ex[0] + ux * fs * 3.6; ty = ex[1] + uy * fs * 3.6; var anc = ex;
   }
-  drawTag(c, tx, ty, ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`, fs, o.color);
+  drawTag(c, tx, ty, ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`, fs, o.color, anc);
 }
 const FRACS = [[1, 4], [1, 3], [1, 2], [2, 3], [3, 4], [1, 1], [4, 3], [3, 2], [2, 1]];
 function ratioText(q) { return `Borde libre = ${Math.round(q * 100)} % del lecho`; }
@@ -593,10 +630,11 @@ function drawRatio(c, o) {
   const ux = o.b[0] - o.a[0], uy = o.b[1] - o.a[1], L = Math.hypot(ux, uy) || 1, nx = -uy / L, ny = ux / L, tk = Math.max(o.w * 4, o.fs * 0.6);
   for (const p of [o.a, o.m, o.b]) { c.beginPath(); c.moveTo(p[0] - nx * tk, p[1] - ny * tk); c.lineTo(p[0] + nx * tk, p[1] + ny * tk); c.stroke(); }
   const L1 = dist(o.a[0], o.a[1], o.m[0], o.m[1]), L2 = dist(o.m[0], o.m[1], o.b[0], o.b[1]);
-  const off = o.fs * 1.6, small = o.fs * 0.75;
-  drawTag(c, (o.a[0] + o.m[0]) / 2 + nx * off, (o.a[1] + o.m[1]) / 2 + ny * off, 'Lecho', small, o.color);
-  drawTag(c, (o.m[0] + o.b[0]) / 2 + nx * off, (o.m[1] + o.b[1]) / 2 + ny * off, 'Borde libre', small, o.color);
-  if (L1 > 0) drawTag(c, o.b[0] + ux / L * o.fs * 2.6, o.b[1] + uy / L * o.fs * 2.6, ratioText(L2 / L1), o.fs, o.color);   // resultado más allá de la punta
+  const off = o.fs * 3.4, small = o.fs * 0.75;
+  const m1 = [(o.a[0] + o.m[0]) / 2, (o.a[1] + o.m[1]) / 2], m2 = [(o.m[0] + o.b[0]) / 2, (o.m[1] + o.b[1]) / 2];
+  drawTag(c, m1[0] + nx * off, m1[1] + ny * off, 'Lecho', small, o.color, m1);
+  drawTag(c, m2[0] + nx * off, m2[1] + ny * off, 'Borde libre', small, o.color, m2);
+  if (L1 > 0) drawTag(c, o.b[0] + ux / L * o.fs * 3.6, o.b[1] + uy / L * o.fs * 3.6, ratioText(L2 / L1), o.fs, o.color, o.b);   // resultado más allá de la punta
 }
 function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde libre (punto alto de la sonrisa → punta)
   c.lineWidth = o.w;
@@ -606,7 +644,7 @@ function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde
     for (const r of [p, q]) { c.beginPath(); c.moveTo(r[0] - nx * tk, r[1] - ny * tk); c.lineTo(r[0] + nx * tk, r[1] + ny * tk); c.stroke(); }
     const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
     const side = other ? -(Math.sign((other[0] - mx) * nx + (other[1] - my) * ny) || 1) : -1;   // la etiqueta, por fuera
-    drawTag(c, mx + nx * o.fs * 1.9 * side, my + ny * o.fs * 1.9 * side, name, o.fs * 0.75, o.color);
+    drawTag(c, mx + nx * o.fs * 3.4 * side, my + ny * o.fs * 3.4 * side, name, o.fs * 0.75, o.color, [mx, my]);
     return { L };
   };
   const m2 = o.c ? [(o.c[0] + o.d[0]) / 2, (o.c[1] + o.d[1]) / 2] : null, m1 = [(o.a[0] + o.b[0]) / 2, (o.a[1] + o.b[1]) / 2];
@@ -615,10 +653,146 @@ function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde
   const s2 = seg(o.c, o.d, 'Borde libre', m1);
   const T = s1.L + s2.L, p1 = Math.round(s1.L / T * 100), p2 = 100 - p1;
   const ux = (o.d[0] - o.c[0]) / s2.L, uy = (o.d[1] - o.c[1]) / s2.L;
-  drawTag(c, o.d[0] + ux * o.fs * 2.6, o.d[1] + uy * o.fs * 2.6, `Almendra ${p1} % · Borde libre ${p2} %`, o.fs, o.color);
+  drawTag(c, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, `Almendra ${p1} % · Borde libre ${p2} %`, o.fs, o.color, o.d);
 }
+/* ---------- ayuda: mantener pulsado un botón + guía ---------- */
+const MOVE_TIP = 'Para mover una forma, tócala y arrástrala sobre la línea de color, no sobre los puntos: los puntos sirven para cambiar la forma.';
+const HELP = {
+  bOpen: ['Abrir foto', 'Abre una foto de la galería o haz una con la cámara para dibujar y corregir encima.'],
+  bTpl: ['Plantillas', 'Abre el panel con las ilustraciones de uñas (formas, perfiles, curva C, smile line, mano…) para trabajar sobre ellas sin necesidad de foto.'],
+  bLbl: ['Etiquetas', 'Abre el panel con los nombres de anatomía y estructura. Al tocar uno aparece una caja con flecha: arrastra la caja para colocarla y el punto de la flecha para señalar la zona exacta.'],
+  bCalco: ['Calco', 'Pone una plantilla semitransparente encima de tu foto para comparar la forma. Muévela, gírala y ajusta su tamaño con los puntos; con "Más suave" y "Más visible" cambias la transparencia.'],
+  bBlank: ['Lienzo', 'Abre una hoja en blanco para dibujar o explicar desde cero. El trabajo actual queda guardado en Trabajos.'],
+  bProjects: ['Trabajos', 'Todos tus trabajos guardados en este dispositivo. Desde aquí puedes abrirlos para seguir o borrarlos.'],
+  bUndo: ['Deshacer', 'Quita el último cambio. Puedes pulsarlo varias veces.'],
+  bRedo: ['Rehacer', 'Vuelve a poner lo que acabas de deshacer.'],
+  bFit: ['Ajustar', 'Centra la imagen, la pone derecha y la ajusta a la pantalla.'],
+  bClear: ['Borrar todo', 'Borra todos los dibujos y marcas. La foto o plantilla se queda. Se puede recuperar con Deshacer.'],
+  bSave: ['Guardar imagen', 'Descarga la imagen con todas tus marcas, la guarda en Trabajos y deja la pantalla lista para otro trabajo.'],
+  bShare: ['Compartir', 'Envía la imagen con tus correcciones por WhatsApp, correo, etc.'],
+  bPresent: ['Presentar', 'Muestra solo la imagen a pantalla completa, sin menús, para enseñarla en clase o en el proyector. Con los dedos puedes ampliar, mover y girar. Para dibujar, sal de la presentación.'],
+  bGuide: ['Guía', 'Abre esta guía con todos los botones y lo que hace cada uno. Consejo: mantén pulsado cualquier botón para ver su explicación.'],
+  bExit: ['Salir', 'Guarda el trabajo y vuelve a la pantalla de inicio.'],
+  hand: ['Mover', 'Con un dedo desplazas la imagen sin dibujar. Con dos dedos siempre puedes ampliar, mover y girar, con cualquier herramienta.'],
+  select: ['Seleccionar', 'Toca un elemento para seleccionarlo y moverlo, girarlo con el tirador dorado, cambiar su color o tamaño, duplicarlo o eliminarlo. Arrastra sobre una zona vacía para seleccionar varios a la vez.'],
+  pen: ['Bolígrafo', 'Trazo fino y nítido para escribir o marcar. El grosor se elige con los botones de abajo.'],
+  marker: ['Rotulador', 'Trazo más grueso para marcar zonas.'],
+  hl: ['Subrayador', 'Trazo semitransparente: marca una zona dejando ver la uña debajo.'],
+  erase: ['Borrador', 'Pasa por encima de un trazo, forma o texto y se borra entero de una vez.'],
+  eraser: ['Borrar zona', 'Borra solo la parte por la que pasas, como una goma, para retoques finos.'],
+  line: ['Línea', 'Dibuja una línea recta arrastrando de un punto a otro. ' + MOVE_TIP],
+  arrow: ['Flecha', 'Dibuja una flecha para señalar. ' + MOVE_TIP],
+  arc: ['Arco (curva C)', 'Dibuja la curva C de un extremo al otro. Los botones 30 %, 40 % y 50 % la dejan exacta (50 % = medio círculo). El punto dorado cambia la curvatura y el turquesa corrige la perspectiva en fotos de lado (el % sale como "estimada"). Invertir la gira hacia el otro lado. ' + MOVE_TIP],
+  ellipse: ['Círculo', 'Dibuja un círculo u óvalo para rodear una zona. ' + MOVE_TIP],
+  rect: ['Rectángulo', 'Dibuja un rectángulo para enmarcar una zona. ' + MOVE_TIP],
+  text: ['Texto', 'Toca donde quieras escribir. Arrastra el texto para colocarlo y toca dos veces para corregirlo.'],
+  ok: ['Bien', 'Cada toque pone un sello verde ✓ para marcar lo que está bien hecho.'],
+  ko: ['Corregir', 'Cada toque pone un sello rojo ✗ para marcar lo que hay que corregir.'],
+  angle: ['Ángulo', 'Dibuja una línea sobre un lateral: aparece otra para colocar en el otro lateral. Indica los grados entre las dos (0° = paralelas). Sirve para laterales, coffin, inclinación de la smile line o comprobar si una stiletto está recta. ' + MOVE_TIP],
+  ratio: ['Proporción', 'Dibuja desde la cutícula hasta la punta y coloca el punto dorado en la smile line. Indica el borde libre en % del lecho. ' + MOVE_TIP],
+  ratio2: ['Almendra', 'Primera medida: de la cutícula a la sonrisa (centro). Segunda: del punto más alto de la sonrisa al borde libre. Indica el reparto, por ejemplo "Almendra 50 % · Borde libre 50 %". ' + MOVE_TIP],
+  bSym: ['Simetría', 'Pone un eje azul: colócalo en el centro de la uña. Lo que dibujes en un lado se refleja en el otro. Si después ajustas una línea o las dos a los laterales reales, indica la desviación en grados y la diferencia de distancia al eje en %. Pulsa otra vez para quitarlo.'],
+  bPressure: ['Presión', 'Solo con lápiz activo: el trazo se afina o engorda según aprietes.'],
+  sFlip: ['Invertir', 'Da la vuelta al arco hacia el otro lado (cóncavo / convexo).'],
+  arcp: ['Curva C 30 · 40 · 50 %', 'Deja el arco con esa curvatura exacta, vista de frente (50 % = medio círculo).'],
+  sFade: ['Más suave', 'Hace el calco más transparente.'],
+  sSolid: ['Más visible', 'Hace el calco menos transparente.'],
+  sSmaller: ['Reducir', 'Hace más pequeño el texto o la etiqueta seleccionada.'],
+  sBigger: ['Ampliar', 'Hace más grande el texto o la etiqueta seleccionada.'],
+  sEdit: ['Editar', 'Cambia lo que pone en el texto o la etiqueta.'],
+  sDup: ['Duplicar', 'Hace una copia del elemento seleccionado.'],
+  sDel: ['Eliminar', 'Borra el elemento seleccionado.'],
+  sOk: ['Listo', 'Termina la edición y quita la selección.']
+};
+const GUIDE = [
+  ['Trabajo e imagen', ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
+  ['Dibujar', ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
+  ['Formas y texto', ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
+  ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
+  ['Al seleccionar un elemento', ['arcp', 'sFlip', 'sFade', 'sSolid', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
+];
+function helpKey(el) { return el.dataset.tool || (el.classList.contains('arcp') ? 'arcp' : el.id); }
+function showHelp(k) {
+  const h = HELP[k]; if (!h) return;
+  $('#hTitle').textContent = h[0];
+  const body = $('#hBody'); body.textContent = h[1].replace(' ' + MOVE_TIP, '');
+  if (h[1].includes(MOVE_TIP)) { const t = document.createElement('div'); t.className = 'tipbox'; t.textContent = '💡 ' + MOVE_TIP; body.appendChild(t); }
+  $('#mHelp').classList.add('show');
+}
+$('#hClose').onclick = () => $('#mHelp').classList.remove('show');
+function iconFor(k) {
+  if (k === 'arcp') return '<span>%</span>';
+  const el = document.querySelector(`[data-tool="${k}"] svg`) || document.querySelector(`#${k} svg`);
+  return el ? el.outerHTML : '';
+}
+function showGuide() {
+  const g = $('#gBody'); g.innerHTML = '';
+  const tips = document.createElement('div');
+  tips.innerHTML = '<div class="tipbox">💡 Mantén pulsado cualquier botón para ver qué hace.</div><div class="tipbox">💡 ' + MOVE_TIP + '</div>' +
+    '<div class="tipbox">💡 Con dos dedos amplías, mueves y giras la imagen con cualquier herramienta.</div>';
+  g.appendChild(tips);
+  for (const [title, keys] of GUIDE) {
+    const h = document.createElement('h3'); h.textContent = title; g.appendChild(h);
+    for (const k of keys) {
+      const it = HELP[k]; if (!it) continue;
+      const row = document.createElement('div'); row.className = 'grow';
+      row.innerHTML = `<div class="gi">${iconFor(k)}</div><div><b></b><span></span></div>`;
+      row.querySelector('b').textContent = it[0]; row.querySelector('span').textContent = it[1].replace(' ' + MOVE_TIP, '');
+      g.appendChild(row);
+    }
+  }
+  $('#mGuide').classList.add('show');
+}
+$('#gClose').onclick = () => $('#mGuide').classList.remove('show');
+(function bindLongPress() {   // mantener pulsado = explicación (no se ejecuta el botón)
+  document.querySelectorAll('header .btn, footer .btn, #selbar .btn').forEach(el => {
+    const k = helpKey(el); if (!HELP[k]) return;
+    let t = 0, fired = false, sx = 0, sy = 0;
+    el.addEventListener('pointerdown', e => { fired = false; sx = e.clientX; sy = e.clientY; clearTimeout(t); t = setTimeout(() => { fired = true; showHelp(k); }, 550); });
+    el.addEventListener('pointermove', e => { if (Math.hypot(e.clientX - sx, e.clientY - sy) > 10) clearTimeout(t); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => el.addEventListener(ev, () => clearTimeout(t)));
+    el.addEventListener('click', e => { if (fired) { e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
+    el.addEventListener('contextmenu', e => e.preventDefault());
+  });
+})();
+
 /* ---------- simetría ---------- */
 function axisObj() { return S.objects.find(o => o.t === 'axis') || null; }
+function newPair() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function pairDir(o) { // dirección principal (líneas, flechas y arcos)
+  if (o.t === 'line' || o.t === 'arrow' || o.t === 'arc') return [o.b[0] - o.a[0], o.b[1] - o.a[1]];
+  return null;
+}
+function drawPairs(c) {   // compara cada pareja reflejada: inclinación (°) y distancia al eje (%)
+  const A = axisObj(); if (!A) return;
+  const ux0 = A.b[0] - A.a[0], uy0 = A.b[1] - A.a[1], UL = Math.hypot(ux0, uy0) || 1, ux = ux0 / UL, uy = uy0 / UL;
+  const sd = p => (p[0] - A.a[0]) * -uy + (p[1] - A.a[1]) * ux;          // distancia con signo al eje
+  const along = p => (p[0] - A.a[0]) * ux + (p[1] - A.a[1]) * uy;         // posición a lo largo del eje
+  const groups = {};
+  for (const o of S.objects) if (o.pair) (groups[o.pair] = groups[o.pair] || []).push(o);
+  const fs = 17 / S.view.s;
+  for (const k in groups) {
+    const g = groups[k]; if (g.length !== 2) continue;
+    const [p, q] = g, cp = centerOf(p), cq = centerOf(q);
+    const dp = Math.abs(sd([cp.x, cp.y])), dq = Math.abs(sd([cq.x, cq.y]));
+    const pct = Math.max(dp, dq) > 1e-6 ? Math.abs(dp - dq) / Math.max(dp, dq) * 100 : 0;
+    let ang = null;
+    const vp = pairDir(p), vq = pairDir(q);
+    if (vp && vq) {
+      const rq = [reflectP(q.b, A)[0] - reflectP(q.a, A)[0], reflectP(q.b, A)[1] - reflectP(q.a, A)[1]];
+      const lp = Math.hypot(...vp) || 1, lq = Math.hypot(...rq) || 1;
+      ang = Math.acos(Math.min(1, Math.abs((vp[0] * rq[0] + vp[1] * rq[1]) / (lp * lq)))) * 180 / Math.PI;
+    }
+    const ok = (ang === null || ang < 1) && pct < 3;
+    const txt = ok ? 'Simétricas ✓' : (ang !== null ? `Desviación ${fmt1(ang)}° · distancia al eje ${Math.round(pct)} %` : `Distancia al eje ${Math.round(pct)} %`);
+    // etiqueta sobre el eje, más allá del extremo de la pareja
+    let tmax = -Infinity;
+    for (const o of g) for (const pt of quadOf(o)) tmax = Math.max(tmax, along(pt));
+    const tm = (along([cp.x, cp.y]) + along([cq.x, cq.y])) / 2, anc = [A.a[0] + ux * tm, A.a[1] + uy * tm];
+    const tt = tmax + fs * 2.6, pos = [A.a[0] + ux * tt, A.a[1] + uy * tt];
+    drawTag(c, pos[0], pos[1], txt, fs, ok ? '#2e9e48' : '#00bcd4', anc);
+  }
+}
 function reflectP(p, A) {
   const ax = A.a[0], ay = A.a[1], dx = A.b[0] - ax, dy = A.b[1] - ay, L2 = dx * dx + dy * dy || 1;
   const t = ((p[0] - ax) * dx + (p[1] - ay) * dy) / L2, fx = ax + t * dx, fy = ay + t * dy;
@@ -1080,7 +1254,7 @@ stage.addEventListener('pointerdown', e => {
   if (act || pinch || blockTouch) return;
 
   const sp = stageXY(e.clientX, e.clientY);
-  const pan = S.tool === 'hand' || (e.pointerType === 'touch' && penSeen) || e.button === 1 || e.button === 2;
+  const pan = document.body.classList.contains('present') || S.tool === 'hand' || (e.pointerType === 'touch' && penSeen) || e.button === 1 || e.button === 2;
   if (pan) { act = { id: e.pointerId, kind: 'pan', lx: e.clientX, ly: e.clientY, ptype: e.pointerType, t0: performance.now() }; return; }
   startTool(e, sp.x, sp.y);
 });
@@ -1267,7 +1441,7 @@ function finishAct(e) {
   if (a.kind === 'draw') {
     if (a.raw) { const p = draft.p, n = p.length; if (dist(a.raw.x, a.raw.y, p[n-3], p[n-2]) > 0.3 / S.view.s) p.push(a.raw.x, a.raw.y, a.raw.pr); }
     cursor = null; S.objects.push(draft);
-    const ax = axisObj(); if (ax) { const md = mirrorObj(draft, ax); if (md) S.objects.push(md); }
+    const ax = axisObj(); if (ax) { const md = mirrorObj(draft, ax); if (md) { draft.pair = md.pair = newPair(); S.objects.push(md); } }
     draft = null; commit(); return;
   }
   if (a.kind === 'erase') { cursor = null; if (a.removed) commit(); req(); return; }
@@ -1290,7 +1464,7 @@ function finishAct(e) {
       o.c = [o.a[0] + ux * 0.75 + nx, o.a[1] + uy * 0.75 + ny]; o.d = [o.b[0] + ux * 0.75 + nx, o.b[1] + uy * 0.75 + ny];
     }
     S.objects.push(o);
-    const ax = axisObj(); if (ax) { const md = mirrorObj(o, ax); if (md) S.objects.push(md); }
+    const ax = axisObj(); if (ax) { const md = mirrorObj(o, ax); if (md) { o.pair = md.pair = newPair(); S.objects.push(md); } }
     commit(); select(o); return;
   }
   if (a.kind === 'stampTap') {
@@ -1404,7 +1578,7 @@ $('#sSmaller').onclick = () => scaleText(1 / 1.2);
 $('#sBigger').onclick = () => scaleText(1.2);
 $('#sDup').onclick = () => {
   if (!S.sel.length) return;
-  const off = 24 / S.view.s, copies = S.sel.map(o => { const c = JSON.parse(JSON.stringify(o)); translate(c, off, off); return c; });
+  const off = 24 / S.view.s, copies = S.sel.map(o => { const c = JSON.parse(JSON.stringify(o)); delete c.pair; translate(c, off, off); return c; });
   S.objects.push(...copies); commit(); select(copies);
 };
 
@@ -1492,7 +1666,7 @@ function renderDoc(scale) {
   const k = document.createElement('canvas'); k.width = w; k.height = h;
   const kx = k.getContext('2d'); kx.setTransform(scale, 0, 0, scale, 0, 0);
   EXPORTING = true;
-  try { for (const o of S.objects) if (o.t !== 'overlay') drawObj(kx, o); } finally { EXPORTING = false; }
+  try { for (const o of S.objects) if (o.t !== 'overlay') drawObj(kx, o); drawPairs(kx); } finally { EXPORTING = false; }
   x.drawImage(k, 0, 0);
   return c;
 }
@@ -1599,6 +1773,8 @@ $('#pClose').onclick = () => $('#mProjects').classList.remove('show');
 $('#hOpen').onclick = () => $('#file').click();
 $('#hBlank').onclick = () => { newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null); toast('Lienzo en blanco'); };
 $('#hProjects').onclick = showProjects;
+$('#bGuide').onclick = showGuide;
+$('#hGuide').onclick = showGuide;
 
 /* ---------- paneles laterales: plantillas (izquierda) y etiquetas (derecha) ---------- */
 const narrow = () => window.innerWidth < 900;
@@ -1658,6 +1834,7 @@ $('#bSym').onclick = () => {
 let presFS = false;
 function setPresent(v) {
   const c = W ? toDocS(W / 2, H / 2) : null;
+  if (v) { select(null); toast('Presentación: dedos para ampliar, mover y girar'); }
   document.body.classList.toggle('present', v);
   setPanel('pTpl', false); setPanel('pLbl', false);
   try {
@@ -1669,7 +1846,6 @@ function setPresent(v) {
 }
 $('#bPresent').onclick = () => { if (!S.empty) setPresent(true); };
 $('#pExit').onclick = () => setPresent(false);
-$('#pUndo').onclick = () => undo();
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement && presFS) { presFS = false; if (document.body.classList.contains('present')) setPresent(false); }
 });
