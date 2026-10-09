@@ -98,6 +98,36 @@ body.present #selbar{top:10px;left:10px;transform:none}
 .card h2{margin:0;font-size:17px;font-family:"Playfair Display",Georgia,serif;font-weight:600;color:var(--acc2)}
 .card textarea{width:100%;min-height:110px;background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:18px;resize:vertical;user-select:text;-webkit-user-select:text}
 .actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+#pEval{width:min(560px,100vw)}
+.evtop{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.evtop label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--mut)}
+.evtop select,.evtop input{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:inherit;font-size:14px;user-select:text;-webkit-user-select:text}
+.evtop .full{grid-column:1/-1}
+.evhands{display:flex;gap:6px;margin:6px 0 8px}
+.evhands button{flex:1;border:1px solid var(--line);background:var(--panel2);color:var(--txt);border-radius:10px;padding:9px 6px;font:inherit;font-size:13px;cursor:pointer;line-height:1.25}
+.evhands button.on{background:var(--acc);color:#141318;border-color:var(--acc)}
+.evhands small{display:block;font-size:11px;opacity:.8}
+table.evg{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
+table.evg th{font-weight:500;font-size:11px;color:var(--mut);padding:4px 1px;text-align:center}
+table.evg th:first-child{text-align:left}
+table.evg td{border-top:1px solid var(--line);padding:3px 2px;text-align:center}
+table.evg td.cn{text-align:left;padding:5px 2px;cursor:pointer;line-height:1.25}
+table.evg td.cn small{display:block;font-size:10.5px;color:#4fc3f7}
+table.evg td.rt{font-size:11.5px;color:var(--mut)}
+table.evg tfoot td{font-weight:600;font-size:12.5px}
+table.evg th .sm{display:none}
+@media (max-width:520px){table.evg th .lg{display:none}table.evg th .sm{display:inline}}
+.evc{width:100%;height:38px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0}
+.evc.h{background:#4a3c14;border-color:#c9a84c;color:#ffd978}
+.evc.f{background:#1d4a2a;border-color:#43a047;color:#a5e5ad}
+.evpen{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.evpen .ct{display:flex;align-items:center;gap:6px}
+.evpen button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:18px;cursor:pointer}
+.evpen b{min-width:22px;text-align:center}
+.evtot{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 6px;border-top:1px solid var(--line)}
+.evtot b{font-size:26px;color:var(--acc2)}
+.evopt{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt);padding:6px 0}
+.evopt input{width:20px;height:20px;accent-color:var(--acc)}
 .pill{border:0;border-radius:10px;padding:11px 18px;font:inherit;font-size:14px;font-weight:600;background:var(--panel2);color:var(--txt);cursor:pointer}
 .pill.pri{background:var(--acc);color:#141318}
 .pill.dan{background:#5a2328;color:#ffd9dc}
@@ -119,6 +149,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
     <button class="btn" id="bTpl"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/><rect x="14" y="15" width="7" height="6" rx="1.5"/></svg>Plantillas</button>
     <button class="btn" id="bLbl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="13" height="8" rx="2"/><path d="M11 11l7 8M18 19l-4-.5M18 19l-.6-4"/></svg>Etiquetas</button>
     <button class="btn" id="bCalco"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2" stroke-dasharray="3 2"/></svg>Calco</button>
+    <button class="btn" id="bEval"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 11l1.5 1.5 3-3M8.5 16.5h7"/></svg>Evaluar</button>
     <button class="btn" id="bBlank"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="M13 11v6M10 14h6"/></svg>Lienzo</button>
     <button class="btn" id="bProjects"><svg viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></svg>Trabajos</button>
     <span class="sep"></span>
@@ -181,6 +212,27 @@ body.present #selbar{top:10px;left:10px;transform:none}
       <p class="hint">Toca un nombre para ponerlo sobre la imagen. Arrastra la caja para moverla y el punto de la flecha para señalar la zona.</p>
       <h3>Anatomía</h3><div class="chips" id="lblA"></div>
       <h3>Estructura</h3><div class="chips" id="lblE"></div>
+    </aside>
+    <aside class="side right" id="pEval">
+      <div class="sidehd"><b>Evaluar</b><button class="x" data-close="pEval" aria-label="Cerrar">✕</button></div>
+      <div class="evtop">
+        <label class="full">Categoría<select id="eFicha"></select></label>
+        <label>División<select id="eDiv"><option value="1">División 1</option><option value="2">División 2</option><option value="3">División 3</option></select></label>
+        <label>Alumna<input id="eName" type="text" placeholder="Nombre" autocomplete="off"></label>
+      </div>
+      <p class="hint">Toca una casilla: vacía → ½ → 1 → vacía. Toca el nombre de un criterio para ver qué se puntúa.</p>
+      <div class="evhands" id="eHands"></div>
+      <table class="evg"><colgroup><col style="width:33%"><col><col><col><col><col><col style="width:13%"></colgroup>
+        <thead><tr><th>Criterio</th><th><span class="lg">Pulgar</span><span class="sm">P</span></th><th><span class="lg">Índice</span><span class="sm">Í</span></th><th><span class="lg">Corazón</span><span class="sm">C</span></th><th><span class="lg">Anular</span><span class="sm">A</span></th><th><span class="lg">Meñique</span><span class="sm">M</span></th><th>Total</th></tr></thead>
+        <tbody id="eRows"></tbody>
+        <tfoot><tr><td style="text-align:left">Total uña</td><td id="eC0"></td><td id="eC1"></td><td id="eC2"></td><td id="eC3"></td><td id="eC4"></td><td id="eHT"></td></tr></tfoot>
+      </table>
+      <h3>Penalizaciones</h3>
+      <div class="evpen"><span>Avisos (−1 cada uno)</span><span class="ct"><button id="ePaM">−</button><b id="ePa">0</b><button id="ePaP">+</button></span></div>
+      <div class="evpen"><span>Normas no cumplidas (−5)</span><span class="ct"><button id="ePnM">−</button><b id="ePn">0</b><button id="ePnP">+</button></span></div>
+      <div class="evtot"><span>Total de las dos manos</span><b id="eTot">0</b></div>
+      <label class="evopt"><input type="checkbox" id="eShow" checked>Poner la hoja de puntos en la imagen al guardar o compartir</label>
+      <div class="actions" style="justify-content:space-between;margin-top:6px"><button class="pill dan" id="eReset">Borrar puntuación</button><button class="pill pri" data-close="pEval">Listo</button></div>
     </aside>
   </div>
 
@@ -268,7 +320,7 @@ body.present #selbar{top:10px;left:10px;transform:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.4)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.5)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -766,6 +818,183 @@ function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde
   drawTag(c, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, `Almendra ${p1} % · Borde libre ${p2} %`, o.fs, o.color, o.d, tagOpt(o, [ux, uy]));
   later.forEach(f => f());
 }
+/* ---------- evaluación: hoja de puntos del concurso ---------- */
+const FINGERS = ['Pulgar', 'Índice', 'Corazón', 'Anular', 'Meñique'];
+const CRIT = {
+  convexo: ['Convexo', 'El contorno exterior debe ser simétrico y la superficie sin irregularidades. Se mira de frente (zona 3) y desde atrás (zona 2), con un contorno simétrico hasta la zona 1.\n½ por cada zona correcta.'],
+  concavo: ['Cóncavo', 'El túnel interior debe ser simétrico y concéntrico a lo largo de todo el borde libre (o hasta que el tubo de curvar toca la punta del dedo).\n½ por cada zona correcta.'],
+  apex: ['Arco o ápex', 'Inclinación sutil y gradual en la zona 2, ni muy pronunciada ni plana, y sin quedar demasiado atrás vista de perfil.\n½ por cada uno de los dos requisitos.'],
+  tip: ['Tip o molde', 'Con molde: sin muescas ni brechas en los pliegues laterales donde empieza la extensión (no valen muescas hechas con lima).\nCon tip: encaje perfecto, sin paredes laterales expuestas, sin inclinación hacia arriba ni hacia abajo y sin huecos.\n½ por cada lado correcto.'],
+  grosor: ['Grosor del borde libre', 'Fino y uniforme, con el mismo grosor en las paredes laterales y en el centro (½).\nNo más de 1,5 mm (½).'],
+  paredes: ['Paredes laterales', 'El borde libre sale recto desde los pliegues laterales, sin ensancharse ni estrecharse de perfil, igual en cada lado, sin muescas ni grietas y con los lados suaves y limpios.\n½ por cada lado.'],
+  extension: ['Extensión lateral', 'Vista de perfil: el borde libre sale directo del pliegue natural, sin caer ni levantarse, con simetría y sin el pliegue natural expuesto.\n½ por cada lado.'],
+  curva: ['Curva C', 'Entre el 30 % y el 40 % de círculo y nunca más del 50 % (½).\nSimétrica (½).\nPuedes medirla con la herramienta Arco.', 'arc'],
+  forma: ['Forma de la uña', 'Forma consistente y uniforme. Borde libre limado en recto (½).\nExtensión recta respecto a la uña (no al dedo), sin parecer torcida ni inclinada, mirada de frente (½).'],
+  suavidad: ['Suavidad de la superficie', 'Sin marcas de lima, suave al tacto, todo limado y abrillantado.\n1 si es perfecta; ½ si queda una línea de demarcación casi imposible de ver o sentir.'],
+  cuticula: ['Área de cutículas', 'Sin cortes ni irritación, sin producto sobrante que se vea o se note en los pliegues, y el producto cubre toda la zona sin dejar margen (si está demasiado limado no puntúa).\n1 si cumple todo; ½ si cumple al menos dos requisitos.'],
+  abajo: ['Parte de abajo', 'Limpia, sin residuos, agua, pegamento ni esmalte (½).\nProducto suave debajo y sin exceso (½).\nSi hay esmalte debajo, lo descuenta el juez de esmaltado.'],
+  brillo: ['Alto brillo', 'Brillo vidriado en toda la uña, sin zonas opacas (½).\nLaterales, bordes y cutícula también brillantes (½).'],
+  control: ['Control del producto', 'Aplicación uniforme con la división de colores marcada en la sonrisa; blanco sólido, sin sombras rosas ni transparencias; sin burbujas ni picaduras.\n½ por el blanco y ½ por el rosa.'],
+  largoF: ['Longitud (blanco 50 %)', 'Se mide de la cutícula al centro de la línea de la sonrisa: el blanco debe medir el 50 % de esa distancia hasta la punta. Si las puntas de la sonrisa no coinciden, se mide desde la más alta.\n1 punto por uña.\nPuedes medirlo con Proporción: el objetivo es "Borde libre = 50 % del lecho".', 'ratio'],
+  sonrisa: ['Línea de la sonrisa', 'División 1 (máx. 1 por uña): forma consistente, división clara y uniforme con las demás uñas.\nDivisión 2 (máx. 2): además, 1 punto si está centrada y alineada, sin ladearse.\nDivisión 3 (máx. 3): además, 1 punto si las puntas son paralelas y coinciden.'],
+  esmalte: ['Aplicación del esmalte', 'Dos capas, homogéneas cerca de la cutícula y sin rayas (½).\nOtro ½ si cumple al menos 2 de estos 3: sin esmalte en la piel, sin esmalte detrás de la uña y todos los bordes del borde libre esmaltados.'],
+  largoR: ['Longitud (igual que la otra mano)', 'Las uñas de las dos manos deben coincidir en largo, desde la cutícula hasta el borde libre.\n1 punto por uña.']
+};
+const BASE_ROWS = ['convexo', 'concavo', 'apex', 'tip', 'grosor', 'paredes', 'extension', 'curva', 'forma', 'suavidad', 'cuticula', 'abajo'];
+const FICHAS = {
+  ssf: { n: 'Salon Style French', hands: [
+    { n: 'Mano francesa', rows: BASE_ROWS.concat(['brillo', 'control', 'largoF', 'sonrisa']) },
+    { n: 'Mano roja', rows: BASE_ROWS.concat(['esmalte', 'largoR']) }
+  ] }
+};
+let evHand = 0;
+const fmtP = v => (Math.round(v * 10) / 10).toString().replace('.', ',');
+function evalNew() { return { f: 'ssf', div: 1, name: '', s: {}, pa: 0, pn: 0, show: true }; }
+function evalCur() { if (!S.eval) S.eval = evalNew(); return S.eval; }
+function rowMax(k, div) { return k === 'sonrisa' ? div : 1; }
+function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [0, 0, 0, 0, 0]); }
+function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v > 0)) || E.pa > 0 || E.pn > 0); }
+function evalSums(E) {
+  const F = FICHAS[E.f], hands = F.hands.map((H, h) => {
+    const rows = H.rows.map(k => { const c = cellsOf(E, h, k).map(v => Math.min(v, rowMax(k, E.div))); return { k, c, t: c.reduce((a, b) => a + b, 0), max: rowMax(k, E.div) * 5 }; });
+    const cols = [0, 1, 2, 3, 4].map(n => rows.reduce((a, r) => a + r.c[n], 0));
+    return { n: H.n, rows, cols, t: rows.reduce((a, r) => a + r.t, 0), max: rows.reduce((a, r) => a + r.max, 0) };
+  });
+  const pen = E.pa + E.pn * 5, raw = hands.reduce((a, h) => a + h.t, 0), max = hands.reduce((a, h) => a + h.max, 0);
+  return { hands, pen, tot: Math.max(0, raw - pen), max };
+}
+function evalMeasure(kind) {   // medidas que ya hay en la foto
+  if (kind === 'arc') {
+    const v = S.objects.filter(o => o.t === 'arc').map(o => { const g = arcInfo(o); return g ? Math.round(g.pct * 100) + ' %' : null; }).filter(Boolean);
+    return v.length ? 'medido: ' + v.join(', ') : '';
+  }
+  if (kind === 'ratio') {
+    const v = S.objects.filter(o => o.t === 'ratio').map(o => { const L1 = dist(o.a[0], o.a[1], o.m[0], o.m[1]), L2 = dist(o.m[0], o.m[1], o.b[0], o.b[1]); return L1 > 0 ? Math.round(L2 / L1 * 100) + ' %' : null; }).filter(Boolean);
+    return v.length ? 'medido: blanco ' + v.join(', ') : '';
+  }
+  return '';
+}
+function evalChanged() { scheduleSave(); evalRender(); }
+function evalRefresh() { if ($('#pEval') && $('#pEval').classList.contains('open')) evalRender(); }
+function evalRender() {
+  if (S.empty) return;
+  const E = evalCur(), F = FICHAS[E.f], sm = evalSums(E);
+  const fs = $('#eFicha'); if (!fs.options.length) for (const k in FICHAS) fs.add(new Option(FICHAS[k].n, k));
+  fs.value = E.f; $('#eDiv').value = String(E.div);
+  if (document.activeElement !== $('#eName')) $('#eName').value = E.name || '';
+  $('#eShow').checked = E.show !== false;
+  if (evHand >= F.hands.length) evHand = 0;
+  const hb = $('#eHands'); hb.innerHTML = '';
+  sm.hands.forEach((H, i) => {
+    const b = document.createElement('button'); b.className = i === evHand ? 'on' : '';
+    b.innerHTML = `${H.n}<small>${fmtP(H.t)} / ${fmtP(H.max)}</small>`;
+    b.onclick = () => { evHand = i; evalRender(); }; hb.appendChild(b);
+  });
+  const H = sm.hands[evHand], tb = $('#eRows'); tb.innerHTML = '';
+  H.rows.forEach(r => {
+    const tr = document.createElement('tr'), cn = document.createElement('td'); cn.className = 'cn';
+    const ms = CRIT[r.k][2] ? evalMeasure(CRIT[r.k][2]) : '';
+    cn.textContent = CRIT[r.k][0]; if (ms) { const sm2 = document.createElement('small'); sm2.textContent = ms; cn.appendChild(sm2); }
+    cn.onclick = () => evalHelp(r.k); tr.appendChild(cn);
+    const mx = rowMax(r.k, E.div);
+    r.c.forEach((v, n) => {
+      const td = document.createElement('td'), b = document.createElement('button');
+      b.className = 'evc' + (v >= mx && v > 0 ? ' f' : v > 0 ? ' h' : '');
+      b.textContent = v === 0 ? '' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½');
+      b.setAttribute('aria-label', CRIT[r.k][0] + ' ' + FINGERS[n]);
+      b.onclick = () => { const c = cellsOf(E, evHand, r.k); c[n] = c[n] >= mx ? 0 : Math.min(mx, c[n] + 0.5); evalChanged(); };
+      td.appendChild(b); tr.appendChild(td);
+    });
+    const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/${r.max}`; tr.appendChild(rt);
+    tb.appendChild(tr);
+  });
+  H.cols.forEach((v, n) => $('#eC' + n).textContent = fmtP(v));
+  $('#eHT').textContent = `${fmtP(H.t)}/${H.max}`;
+  $('#ePa').textContent = E.pa; $('#ePn').textContent = E.pn;
+  $('#eTot').textContent = `${fmtP(sm.tot)} / ${sm.max}`;
+}
+function evalHelp(k) {
+  const c = CRIT[k];
+  $('#hTitle').textContent = c[0];
+  const body = $('#hBody'); body.innerHTML = '';
+  c[1].split('\n').forEach(t => { const p = document.createElement('p'); p.style.margin = '0 0 8px'; p.textContent = t; body.appendChild(p); });
+  $('#mHelp').classList.add('show');
+}
+$('#eFicha').onchange = e => { evalCur().f = e.target.value; evalChanged(); };
+$('#eDiv').onchange = e => { evalCur().div = +e.target.value; evalChanged(); };
+$('#eName').oninput = e => { evalCur().name = e.target.value; scheduleSave(); };
+$('#eShow').onchange = e => { evalCur().show = e.target.checked; scheduleSave(); };
+$('#ePaP').onclick = () => { evalCur().pa++; evalChanged(); };
+$('#ePaM').onclick = () => { const E = evalCur(); E.pa = Math.max(0, E.pa - 1); evalChanged(); };
+$('#ePnP').onclick = () => { evalCur().pn++; evalChanged(); };
+$('#ePnM').onclick = () => { const E = evalCur(); E.pn = Math.max(0, E.pn - 1); evalChanged(); };
+$('#eReset').onclick = async () => {
+  if (!evalHasScores()) return;
+  if (await confirmBox('Borrar puntuación', 'Se pondrán a cero todas las casillas y penalizaciones de este trabajo.', 'Borrar')) {
+    const E = evalCur(); E.s = {}; E.pa = 0; E.pn = 0; evalChanged();
+  }
+};
+function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
+  const E = S.eval, F = FICHAS[E.f], sm = evalSums(E), u = W / 1080;
+  const rowsN = Math.max(...sm.hands.map(h => h.rows.length));
+  const lost = [];
+  sm.hands.forEach(h => h.rows.forEach(r => { if (r.t < r.max) { const ex = lost.find(l => l.k === r.k); if (ex) ex.l += r.max - r.t; else lost.push({ k: r.k, l: r.max - r.t }); } }));
+  lost.sort((a, b) => b.l - a.l);
+  const rh = 27, top = 150, tableH = 34 + rowsN * rh + 32, extra = (sm.pen ? 30 : 0) + (lost.length ? 60 : 0);
+  const Hh = Math.round((top + tableH + extra + 56) * u);
+  const c = document.createElement('canvas'); c.width = W; c.height = Hh;
+  const x = c.getContext('2d'); x.scale(u, u);
+  const ink = '#1f1d24', mut = '#6f6a73', gold = '#a8862f', line = '#e4ded3';
+  x.fillStyle = '#fbf8f2'; x.fillRect(0, 0, 1080, Hh / u);
+  x.fillStyle = gold; x.fillRect(0, 0, 1080, 6);
+  const T = (t, px, py, size, wgt, col, al) => { x.font = `${wgt} ${size}px Montserrat, system-ui, sans-serif`; x.fillStyle = col; x.textAlign = al || 'left'; x.textBaseline = 'alphabetic'; x.fillText(t, px, py); };
+  T('ZALESTUDIO · HOJA DE PUNTOS', 40, 44, 14, 700, gold);
+  T(F.n + ' · División ' + E.div, 40, 84, 28, 700, ink);
+  T((E.name ? 'Alumna: ' + E.name + ' · ' : '') + new Date().toLocaleDateString('es-ES'), 40, 116, 17, 500, mut);
+  T(fmtP(sm.tot) + ' / ' + sm.max, 1040, 86, 44, 800, ink, 'right');
+  T(Math.round(sm.tot / sm.max * 100) + ' %', 1040, 118, 20, 700, gold, 'right');
+  const colW = 485, nameW = 206, cw = 44;
+  sm.hands.forEach((h, hi) => {
+    const x0 = 40 + hi * (colW + 0), y0 = top;
+    const ox = hi ? 1080 - 40 - colW : 40;
+    T(h.n, ox, y0 + 18, 16, 700, ink);
+    ['P', 'Í', 'C', 'A', 'M'].forEach((f, n) => T(f, ox + nameW + n * cw + cw / 2, y0 + 18, 13, 700, mut, 'center'));
+    T('Total', ox + colW, y0 + 18, 13, 700, mut, 'right');
+    h.rows.forEach((r, ri) => {
+      const y = y0 + 34 + ri * rh;
+      x.fillStyle = line; x.fillRect(ox, y, colW, 1);
+      { let fz = 14; x.font = `500 ${fz}px Montserrat, system-ui, sans-serif`; while (fz > 10 && x.measureText(CRIT[r.k][0]).width > nameW - 8) { fz -= 0.5; x.font = `500 ${fz}px Montserrat, system-ui, sans-serif`; }
+        T(CRIT[r.k][0], ox, y + 19, fz, 500, ink); }
+      const mx = rowMax(r.k, E.div);
+      r.c.forEach((v, n) => {
+        const cx = ox + nameW + n * cw + 4;
+        x.fillStyle = v >= mx && v > 0 ? '#d9efdc' : v > 0 ? '#f6e7bf' : '#f1ece3';
+        x.beginPath(); x.roundRect(cx, y + 4, cw - 8, rh - 8, 5); x.fill();
+        if (v > 0) T(v === 0.5 ? '½' : fmtP(v).replace(',5', '½'), cx + (cw - 8) / 2, y + 19, 14, 700, v >= mx ? '#1d6b2c' : '#7a5a0c', 'center');
+      });
+      T(fmtP(r.t) + '/' + r.max, ox + colW, y + 19, 13, 600, mut, 'right');
+    });
+    const yf = y0 + 34 + h.rows.length * rh;
+    x.fillStyle = ink; x.fillRect(ox, yf, colW, 1.5);
+    T('Total uña', ox, yf + 21, 14, 700, ink);
+    h.cols.forEach((v, n) => T(fmtP(v), ox + nameW + n * cw + cw / 2, yf + 21, 13, 700, ink, 'center'));
+    T(fmtP(h.t) + '/' + h.max, ox + colW, yf + 21, 14, 800, ink, 'right');
+  });
+  let y = top + tableH + 14;
+  if (sm.pen) { T(`Penalizaciones: −${sm.pen}` + (E.pa ? ` (${E.pa} aviso${E.pa > 1 ? 's' : ''})` : '') + (E.pn ? ` (${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''})` : ''), 40, y + 10, 15, 700, '#b3261e'); y += 30; }
+  if (lost.length) {
+    T('A mejorar', 40, y + 14, 14, 700, gold);
+    const txt = lost.slice(0, 6).map(l => `${CRIT[l.k][0]} (−${fmtP(l.l)})`).join(' · ');
+    x.font = '500 15px Montserrat, system-ui, sans-serif';
+    let line1 = '', line2 = '';
+    for (const w of txt.split(' ')) { const t = line1 ? line1 + ' ' + w : w; if (!line2 && x.measureText(t).width < 1000) line1 = t; else line2 = line2 ? line2 + ' ' + w : w; }
+    T(line1, 40, y + 36, 15, 500, ink); if (line2) T(line2, 40, y + 56, 15, 500, ink);
+    y += 60;
+  }
+  T('© ZALESYA® · ZaleStudio', 1040, Hh / u - 22, 12, 600, mut, 'right');
+  return c;
+}
+
 /* ---------- ayuda: mantener pulsado un botón + guía ---------- */
 const MOVE_TIP = 'Para mover una forma, tócala y arrástrala sobre la línea de color, no sobre los puntos: los puntos sirven para cambiar la forma.';
 const HELP = {
@@ -773,6 +1002,7 @@ const HELP = {
   bTpl: ['Plantillas', 'Abre el panel con las ilustraciones de uñas (formas, perfiles, curva C, smile line, mano…) para trabajar sobre ellas sin necesidad de foto.'],
   bLbl: ['Etiquetas', 'Abre el panel con los nombres de anatomía y estructura. Al tocar uno aparece una caja con flecha: arrastra la caja para colocarla y el punto de la flecha para señalar la zona exacta.'],
   bCalco: ['Calco', 'Pone una plantilla semitransparente encima de tu foto para comparar la forma. Muévela, gírala y ajusta su tamaño con los puntos; con "Más suave" y "Más visible" cambias la transparencia.'],
+  bEval: ['Evaluar', 'Abre la hoja de puntos del concurso (por ahora Salon Style French). Eliges división y alumna, y para cada criterio tocas la casilla de cada uña: un toque ½, dos toques 1. El total se suma solo y al guardar o compartir la hoja sale debajo de la foto.'],
   bBlank: ['Lienzo', 'Abre una hoja en blanco para dibujar o explicar desde cero. El trabajo actual queda guardado en Trabajos.'],
   bProjects: ['Trabajos', 'Todos tus trabajos guardados en este dispositivo. Desde aquí puedes abrirlos para seguir o borrarlos.'],
   bUndo: ['Deshacer', 'Quita el último cambio. Puedes pulsarlo varias veces.'],
@@ -816,7 +1046,7 @@ const HELP = {
   sOk: ['Listo', 'Termina la edición y quita la selección.']
 };
 const GUIDE = [
-  ['Trabajo e imagen', ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
+  ['Trabajo e imagen', ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
   ['Dibujar', ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
   ['Formas y texto', ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
   ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
@@ -1740,21 +1970,22 @@ function setEmpty(v) {
   S.empty = v;
   $('#home').classList.toggle('show', v);
   $('#app').classList.toggle('is-empty', v);
-  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bCalco']) $('#' + id).disabled = v;
+  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bCalco', 'bEval']) $('#' + id).disabled = v;
+  if (v) { $('#pEval').classList.remove('open'); $('#bEval').classList.remove('on'); }
   if (v) document.body.classList.remove('present');
   if (!v) updUndo();
 }
 function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en Trabajos)
   clearTimeout(saveT); dirty = false;
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
-  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = '';
+  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null;
   select(null); resetHist(); setEmpty(true); render();
 }
 function newDoc(w, h, bg, blob) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   setEmpty(false);
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
-  S.objects = []; S.projectId = null; S.projectName = nowName();
+  S.objects = []; S.projectId = null; S.projectName = nowName(); S.eval = null; evalRefresh();
   select(null); resetHist(); fit(); scheduleSave();
 }
 $('#bFit').onclick = fit;
@@ -1786,7 +2017,16 @@ function renderDoc(scale) {
   x.drawImage(k, 0, 0);
   return c;
 }
-function pngBlob() { return new Promise(r => renderDoc(1).toBlob(r, 'image/png')); }
+function pngBlob() {
+  const withEval = S.eval && S.eval.show !== false && evalHasScores();
+  let c;
+  if (withEval) {
+    const W = Math.max(S.docW, 1080), img = renderDoc(W / S.docW), strip = renderEvalStrip(W);
+    c = document.createElement('canvas'); c.width = W; c.height = img.height + strip.height;
+    const x = c.getContext('2d'); x.drawImage(img, 0, 0); x.drawImage(strip, 0, img.height);
+  } else c = renderDoc(1);
+  return new Promise(r => c.toBlob(r, 'image/png'));
+}
 $('#bSave').onclick = async () => {
   if (S.empty) return;
   select(null);
@@ -1844,7 +2084,7 @@ async function saveNow(force) {
     const sc = Math.min(1, 360 / Math.max(S.docW, S.docH));
     const thumb = renderDoc(sc).toDataURL('image/jpeg', 0.75);
     await DB.put({ id: S.projectId, name: S.projectName || nowName(), updated: Date.now(),
-                   docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view } });
+                   docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view }, eval: S.eval || null });
     localStorage.setItem('zalestudio-last', S.projectId);
   } catch (err) { console.error(err); toast('No se pudo guardar el trabajo'); }
 }
@@ -1853,7 +2093,7 @@ async function openProject(id, keepView) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   S.docW = p.docW; S.docH = p.docH; S.bgBlob = p.bg || null;
   S.bg = p.bg ? await loadImg(URL.createObjectURL(p.bg)) : null;
-  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name;
+  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = p.eval || null; evalRefresh();
   setEmpty(false); select(null); resetHist();
   if (keepView && p.view) { S.view = { r: 0, ...p.view }; render(); } else fit();
   localStorage.setItem('zalestudio-last', p.id);
@@ -1895,15 +2135,19 @@ $('#hGuide').onclick = showGuide;
 /* ---------- paneles laterales: plantillas (izquierda) y etiquetas (derecha) ---------- */
 const narrow = () => window.innerWidth < 900;
 stage.addEventListener('scroll', () => { stage.scrollTop = 0; stage.scrollLeft = 0; });   // el lienzo nunca se desplaza solo
+const PANEL_BTN = { pTpl: '#bTpl', pLbl: '#bLbl', pEval: '#bEval' };
 function setPanel(id, open) {
   const p = $('#' + id); p.classList.toggle('open', open);
-  $(id === 'pTpl' ? '#bTpl' : '#bLbl').classList.toggle('on', open);
-  if (open && narrow()) setPanel(id === 'pTpl' ? 'pLbl' : 'pTpl', false);   // en el móvil, solo uno a la vez
+  $(PANEL_BTN[id]).classList.toggle('on', open);
+  if (open) for (const k in PANEL_BTN)   // en el móvil, solo uno a la vez; en la tablet, uno por lado
+    if (k !== id && $('#' + k).classList.contains('open') && (narrow() || $('#' + k).classList.contains('right') === p.classList.contains('right'))) setPanel(k, false);
+  if (id === 'pEval' && open) evalRender();
 }
 function togglePanel(id) { setPanel(id, !$('#' + id).classList.contains('open')); }
 $('#bTpl').onclick = () => { setTplMode('open'); togglePanel('pTpl'); };
 $('#hTpl').onclick = () => { setTplMode('open'); setPanel('pTpl', true); };
 $('#bLbl').onclick = () => togglePanel('pLbl');
+$('#bEval').onclick = () => { if (S.empty) { toast('Abre primero una foto o una plantilla'); return; } togglePanel('pEval'); };
 document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => setPanel(b.dataset.close, false));
 (function buildPanels() {
   const g = $('#tplGrid');
