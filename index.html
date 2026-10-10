@@ -121,6 +121,9 @@ table.evg th .sm{display:none}
 .evc.h{background:#4a3c14;border-color:#c9a84c;color:#ffd978}
 .evc.f{background:#1d4a2a;border-color:#43a047;color:#a5e5ad}
 .evc.z{background:#4a1d22;border-color:#e57373;color:#ffb4b4}
+.evart{display:flex;align-items:center;justify-content:center;gap:12px}
+.evart button{width:44px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:20px;cursor:pointer}
+.evart b{min-width:56px;text-align:center;font-size:16px}
 .evinfo{font-size:12px;color:var(--acc);margin:-2px 0 6px}
 .evpen{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evpen .ct{display:flex;align-items:center;gap:6px}
@@ -233,7 +236,7 @@ table.evg th .sm{display:none}
       <h3>Penalizaciones</h3>
       <div class="evpen"><span>Avisos (−1 cada uno)</span><span class="ct"><button id="ePaM">−</button><b id="ePa">0</b><button id="ePaP">+</button></span></div>
       <div class="evpen"><span>Normas no cumplidas (−5)</span><span class="ct"><button id="ePnM">−</button><b id="ePn">0</b><button id="ePnP">+</button></span></div>
-      <div class="evtot"><span>Total de las dos manos</span><b id="eTot">0</b></div>
+      <div class="evtot"><span id="eTotL">Total de las dos manos</span><b id="eTot">0</b></div>
       <label class="evopt"><input type="checkbox" id="eShow" checked>Poner la hoja de puntos en la imagen al guardar o compartir</label>
       <div class="actions" style="justify-content:space-between;margin-top:6px"><button class="pill dan" id="eReset">Borrar puntuación</button><button class="pill pri" data-close="pEval">Listo</button></div>
     </aside>
@@ -323,7 +326,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.7)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.8)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -866,6 +869,20 @@ const CRIT = {
   formaBB: ['Uniformidad de la forma', 'Se permite cualquier forma de salón (cuadrada suave, coffin, bailarina, ovalada, almendra…), pero las 5 uñas tienen que ser iguales y uniformes. Borde libre limado recto y uña recta respecto a la uña natural, no torcida.\n1 punto por uña.'],
   largoBB: ['Longitud', 'Largo uniforme y bien proporcionado en las 5 uñas. En competiciones de 1 mano cada uña consigue 1 punto por la precisión de la extensión; no se compara con la otra mano.'],
   controlBB: ['Control del producto', 'Efecto baby boomer: degradado progresivo de los colores francesa que cubre la línea poco a poco hasta un borde libre blanco, sin cortes marcados. Aplicación uniforme, sin sombras ni transparencias no deseadas, sin burbujas ni picaduras.\nLa uña debe cumplir todos los requisitos para conseguir el punto.'],
+  concavoS: ['Cóncavo', 'El túnel interior debe ser completamente simétrico.\n1 punto por uña.'],
+  grosorS: ['Grosor del borde libre', 'Fino y uniforme a lo largo de todo el borde libre, con el mismo grosor en las paredes laterales y en el centro, y no más de 1,5 mm.\nEl manual indica: "Se dará ½ punto si la uña cumple ambos requisitos".'],
+  paredesS: ['Paredes laterales', 'El borde libre sale directo desde los pliegues laterales, uniforme en cada lado, sin muescas ni estrías y con los lados suaves y limpios.\n½ por cada lado.'],
+  extensionS: ['Extensión lateral', 'Vista de perfil: extensiones laterales simétricas y bien situadas, sin el pliegue natural expuesto.\n½ por cada lado.'],
+  suavidadS: ['Suavidad de la superficie', 'Toda la superficie sin diseño en 3D debe estar suave, sin marcas ni manchas del producto. Si se usa gel sellador, toda la uña sellada con gel sealer o top coat.\n1 punto por uña.'],
+  uniformS: ['Consistencia de uniformidad', 'Todas las uñas con forma y estilo similares (½).\nForma recta desde la base y vista de frente, alineada con la uña natural, no con el dedo (½).\nPuedes comprobar si la stiletto está recta con la herramienta Ángulo.'],
+  largoS: ['Longitud', 'Se mide de la cutícula a la punta del borde libre.\nÍndice, corazón y anular deben tener la misma longitud; pulgar y meñique también iguales entre sí.\n1 punto por uña.'],
+  abajoS: ['Parte de abajo', 'Parte de abajo del borde libre limpia, sin residuos ni producto (½).\nAplicación suave, sin exceso de acrílico o gel ni marcas del torno; si se usa top coat o gel sealer para transparencias, suave y sin exceso (½).'],
+  cuticulaS: ['Área de la cutícula', 'Sin cortes nuevos ni irritación, sin producto sobrante que se vea o se note, el producto cubre toda la zona sin dejar margen y no está demasiado limado.\n1 si cumple todo; ½ si cumple al menos dos requisitos.'],
+  controlS: ['Control del producto', 'Color aplicado de forma uniforme y limpia; si hay purpurina, aplicación controlada (½).\nSin burbujas ni picaduras (½).'],
+  brilloS: ['Alto brillo', 'Brillo vidriado y reluciente en toda la uña, incluidos laterales, bordes y cutícula. Gel sellador completamente curado, sin tacto pegajoso ni mate y sin capa de inhibición.\n1 punto por uña.'],
+  creatividad: ['Creatividad del diseño', 'Nota del 1 al 10 para toda la mano.\nCada uña debe tener una aportación creativa del arte empleado, con elemento artístico tanto dentro como en la superficie de la uña.\nPintura y brillantes (rhinestones y bullions) solo cuentan un 20 % de la puntuación artística.'],
+  impresion: ['Impresión total', 'Nota del 1 al 10 para toda la mano.\nImpresión general del elemento artístico: cada uña debe representarlo como uña individual y como conjunto, sin uñas con más o menos trabajo que otras.'],
+  dificultad: ['Nivel de dificultad', 'Nota del 1 al 10 para toda la mano.\nSe valora según el nivel de dificultad de la división en la que compite.'],
   largoR: ['Longitud (igual que la otra mano)', 'Las uñas de las dos manos deben coincidir en largo, desde la cutícula hasta el borde libre.\n1 punto por uña.']
 };
 const BASE_ROWS = ['convexo', 'concavo', 'apex', 'tip', 'grosor', 'paredes', 'extension', 'curva', 'forma', 'suavidad', 'cuticula', 'abajo'];
@@ -881,6 +898,9 @@ const FICHAS = {
   tgm: { n: 'Traditional Gel Manicure', info: '2 manos · 1 hora · uñas naturales, solo productos gel · máx. 70 / 75 / 80', hands: [
     { n: 'Mano francesa', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'sonrisaM'] },
     { n: 'Mano roja', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'rojoM'] }
+  ] },
+  sna: { n: 'Stiletto Nail Art', info: '1 mano · 2 horas · stiletto esculpido con molde, gel o acrílico · arte encapsulado o encima (máx. 5 mm)', hands: [
+    { n: 'Mano', rows: ['convexo', 'concavoS', 'apex', 'grosorS', 'paredesS', 'extensionS', 'suavidadS', 'uniformS', 'largoS', 'abajoS', 'cuticulaS', 'controlS', 'brilloS', 'creatividad', 'impresion', 'dificultad'] }
   ] },
   bb: { n: 'Baby Boomer', whole: true, info: '1 mano · 90 minutos · 15 criterios de 5 puntos · cada uña 0 o 1 · máx. 75', hands: [
     { n: 'Mano', rows: ['convexo', 'concavo', 'apex', 'tip', 'grosorBB', 'paredes1', 'extension1', 'curvaBB', 'formaBB', 'largoBB', 'suavidad', 'brillo', 'controlBB', 'cuticula', 'abajo'] }
@@ -899,12 +919,14 @@ function evalFix(E) {   // hojas de la versión anterior: el 0 era casilla vací
   return E;
 }
 function evalCur() { if (!S.eval) S.eval = evalNew(); return evalFix(S.eval); }
-function rowMax(k, div) { return k === 'sonrisa' || k === 'sonrisaM' ? div : 1; }
+const ART = new Set(['creatividad', 'impresion', 'dificultad']);   // nota del 1 al 10 para toda la mano
+function rowMax(k, div) { return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' ? div : 1; }
 function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [null, null, null, null, null]); }
 function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0); }
 function evalSums(E) {
   const F = FICHAS[E.f], hands = F.hands.map((H, h) => {
     const rows = H.rows.map(k => {
+      if (ART.has(k)) { const v = cellsOf(E, h, k)[0]; return { k, art: true, v, c: [v], cv: [0, 0, 0, 0, 0], t: v || 0, max: 10, lost: v === null ? 0 : 10 - v }; }
       const mx = rowMax(k, E.div), c = cellsOf(E, h, k).map(v => v === null ? null : Math.min(v, mx)), cv = c.map(v => v || 0);
       return { k, c, cv, t: cv.reduce((a, b) => a + b, 0), max: mx * 5, lost: c.reduce((a, v) => a + (v === null ? 0 : mx - v), 0) };
     });
@@ -953,6 +975,17 @@ function evalRender() {
     cn.textContent = CRIT[r.k][0]; if (ms) { const sm2 = document.createElement('small'); sm2.textContent = ms; cn.appendChild(sm2); }
     cn.onclick = () => evalHelp(r.k); tr.appendChild(cn);
     const mx = rowMax(r.k, E.div);
+    if (r.art) {   // nota única para toda la mano
+      const td = document.createElement('td'); td.colSpan = 5;
+      td.innerHTML = '<div class="evart"><button aria-label="Bajar">−</button><b></b><button aria-label="Subir">+</button></div>';
+      td.querySelector('b').textContent = r.v === null ? '—' : r.v + ' / 10';
+      const [bm, bp] = td.querySelectorAll('button'), c = cellsOf(E, evHand, r.k);
+      bm.onclick = () => { c[0] = c[0] === null ? null : c[0] <= 0 ? null : c[0] - 1; evalChanged(); };
+      bp.onclick = () => { c[0] = c[0] === null ? 1 : Math.min(10, c[0] + 1); evalChanged(); };
+      tr.appendChild(td);
+      const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/10`; tr.appendChild(rt);
+      tb.appendChild(tr); return;
+    }
     r.c.forEach((v, n) => {
       const td = document.createElement('td'), b = document.createElement('button');
       b.className = 'evc' + (v === null ? '' : v === 0 ? ' z' : v >= mx ? ' f' : ' h');
@@ -968,6 +1001,7 @@ function evalRender() {
   $('#eHT').textContent = `${fmtP(H.t)}/${H.max}`;
   $('#ePa').textContent = E.pa; $('#ePn').textContent = E.pn;
   $('#eTot').textContent = `${fmtP(sm.tot)} / ${sm.max}`;
+  $('#eTotL').textContent = F.hands.length > 1 ? 'Total de las dos manos' : 'Total';
 }
 function evalHelp(k) {
   const c = CRIT[k];
@@ -1024,6 +1058,12 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
       { let fz = 14; x.font = `500 ${fz}px Montserrat, system-ui, sans-serif`; while (fz > 10 && x.measureText(CRIT[r.k][0]).width > nameW - 8) { fz -= 0.5; x.font = `500 ${fz}px Montserrat, system-ui, sans-serif`; }
         T(CRIT[r.k][0], ox, y + 19, fz, 500, ink); }
       const mx = rowMax(r.k, E.div);
+      if (r.art) {
+        x.fillStyle = r.v === null ? '#f1ece3' : '#e3e0f4'; x.beginPath(); x.roundRect(ox + nameW + 4, y + 4, cw * 5 - 8, rh - 8, 5); x.fill();
+        if (r.v !== null) T(r.v + ' / 10', ox + nameW + cw * 2.5, y + 19, 14, 700, '#3c3489', 'center');
+        T(fmtP(r.t) + '/10', ox + colW, y + 19, 13, 600, mut, 'right');
+        return;
+      }
       r.c.forEach((v, n) => {
         const cx = ox + nameW + n * cw + 4;
         x.fillStyle = v === null ? '#f1ece3' : v === 0 ? '#f8d9d9' : v >= mx ? '#d9efdc' : '#f6e7bf';
