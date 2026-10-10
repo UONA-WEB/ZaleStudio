@@ -326,7 +326,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.8)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.0)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -870,7 +870,7 @@ const CRIT = {
   largoBB: ['Longitud', 'Largo uniforme y bien proporcionado en las 5 uñas. En competiciones de 1 mano cada uña consigue 1 punto por la precisión de la extensión; no se compara con la otra mano.'],
   controlBB: ['Control del producto', 'Efecto baby boomer: degradado progresivo de los colores francesa que cubre la línea poco a poco hasta un borde libre blanco, sin cortes marcados. Aplicación uniforme, sin sombras ni transparencias no deseadas, sin burbujas ni picaduras.\nLa uña debe cumplir todos los requisitos para conseguir el punto.'],
   concavoS: ['Cóncavo', 'El túnel interior debe ser completamente simétrico.\n1 punto por uña.'],
-  grosorS: ['Grosor del borde libre', 'Fino y uniforme a lo largo de todo el borde libre, con el mismo grosor en las paredes laterales y en el centro, y no más de 1,5 mm.\nEl manual indica: "Se dará ½ punto si la uña cumple ambos requisitos".'],
+  grosorS: ['Grosor del borde libre', 'Fino y uniforme a lo largo de todo el borde libre, con el mismo grosor en las paredes laterales y en el centro, y no más de 1,5 mm.\n1 punto por uña (5 en total), según la hoja oficial de puntuación.'],
   paredesS: ['Paredes laterales', 'El borde libre sale directo desde los pliegues laterales, uniforme en cada lado, sin muescas ni estrías y con los lados suaves y limpios.\n½ por cada lado.'],
   extensionS: ['Extensión lateral', 'Vista de perfil: extensiones laterales simétricas y bien situadas, sin el pliegue natural expuesto.\n½ por cada lado.'],
   suavidadS: ['Suavidad de la superficie', 'Toda la superficie sin diseño en 3D debe estar suave, sin marcas ni manchas del producto. Si se usa gel sellador, toda la uña sellada con gel sealer o top coat.\n1 punto por uña.'],
@@ -879,10 +879,23 @@ const CRIT = {
   abajoS: ['Parte de abajo', 'Parte de abajo del borde libre limpia, sin residuos ni producto (½).\nAplicación suave, sin exceso de acrílico o gel ni marcas del torno; si se usa top coat o gel sealer para transparencias, suave y sin exceso (½).'],
   cuticulaS: ['Área de la cutícula', 'Sin cortes nuevos ni irritación, sin producto sobrante que se vea o se note, el producto cubre toda la zona sin dejar margen y no está demasiado limado.\n1 si cumple todo; ½ si cumple al menos dos requisitos.'],
   controlS: ['Control del producto', 'Color aplicado de forma uniforme y limpia; si hay purpurina, aplicación controlada (½).\nSin burbujas ni picaduras (½).'],
-  brilloS: ['Alto brillo', 'Brillo vidriado y reluciente en toda la uña, incluidos laterales, bordes y cutícula. Gel sellador completamente curado, sin tacto pegajoso ni mate y sin capa de inhibición.\n1 punto por uña.'],
+  brilloS: ['Alto brillo', 'Máximo 1 punto por uña (5 en total).\nBrillo vidriado y reluciente en toda la uña, incluidos laterales, bordes y cutícula. Gel sellador completamente curado, sin tacto pegajoso ni mate y sin capa de inhibición.'],
   creatividad: ['Creatividad del diseño', 'Nota del 1 al 10 para toda la mano.\nCada uña debe tener una aportación creativa del arte empleado, con elemento artístico tanto dentro como en la superficie de la uña.\nPintura y brillantes (rhinestones y bullions) solo cuentan un 20 % de la puntuación artística.'],
   impresion: ['Impresión total', 'Nota del 1 al 10 para toda la mano.\nImpresión general del elemento artístico: cada uña debe representarlo como uña individual y como conjunto, sin uñas con más o menos trabajo que otras.'],
   dificultad: ['Nivel de dificultad', 'Nota del 1 al 10 para toda la mano.\nSe valora según el nivel de dificultad de la división en la que compite.'],
+  otBrillo: ['Superficie y brillo', 'La uña debe sentirse completamente lisa en la superficie (1).\nEl gel sellador o top coat completamente curado, con alto brillo (1).\nMáximo 2 puntos por uña.'],
+  otAbajo: ['Parte de abajo', 'Sin polvo, restos de producto, agua, pegamento ni exceso de aceite debajo de la uña: apariencia limpia (1).\nProducto suave debajo de la uña y sin exceso (1).\nSi gotea aceite del dedo, se descuenta aquí.\nMáximo 2 puntos por uña.'],
+  otApex: ['Arco y ápex', 'Ápex no demasiado aparente, con inclinación sutil y gradual situada siempre en la zona 2; arco ni muy pronunciado ni plano, y no demasiado adelante ni atrás visto de perfil.\n1 punto por cada uno de los dos requisitos. Máximo 2 por uña.'],
+  otForma: ['Forma de la uña', 'Forma consistente y uniforme (cuadrado extremo). Borde libre limado recto, no desigual (1).\nUña aplicada recta respecto a la uña natural, no torcida ni inclinada, vista de frente (1).\nMáximo 2 por uña. Se permiten ½ puntos.'],
+  otMolde: ['Aplicación del molde', 'La extensión no debe tener muescas ni huecos en los pliegues laterales donde empieza el borde libre (muescas del esculpido, no hechas con lima).\n1 punto por cada lado sin muesca. Máximo 2 por uña.'],
+  otCut: ['Área de la cutícula', 'Sin cortes nuevos ni irritación alrededor de la uña (1).\nSin exceso de producto que se vea o se note cerca de los pliegues proximales (½).\nProducto visible cubriendo toda la zona de la cutícula, sin dejar margen y sin estar demasiado limado (½).\nMáximo 2 por uña.'],
+  otConvexo: ['Convexo', 'Contorno exterior completamente simétrico y superficie sin irregularidades, hasta la zona 1. Se mira de frente (zona 3) y desde atrás (zona 2).\n1 punto por cada zona correcta. Máximo 2 por uña.'],
+  otConcavo: ['Cóncavo', 'Túnel interior simétrico y concéntrico desde el inicio de la curva C hasta el borde distal.\n1 punto si es concéntrico donde empieza el borde libre (el molde sigue el borde distal, sin parecer que deja sitio para exceso de producto).\n1 punto si es simétrico en todo el borde libre, sin irregularidades en el túnel.\nMáximo 2 por uña.'],
+  otParedes: ['Paredes laterales', 'El borde libre sale recto desde los pliegues laterales, sin ensancharse ni estrecharse vista de frente, igual en cada lado, sin rebordes y con los lados lisos y limpios.\n1 punto por cada lado. Máximo 2 por uña.'],
+  otExt: ['Extensión lateral', 'Vista de perfil: el borde libre sale directo del pliegue lateral natural, sin caer ni inclinarse hacia arriba, con simetría y sin el pliegue lateral expuesto.\n1 punto por cada lado. Máximo 2 por uña.'],
+  otGrosor: ['Grosor del borde libre', 'Fino y uniforme en todo el borde libre, igual en las paredes laterales que en el centro (1).\nNo más de 1,5 mm donde se unen las zonas 2 y 3 (1).\nMáximo 2 por uña.'],
+  otCurva: ['Curva C', 'Entre el 40 % y el 50 % de círculo (1).\nConcéntrica, como un semicírculo (1).\nMáximo 2 por uña. Puedes medirla con la herramienta Arco.', 'arc'],
+  otLargo: ['Longitud', 'Extensión de al menos 1 cm y no más de 1,5 cm desde la parte superior del borde distal de la uña natural.\n1 punto por uña.'],
   largoR: ['Longitud (igual que la otra mano)', 'Las uñas de las dos manos deben coincidir en largo, desde la cutícula hasta el borde libre.\n1 punto por uña.']
 };
 const BASE_ROWS = ['convexo', 'concavo', 'apex', 'tip', 'grosor', 'paredes', 'extension', 'curva', 'forma', 'suavidad', 'cuticula', 'abajo'];
@@ -898,6 +911,10 @@ const FICHAS = {
   tgm: { n: 'Traditional Gel Manicure', info: '2 manos · 1 hora · uñas naturales, solo productos gel · máx. 70 / 75 / 80', hands: [
     { n: 'Mano francesa', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'sonrisaM'] },
     { n: 'Mano roja', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'rojoM'] }
+  ] },
+  ot: { n: 'One Tone Sculptured', info: '1 mano · 60 minutos · un solo tono (cobertura o natural), esculpida con molde · máx. 125 en todas las divisiones',
+    pts: { otBrillo: 2, otAbajo: 2, otApex: 2, otForma: 2, otMolde: 2, otCut: 2, otConvexo: 2, otConcavo: 2, otParedes: 2, otExt: 2, otGrosor: 2, otCurva: 2, otLargo: 1 }, hands: [
+    { n: 'Mano', rows: ['otBrillo', 'otAbajo', 'otApex', 'otForma', 'otMolde', 'otCut', 'otConvexo', 'otConcavo', 'otParedes', 'otExt', 'otGrosor', 'otCurva', 'otLargo'] }
   ] },
   sna: { n: 'Stiletto Nail Art', info: '1 mano · 2 horas · stiletto esculpido con molde, gel o acrílico · arte encapsulado o encima (máx. 5 mm)', hands: [
     { n: 'Mano', rows: ['convexo', 'concavoS', 'apex', 'grosorS', 'paredesS', 'extensionS', 'suavidadS', 'uniformS', 'largoS', 'abajoS', 'cuticulaS', 'controlS', 'brilloS', 'creatividad', 'impresion', 'dificultad'] }
@@ -920,14 +937,14 @@ function evalFix(E) {   // hojas de la versión anterior: el 0 era casilla vací
 }
 function evalCur() { if (!S.eval) S.eval = evalNew(); return evalFix(S.eval); }
 const ART = new Set(['creatividad', 'impresion', 'dificultad']);   // nota del 1 al 10 para toda la mano
-function rowMax(k, div) { return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' ? div : 1; }
+function rowMax(k, E) { const F = FICHAS[E.f]; if (F && F.pts && F.pts[k]) return F.pts[k]; return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' ? E.div : 1; }
 function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [null, null, null, null, null]); }
 function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0); }
 function evalSums(E) {
   const F = FICHAS[E.f], hands = F.hands.map((H, h) => {
     const rows = H.rows.map(k => {
       if (ART.has(k)) { const v = cellsOf(E, h, k)[0]; return { k, art: true, v, c: [v], cv: [0, 0, 0, 0, 0], t: v || 0, max: 10, lost: v === null ? 0 : 10 - v }; }
-      const mx = rowMax(k, E.div), c = cellsOf(E, h, k).map(v => v === null ? null : Math.min(v, mx)), cv = c.map(v => v || 0);
+      const mx = rowMax(k, E), c = cellsOf(E, h, k).map(v => v === null ? null : Math.min(v, mx)), cv = c.map(v => v || 0);
       return { k, c, cv, t: cv.reduce((a, b) => a + b, 0), max: mx * 5, lost: c.reduce((a, v) => a + (v === null ? 0 : mx - v), 0) };
     });
     const cols = [0, 1, 2, 3, 4].map(n => rows.reduce((a, r) => a + r.cv[n], 0));
@@ -974,7 +991,7 @@ function evalRender() {
     const ms = CRIT[r.k][2] ? evalMeasure(CRIT[r.k][2]) : '';
     cn.textContent = CRIT[r.k][0]; if (ms) { const sm2 = document.createElement('small'); sm2.textContent = ms; cn.appendChild(sm2); }
     cn.onclick = () => evalHelp(r.k); tr.appendChild(cn);
-    const mx = rowMax(r.k, E.div);
+    const mx = rowMax(r.k, E);
     if (r.art) {   // nota única para toda la mano
       const td = document.createElement('td'); td.colSpan = 5;
       td.innerHTML = '<div class="evart"><button aria-label="Bajar">−</button><b></b><button aria-label="Subir">+</button></div>';
@@ -994,13 +1011,13 @@ function evalRender() {
       b.onclick = () => { const c = cellsOf(E, evHand, r.k); c[n] = c[n] === null ? 0 : c[n] >= mx ? null : Math.min(mx, c[n] + (F.whole ? 1 : 0.5)); evalChanged(); };
       td.appendChild(b); tr.appendChild(td);
     });
-    const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/${r.max}`; tr.appendChild(rt);
+    const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/${fmtP(r.max)}`; tr.appendChild(rt);
     tb.appendChild(tr);
   });
   H.cols.forEach((v, n) => $('#eC' + n).textContent = fmtP(v));
-  $('#eHT').textContent = `${fmtP(H.t)}/${H.max}`;
+  $('#eHT').textContent = `${fmtP(H.t)}/${fmtP(H.max)}`;
   $('#ePa').textContent = E.pa; $('#ePn').textContent = E.pn;
-  $('#eTot').textContent = `${fmtP(sm.tot)} / ${sm.max}`;
+  $('#eTot').textContent = `${fmtP(sm.tot)} / ${fmtP(sm.max)}`;
   $('#eTotL').textContent = F.hands.length > 1 ? 'Total de las dos manos' : 'Total';
 }
 function evalHelp(k) {
@@ -1043,7 +1060,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
   T('ZALESTUDIO · HOJA DE PUNTOS', 40, 44, 14, 700, gold);
   T(F.n + ' · División ' + E.div, 40, 84, 28, 700, ink);
   T((E.name ? 'Alumna: ' + E.name + ' · ' : '') + new Date().toLocaleDateString('es-ES'), 40, 116, 17, 500, mut);
-  T(fmtP(sm.tot) + ' / ' + sm.max, 1040, 86, 44, 800, ink, 'right');
+  T(fmtP(sm.tot) + ' / ' + fmtP(sm.max), 1040, 86, 44, 800, ink, 'right');
   T(Math.round(sm.tot / sm.max * 100) + ' %', 1040, 118, 20, 700, gold, 'right');
   const colW = 485, nameW = 206, cw = 44;
   sm.hands.forEach((h, hi) => {
@@ -1057,7 +1074,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
       x.fillStyle = line; x.fillRect(ox, y, colW, 1);
       { let fz = 14; x.font = `500 ${fz}px Montserrat, system-ui, sans-serif`; while (fz > 10 && x.measureText(CRIT[r.k][0]).width > nameW - 8) { fz -= 0.5; x.font = `500 ${fz}px Montserrat, system-ui, sans-serif`; }
         T(CRIT[r.k][0], ox, y + 19, fz, 500, ink); }
-      const mx = rowMax(r.k, E.div);
+      const mx = rowMax(r.k, E);
       if (r.art) {
         x.fillStyle = r.v === null ? '#f1ece3' : '#e3e0f4'; x.beginPath(); x.roundRect(ox + nameW + 4, y + 4, cw * 5 - 8, rh - 8, 5); x.fill();
         if (r.v !== null) T(r.v + ' / 10', ox + nameW + cw * 2.5, y + 19, 14, 700, '#3c3489', 'center');
@@ -1070,13 +1087,13 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
         x.beginPath(); x.roundRect(cx, y + 4, cw - 8, rh - 8, 5); x.fill();
         if (v !== null) T(v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½'), cx + (cw - 8) / 2, y + 19, 14, 700, v === 0 ? '#b3261e' : v >= mx ? '#1d6b2c' : '#7a5a0c', 'center');
       });
-      T(fmtP(r.t) + '/' + r.max, ox + colW, y + 19, 13, 600, mut, 'right');
+      T(fmtP(r.t) + '/' + fmtP(r.max), ox + colW, y + 19, 13, 600, mut, 'right');
     });
     const yf = y0 + 34 + h.rows.length * rh;
     x.fillStyle = ink; x.fillRect(ox, yf, colW, 1.5);
     T('Total uña', ox, yf + 21, 14, 700, ink);
     h.cols.forEach((v, n) => T(fmtP(v), ox + nameW + n * cw + cw / 2, yf + 21, 13, 700, ink, 'center'));
-    T(fmtP(h.t) + '/' + h.max, ox + colW, yf + 21, 14, 800, ink, 'right');
+    T(fmtP(h.t) + '/' + fmtP(h.max), ox + colW, yf + 21, 14, 800, ink, 'right');
   });
   let y = top + tableH + 14;
   if (sm.pen) { T(`Penalizaciones: −${sm.pen}` + (E.pa ? ` (${E.pa} aviso${E.pa > 1 ? 's' : ''})` : '') + (E.pn ? ` (${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''})` : ''), 40, y + 10, 15, 700, '#b3261e'); y += 30; }

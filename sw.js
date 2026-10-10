@@ -1,6 +1,6 @@
 // ZaleStudio by ZALESYA — service worker
 // Al cambiar archivos, sube el número de versión para forzar la actualización.
-const CACHE = 'zalestudio-v17';
+const CACHE = 'zalestudio-v19';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
