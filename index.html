@@ -120,6 +120,8 @@ table.evg th .sm{display:none}
 .evc{width:100%;height:38px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0}
 .evc.h{background:#4a3c14;border-color:#c9a84c;color:#ffd978}
 .evc.f{background:#1d4a2a;border-color:#43a047;color:#a5e5ad}
+.evc.z{background:#4a1d22;border-color:#e57373;color:#ffb4b4}
+.evinfo{font-size:12px;color:var(--acc);margin:-2px 0 6px}
 .evpen{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evpen .ct{display:flex;align-items:center;gap:6px}
 .evpen button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:18px;cursor:pointer}
@@ -220,7 +222,8 @@ table.evg th .sm{display:none}
         <label>División<select id="eDiv"><option value="1">División 1</option><option value="2">División 2</option><option value="3">División 3</option></select></label>
         <label>Alumna<input id="eName" type="text" placeholder="Nombre" autocomplete="off"></label>
       </div>
-      <p class="hint">Toca una casilla: vacía → ½ → 1 → vacía. Toca el nombre de un criterio para ver qué se puntúa.</p>
+      <div class="evinfo" id="eInfo"></div>
+      <p class="hint">Toca una casilla: vacía → 0 → ½ → 1 → vacía. Toca el nombre de un criterio para ver qué se puntúa.</p>
       <div class="evhands" id="eHands"></div>
       <table class="evg"><colgroup><col style="width:33%"><col><col><col><col><col><col style="width:13%"></colgroup>
         <thead><tr><th>Criterio</th><th><span class="lg">Pulgar</span><span class="sm">P</span></th><th><span class="lg">Índice</span><span class="sm">Í</span></th><th><span class="lg">Corazón</span><span class="sm">C</span></th><th><span class="lg">Anular</span><span class="sm">A</span></th><th><span class="lg">Meñique</span><span class="sm">M</span></th><th>Total</th></tr></thead>
@@ -320,7 +323,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.5)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v2.6)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -838,26 +841,43 @@ const CRIT = {
   largoF: ['Longitud (blanco 50 %)', 'Se mide de la cutícula al centro de la línea de la sonrisa: el blanco debe medir el 50 % de esa distancia hasta la punta. Si las puntas de la sonrisa no coinciden, se mide desde la más alta.\n1 punto por uña.\nPuedes medirlo con Proporción: el objetivo es "Borde libre = 50 % del lecho".', 'ratio'],
   sonrisa: ['Línea de la sonrisa', 'División 1 (máx. 1 por uña): forma consistente, división clara y uniforme con las demás uñas.\nDivisión 2 (máx. 2): además, 1 punto si está centrada y alineada, sin ladearse.\nDivisión 3 (máx. 3): además, 1 punto si las puntas son paralelas y coinciden.'],
   esmalte: ['Aplicación del esmalte', 'Dos capas, homogéneas cerca de la cutícula y sin rayas (½).\nOtro ½ si cumple al menos 2 de estos 3: sin esmalte en la piel, sin esmalte detrás de la uña y todos los bordes del borde libre esmaltados.'],
+  molde: ['Aplicación del molde', 'El borde libre no debe tener ninguna muesca cerca de la aplicación del molde (muescas del proceso de aplicación, no hechas con lima).\n½ por cada lado sin muesca.'],
+  grosor1: ['Grosor del borde libre', 'Fino y uniforme, con el mismo grosor en las paredes laterales y en el centro (½).\nNo más de 1 mm (½).'],
+  curvaA: ['Curva C', 'División 1: entre el 40 % y el 50 % de círculo (½) y concéntrica (½).\nDivisión 2: el primer ½ necesita las dos cosas, 40–50 % y concéntrica; el segundo ½, que los dos lados midan igual y sea completamente simétrica.\nDivisión 3: igual que la 2, y además la forma debe coincidir con la del dedo equivalente de la otra mano; si no coincide, ninguna de las dos uñas consigue ese ½.\nPuedes medirla con la herramienta Arco.', 'arc'],
+  largoA: ['Longitud (blanco = rosa)', 'De la cutícula al centro de la sonrisa debe medir lo mismo que del borde libre a las puntas de la sonrisa. Si las puntas no coinciden, se mide desde la más alta.\n1 punto por uña.\nPuedes medirlo con Almendra: el objetivo es "Almendra 50 % · Borde libre 50 %".', 'ratio2'],
+  esmalteA: ['Aplicación del esmalte', 'Sin base, ridgefiller ni top coat: solo esmalte rojo crema.\nDos capas, uniformes en la zona de la cutícula y sin rayas (½).\nOtro ½ si cumple al menos 2 de estos 3: sin esmalte en la piel, sin esmalte debajo de la uña y todos los bordes del borde libre esmaltados.'],
   largoR: ['Longitud (igual que la otra mano)', 'Las uñas de las dos manos deben coincidir en largo, desde la cutícula hasta el borde libre.\n1 punto por uña.']
 };
 const BASE_ROWS = ['convexo', 'concavo', 'apex', 'tip', 'grosor', 'paredes', 'extension', 'curva', 'forma', 'suavidad', 'cuticula', 'abajo'];
 const FICHAS = {
-  ssf: { n: 'Salon Style French', hands: [
+  ssf: { n: 'Salon Style French', info: '2 manos · 2 horas · gel o acrílico, tips o moldes', hands: [
     { n: 'Mano francesa', rows: BASE_ROWS.concat(['brillo', 'control', 'largoF', 'sonrisa']) },
     { n: 'Mano roja', rows: BASE_ROWS.concat(['esmalte', 'largoR']) }
+  ] },
+  fsa: { n: 'French Sculptured Acrylic', info: '2 manos · 2 h 30 min · acrílico esculpido con molde', hands: [
+    { n: 'Mano francesa', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor1', 'paredes', 'extension', 'curvaA', 'forma', 'suavidad', 'cuticula', 'abajo', 'brillo', 'control', 'largoA', 'sonrisa'] },
+    { n: 'Mano roja', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor1', 'paredes', 'extension', 'curvaA', 'forma', 'suavidad', 'cuticula', 'abajo', 'esmalteA', 'largoR'] }
   ] }
 };
 let evHand = 0;
 const fmtP = v => (Math.round(v * 10) / 10).toString().replace('.', ',');
-function evalNew() { return { f: 'ssf', div: 1, name: '', s: {}, pa: 0, pn: 0, show: true }; }
-function evalCur() { if (!S.eval) S.eval = evalNew(); return S.eval; }
+function evalNew() { return { v: 2, f: 'ssf', div: 1, name: '', s: {}, pa: 0, pn: 0, show: true }; }
+function evalFix(E) {   // hojas de la versión anterior: el 0 era casilla vacía
+  if (E && !E.v) { for (const k in E.s) E.s[k] = E.s[k].map(v => v > 0 ? v : null); E.v = 2; }
+  if (E && !FICHAS[E.f]) E.f = 'ssf';
+  return E;
+}
+function evalCur() { if (!S.eval) S.eval = evalNew(); return evalFix(S.eval); }
 function rowMax(k, div) { return k === 'sonrisa' ? div : 1; }
-function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [0, 0, 0, 0, 0]); }
-function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v > 0)) || E.pa > 0 || E.pn > 0); }
+function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [null, null, null, null, null]); }
+function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0); }
 function evalSums(E) {
   const F = FICHAS[E.f], hands = F.hands.map((H, h) => {
-    const rows = H.rows.map(k => { const c = cellsOf(E, h, k).map(v => Math.min(v, rowMax(k, E.div))); return { k, c, t: c.reduce((a, b) => a + b, 0), max: rowMax(k, E.div) * 5 }; });
-    const cols = [0, 1, 2, 3, 4].map(n => rows.reduce((a, r) => a + r.c[n], 0));
+    const rows = H.rows.map(k => {
+      const mx = rowMax(k, E.div), c = cellsOf(E, h, k).map(v => v === null ? null : Math.min(v, mx)), cv = c.map(v => v || 0);
+      return { k, c, cv, t: cv.reduce((a, b) => a + b, 0), max: mx * 5, lost: c.reduce((a, v) => a + (v === null ? 0 : mx - v), 0) };
+    });
+    const cols = [0, 1, 2, 3, 4].map(n => rows.reduce((a, r) => a + r.cv[n], 0));
     return { n: H.n, rows, cols, t: rows.reduce((a, r) => a + r.t, 0), max: rows.reduce((a, r) => a + r.max, 0) };
   });
   const pen = E.pa + E.pn * 5, raw = hands.reduce((a, h) => a + h.t, 0), max = hands.reduce((a, h) => a + h.max, 0);
@@ -866,6 +886,10 @@ function evalSums(E) {
 function evalMeasure(kind) {   // medidas que ya hay en la foto
   if (kind === 'arc') {
     const v = S.objects.filter(o => o.t === 'arc').map(o => { const g = arcInfo(o); return g ? Math.round(g.pct * 100) + ' %' : null; }).filter(Boolean);
+    return v.length ? 'medido: ' + v.join(', ') : '';
+  }
+  if (kind === 'ratio2') {
+    const v = S.objects.filter(o => o.t === 'ratio2' && o.c).map(o => { const L1 = dist(o.a[0], o.a[1], o.b[0], o.b[1]), L2 = dist(o.c[0], o.c[1], o.d[0], o.d[1]); if (!(L1 + L2)) return null; const p = Math.round(L1 / (L1 + L2) * 100); return `almendra ${p} % · borde libre ${100 - p} %`; }).filter(Boolean);
     return v.length ? 'medido: ' + v.join(', ') : '';
   }
   if (kind === 'ratio') {
@@ -880,7 +904,7 @@ function evalRender() {
   if (S.empty) return;
   const E = evalCur(), F = FICHAS[E.f], sm = evalSums(E);
   const fs = $('#eFicha'); if (!fs.options.length) for (const k in FICHAS) fs.add(new Option(FICHAS[k].n, k));
-  fs.value = E.f; $('#eDiv').value = String(E.div);
+  fs.value = E.f; $('#eDiv').value = String(E.div); $('#eInfo').textContent = F.info || '';
   if (document.activeElement !== $('#eName')) $('#eName').value = E.name || '';
   $('#eShow').checked = E.show !== false;
   if (evHand >= F.hands.length) evHand = 0;
@@ -899,10 +923,10 @@ function evalRender() {
     const mx = rowMax(r.k, E.div);
     r.c.forEach((v, n) => {
       const td = document.createElement('td'), b = document.createElement('button');
-      b.className = 'evc' + (v >= mx && v > 0 ? ' f' : v > 0 ? ' h' : '');
-      b.textContent = v === 0 ? '' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½');
+      b.className = 'evc' + (v === null ? '' : v === 0 ? ' z' : v >= mx ? ' f' : ' h');
+      b.textContent = v === null ? '' : v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½');
       b.setAttribute('aria-label', CRIT[r.k][0] + ' ' + FINGERS[n]);
-      b.onclick = () => { const c = cellsOf(E, evHand, r.k); c[n] = c[n] >= mx ? 0 : Math.min(mx, c[n] + 0.5); evalChanged(); };
+      b.onclick = () => { const c = cellsOf(E, evHand, r.k); c[n] = c[n] === null ? 0 : c[n] >= mx ? null : Math.min(mx, c[n] + 0.5); evalChanged(); };
       td.appendChild(b); tr.appendChild(td);
     });
     const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/${r.max}`; tr.appendChild(rt);
@@ -938,7 +962,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
   const E = S.eval, F = FICHAS[E.f], sm = evalSums(E), u = W / 1080;
   const rowsN = Math.max(...sm.hands.map(h => h.rows.length));
   const lost = [];
-  sm.hands.forEach(h => h.rows.forEach(r => { if (r.t < r.max) { const ex = lost.find(l => l.k === r.k); if (ex) ex.l += r.max - r.t; else lost.push({ k: r.k, l: r.max - r.t }); } }));
+  sm.hands.forEach(h => h.rows.forEach(r => { if (r.lost > 0) { const nm = CRIT[r.k][0], ex = lost.find(l => l.n === nm); if (ex) ex.l += r.lost; else lost.push({ n: nm, l: r.lost }); } }));
   lost.sort((a, b) => b.l - a.l);
   const rh = 27, top = 150, tableH = 34 + rowsN * rh + 32, extra = (sm.pen ? 30 : 0) + (lost.length ? 60 : 0);
   const Hh = Math.round((top + tableH + extra + 56) * u);
@@ -968,9 +992,9 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
       const mx = rowMax(r.k, E.div);
       r.c.forEach((v, n) => {
         const cx = ox + nameW + n * cw + 4;
-        x.fillStyle = v >= mx && v > 0 ? '#d9efdc' : v > 0 ? '#f6e7bf' : '#f1ece3';
+        x.fillStyle = v === null ? '#f1ece3' : v === 0 ? '#f8d9d9' : v >= mx ? '#d9efdc' : '#f6e7bf';
         x.beginPath(); x.roundRect(cx, y + 4, cw - 8, rh - 8, 5); x.fill();
-        if (v > 0) T(v === 0.5 ? '½' : fmtP(v).replace(',5', '½'), cx + (cw - 8) / 2, y + 19, 14, 700, v >= mx ? '#1d6b2c' : '#7a5a0c', 'center');
+        if (v !== null) T(v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½'), cx + (cw - 8) / 2, y + 19, 14, 700, v === 0 ? '#b3261e' : v >= mx ? '#1d6b2c' : '#7a5a0c', 'center');
       });
       T(fmtP(r.t) + '/' + r.max, ox + colW, y + 19, 13, 600, mut, 'right');
     });
@@ -984,7 +1008,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
   if (sm.pen) { T(`Penalizaciones: −${sm.pen}` + (E.pa ? ` (${E.pa} aviso${E.pa > 1 ? 's' : ''})` : '') + (E.pn ? ` (${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''})` : ''), 40, y + 10, 15, 700, '#b3261e'); y += 30; }
   if (lost.length) {
     T('A mejorar', 40, y + 14, 14, 700, gold);
-    const txt = lost.slice(0, 6).map(l => `${CRIT[l.k][0]} (−${fmtP(l.l)})`).join(' · ');
+    const txt = lost.slice(0, 6).map(l => `${l.n} (−${fmtP(l.l)})`).join(' · ');
     x.font = '500 15px Montserrat, system-ui, sans-serif';
     let line1 = '', line2 = '';
     for (const w of txt.split(' ')) { const t = line1 ? line1 + ' ' + w : w; if (!line2 && x.measureText(t).width < 1000) line1 = t; else line2 = line2 ? line2 + ' ' + w : w; }
@@ -1002,7 +1026,7 @@ const HELP = {
   bTpl: ['Plantillas', 'Abre el panel con las ilustraciones de uñas (formas, perfiles, curva C, smile line, mano…) para trabajar sobre ellas sin necesidad de foto.'],
   bLbl: ['Etiquetas', 'Abre el panel con los nombres de anatomía y estructura. Al tocar uno aparece una caja con flecha: arrastra la caja para colocarla y el punto de la flecha para señalar la zona exacta.'],
   bCalco: ['Calco', 'Pone una plantilla semitransparente encima de tu foto para comparar la forma. Muévela, gírala y ajusta su tamaño con los puntos; con "Más suave" y "Más visible" cambias la transparencia.'],
-  bEval: ['Evaluar', 'Abre la hoja de puntos del concurso (por ahora Salon Style French). Eliges división y alumna, y para cada criterio tocas la casilla de cada uña: un toque ½, dos toques 1. El total se suma solo y al guardar o compartir la hoja sale debajo de la foto.'],
+  bEval: ['Evaluar', 'Abre la hoja de puntos del concurso (Salon Style French y French Sculptured Acrylic). Eliges categoría, división y alumna, y para cada criterio tocas la casilla de cada uña: un toque 0, dos toques ½, tres toques 1. El total se suma solo y al guardar o compartir la hoja sale debajo de la foto.'],
   bBlank: ['Lienzo', 'Abre una hoja en blanco para dibujar o explicar desde cero. El trabajo actual queda guardado en Trabajos.'],
   bProjects: ['Trabajos', 'Todos tus trabajos guardados en este dispositivo. Desde aquí puedes abrirlos para seguir o borrarlos.'],
   bUndo: ['Deshacer', 'Quita el último cambio. Puedes pulsarlo varias veces.'],
@@ -2093,7 +2117,7 @@ async function openProject(id, keepView) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   S.docW = p.docW; S.docH = p.docH; S.bgBlob = p.bg || null;
   S.bg = p.bg ? await loadImg(URL.createObjectURL(p.bg)) : null;
-  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = p.eval || null; evalRefresh();
+  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = evalFix(p.eval || null); evalRefresh();
   setEmpty(false); select(null); resetHist();
   if (keepView && p.view) { S.view = { r: 0, ...p.view }; render(); } else fit();
   localStorage.setItem('zalestudio-last', p.id);
