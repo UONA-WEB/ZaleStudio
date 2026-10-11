@@ -132,6 +132,7 @@ table.evg th .sm{display:none}
 #eTable.single thead,#eTable.single tfoot{display:none}
 .evchk{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evchk input{width:22px;height:22px;accent-color:#e57373;flex:0 0 auto}
+.evnote{font-size:11.5px;color:var(--mut);line-height:1.4;margin-top:-2px}
 .evinfo{font-size:12px;color:var(--acc);margin:-2px 0 6px}
 .evpen{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evpen .ct{display:flex;align-items:center;gap:6px}
@@ -232,6 +233,7 @@ table.evg th .sm{display:none}
       <div class="sidehd"><b>Evaluar</b><button class="x" data-close="pEval" aria-label="Cerrar">✕</button></div>
       <div class="evtop">
         <label class="full">Categoría<select id="eFicha"></select></label>
+        <div class="full evnote">Ultimate Nail Art Challenge, Team Relay y Fantasy Total Look no se evalúan aquí: son categorías de grupo y presenciales, sin práctica.</div>
         <label>División<select id="eDiv"><option value="1">División 1</option><option value="2">División 2</option><option value="3">División 3</option></select></label>
         <label>Alumna<input id="eName" type="text" placeholder="Nombre" autocomplete="off"></label>
       </div>
@@ -339,7 +341,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.5)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.6)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -1249,7 +1251,7 @@ const HELP = {
   bTpl: ['Plantillas', 'Abre el panel con las ilustraciones de uñas (formas, perfiles, curva C, smile line, mano…) para trabajar sobre ellas sin necesidad de foto.'],
   bLbl: ['Etiquetas', 'Abre el panel con los nombres de anatomía y estructura. Al tocar uno aparece una caja con flecha: arrastra la caja para colocarla y el punto de la flecha para señalar la zona exacta.'],
   bCalco: ['Calco', 'Pone una plantilla semitransparente encima de tu foto para comparar la forma. Muévela, gírala y ajusta su tamaño con los puntos; con "Más suave" y "Más visible" cambias la transparencia.'],
-  bEval: ['Evaluar', 'Abre la hoja de puntos del concurso (categorías del manual NIJ). Eliges categoría, división y alumna, y para cada criterio tocas la casilla de cada uña: un toque 0, dos toques ½, tres toques 1. El total se suma solo y al guardar o compartir la hoja sale debajo de la foto.'],
+  bEval: ['Evaluar', 'Abre la hoja de puntos del concurso (categorías del manual NIJ). Eliges categoría, división y alumna, y para cada criterio tocas la casilla de cada uña: un toque 0, dos toques ½, tres toques 1. El total se suma solo y al guardar o compartir la hoja sale debajo de la foto. Ultimate Nail Art Challenge, Team Relay y Fantasy Total Look no se evalúan en la app: son categorías de grupo y presenciales, sin práctica.'],
   bBlank: ['Lienzo', 'Abre una hoja en blanco para dibujar o explicar desde cero. El trabajo actual queda guardado en Trabajos.'],
   bProjects: ['Trabajos', 'Todos tus trabajos guardados en este dispositivo. Desde aquí puedes abrirlos para seguir o borrarlos.'],
   bUndo: ['Deshacer', 'Quita el último cambio. Puedes pulsarlo varias veces.'],
