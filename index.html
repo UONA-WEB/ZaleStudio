@@ -326,7 +326,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.1)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.2)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -452,7 +452,7 @@ function render() {
   setT(ictx);
   ictx.save();
   ictx.beginPath(); ictx.rect(0, 0, S.docW, S.docH); ictx.clip();
-  TAG_LOG = []; TAG_PLACED = []; ALL_SEGS = []; MEAS_N = countMeas();
+  TAG_LOG = []; TAG_PLACED = []; ALL_SEGS = []; MEAS_N = countMeas(); LEGEND = []; reserveLegend();
   for (const o of S.objects) if (o.t !== 'overlay' && o.t !== 'axis') ALL_SEGS.push(...objSegs(o));
   for (const o of S.objects) if (o.t !== 'overlay') { TAG_OWNER = [o]; drawObj(ictx, o); }
   TAG_OWNER = null;
@@ -461,6 +461,7 @@ function render() {
     const ax = axisObj(); if (ax) { const md = mirrorObj(draft, ax); if (md) drawObj(ictx, md); }
   }
   drawPairs(ictx);
+  drawLegend(ictx); LEGEND = null;
   $('#bSym').classList.toggle('on', !!axisObj());
   ictx.restore();
 
@@ -490,6 +491,7 @@ function placeSelbar() {   // pone Duplicar/Eliminar/Listo en la esquina que men
   const rh = rotHandlePos(); if (rh) obs.push({ x1: rh.x - 30, y1: rh.y - 30, x2: rh.x + 30, y2: rh.y + 30, w: 8 });
   const one = single();
   if (one) for (const [, h] of handlesOf(one)) { const p = toScreen(h[0], h[1]); obs.push({ x1: p.x - 30, y1: p.y - 30, x2: p.x + 30, y2: p.y + 30, w: 8 }); }
+  if (LEGEND_RECT) { const [lx, ly, lw, lh] = LEGEND_RECT, q2 = [[lx, ly], [lx + lw, ly], [lx, ly + lh], [lx + lw, ly + lh]].map(p => toScreen(p[0], p[1])); obs.push({ x1: Math.min(...q2.map(p => p.x)), y1: Math.min(...q2.map(p => p.y)), x2: Math.max(...q2.map(p => p.x)), y2: Math.max(...q2.map(p => p.y)), w: 4 }); }
   for (const t of TAG_LOG || []) if (t.owner && t.owner.some(o => S.sel.includes(o))) obs.push({ x1: t.x1 - 6, y1: t.y1 - 6, x2: t.x2 + 6, y2: t.y2 + 6, w: 3 });
   const L = m, C = (W - bw) / 2, R = W - bw - m, T = m, B = H - bh - m;
   const cand = [[C, T], [C, B], [L, T], [R, T], [L, B], [R, B], [L, (H - bh) / 2], [R, (H - bh) / 2]];
@@ -627,32 +629,33 @@ function tplImg(f) {
   return TPL_IMG[f];
 }
 const fmt1 = v => v.toFixed(1).replace('.', ',');
-let TAG_LOG = null, TAG_OWNER = null, TAG_PLACED = null, ALL_SEGS = null, MEAS_N = 0, LEGEND = null;
+let TAG_LOG = null, TAG_OWNER = null, TAG_PLACED = null, ALL_SEGS = null, MEAS_N = 0, LEGEND = null, LEGEND_RECT = null;
 function countMeas() {   // cuántas medidas hay (ángulo, proporción, almendra y parejas de simetría)
   let n = S.objects.filter(o => (o.t === 'angle' && o.c) || o.t === 'ratio' || (o.t === 'ratio2' && o.c)).length;
   if (axisObj()) { const g = {}; for (const o of S.objects) if (o.pair) g[o.pair] = (g[o.pair] || 0) + 1; n += Object.values(g).filter(v => v === 2).length; }
   return n;
 }
-function tagMode(objs) {   // 'full' texto completo · 'short' solo el número · 'num' número + leyenda (imagen guardada)
-  if (MEAS_N < 2) return 'full';
-  if (EXPORTING) return LEGEND ? 'num' : 'full';
-  return objs.some(o => S.sel.includes(o)) ? 'full' : 'short';
+function tagMode() { return 'short'; }   // junto a la uña siempre el texto corto; el completo va en el recuadro de arriba
+function measTag(c, objs, full, short, x, y, fs, color, anc, opt, lg) {   // número + resultado corto; el texto completo, a la leyenda
+  if (!LEGEND) { drawTag(c, x, y, full, fs, color, anc, opt); return; }
+  const n = LEGEND.length + 1; LEGEND.push({ n, text: lg || full, color });
+  drawTag(c, x, y, `${n} · ${short}`, fs * 0.85, color, anc, opt);
 }
-function measTag(c, objs, full, short, x, y, fs, color, anc, opt, lg) {
-  const m = tagMode(objs);
-  if (m === 'num') { const n = LEGEND.length + 1; LEGEND.push({ n, text: lg || full, color }); drawTag(c, x, y, String(n), fs * 0.8, color, anc, opt); return; }
-  drawTag(c, x, y, m === 'short' ? short : full, m === 'short' ? fs * 0.85 : fs, color, anc, opt);
+function legendMetrics() { const fs = Math.max(12, Math.min(S.docW, S.docH) * 0.026, EXPORTING ? 0 : 13 / S.view.s); /* en pantalla siempre legible */ return { fs, lh: fs * 1.55, pad: fs * 0.7, r: fs * 0.55, m: fs * 0.6 }; }
+function reserveLegend() {   // las etiquetas de las medidas no se ponen debajo del recuadro de arriba
+  if (!MEAS_N || !TAG_PLACED) return;
+  const L = legendMetrics(), h = MEAS_N * L.lh + L.pad * 1.2, w = S.docW * 0.75;
+  TAG_PLACED.push({ x: L.m + w / 2, y: L.m + h / 2, pw: w, ph: h });
 }
-function drawLegend(c) {   // recuadro con los resultados numerados (en la imagen guardada)
+function drawLegend(c) {   // recuadro con los resultados numerados, siempre arriba
+  if (!EXPORTING) LEGEND_RECT = null;
   if (!LEGEND || !LEGEND.length) return;
-  const fs = Math.max(12, Math.min(S.docW, S.docH) * 0.026), lh = fs * 1.55, pad = fs * 0.7, r = fs * 0.55;
+  const { fs, lh, pad, r, m } = legendMetrics();
   c.save(); c.setLineDash([]); c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`;
   let tw = 0; for (const e of LEGEND) tw = Math.max(tw, c.measureText(e.text).width);
-  const w = Math.min(S.docW - 2 * pad, tw + pad * 2 + r * 2 + fs * 0.6), h = LEGEND.length * lh + pad * 1.2, m = fs * 0.6;
-  const cand = [[m, m], [S.docW - w - m, m], [m, S.docH - h - m], [S.docW - w - m, S.docH - h - m]];
-  const cost = ([x0, y0]) => { const cx = x0 + w / 2, cy = y0 + h / 2; let k = 0; for (const [p, q] of ALL_SEGS || []) if (segBox(p[0] - cx, p[1] - cy, q[0] - cx, q[1] - cy, w / 2, h / 2)) k++; return k; };
-  let best = cand[0], bc = cost(best); for (const p of cand.slice(1)) { const k = cost(p); if (k < bc) { bc = k; best = p; } }
-  const [x0, y0] = best;
+  const w = Math.min(S.docW - 2 * m, tw + pad * 2 + r * 2 + fs * 0.6), h = LEGEND.length * lh + pad * 1.2;
+  const x0 = m, y0 = m;   // siempre arriba
+  if (!EXPORTING) LEGEND_RECT = [x0, y0, w, h];
   c.globalAlpha = 1; c.fillStyle = 'rgba(20,19,24,.88)'; c.beginPath(); c.roundRect(x0, y0, w, h, fs * 0.4); c.fill();
   LEGEND.forEach((e, i) => {
     const cy = y0 + pad * 0.6 + lh * i + lh / 2, cx = x0 + pad + r;
@@ -2165,6 +2168,7 @@ function renderDoc(scale) {
   EXPORTING = true;
   const keep = [TAG_PLACED, ALL_SEGS, TAG_LOG, MEAS_N]; TAG_PLACED = []; ALL_SEGS = []; TAG_LOG = null; MEAS_N = countMeas(); LEGEND = [];
   for (const o of S.objects) if (o.t !== 'overlay' && o.t !== 'axis') ALL_SEGS.push(...objSegs(o));
+  reserveLegend();
   try { for (const o of S.objects) if (o.t !== 'overlay') drawObj(kx, o); drawPairs(kx); drawLegend(kx); } finally { EXPORTING = false; LEGEND = null; [TAG_PLACED, ALL_SEGS, TAG_LOG, MEAS_N] = keep; }
   x.drawImage(k, 0, 0);
   return c;
