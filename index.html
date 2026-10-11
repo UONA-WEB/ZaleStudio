@@ -124,6 +124,14 @@ table.evg th .sm{display:none}
 .evart{display:flex;align-items:center;justify-content:center;gap:12px}
 .evart button{width:44px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:20px;cursor:pointer}
 .evart b{min-width:56px;text-align:center;font-size:16px}
+.evval{min-width:84px;height:38px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--txt);font:inherit;font-size:15px;font-weight:700;cursor:pointer;padding:0 10px}
+.evval.on{background:#1d4a2a;border-color:#43a047;color:#a5e5ad}
+.evpick{display:flex;flex-wrap:wrap;gap:5px;padding:4px 0 8px}
+.evpick button{width:40px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.evpick button.on{background:var(--acc);color:#141318;border-color:var(--acc)}
+#eTable.single thead,#eTable.single tfoot{display:none}
+.evchk{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.evchk input{width:22px;height:22px;accent-color:#e57373;flex:0 0 auto}
 .evinfo{font-size:12px;color:var(--acc);margin:-2px 0 6px}
 .evpen{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evpen .ct{display:flex;align-items:center;gap:6px}
@@ -230,14 +238,17 @@ table.evg th .sm{display:none}
       <div class="evinfo" id="eInfo"></div>
       <p class="hint" id="eHint">Toca una casilla: vacía → 0 → ½ → 1 → vacía. Toca el nombre de un criterio para ver qué se puntúa.</p>
       <div class="evhands" id="eHands"></div>
-      <table class="evg"><colgroup><col style="width:33%"><col><col><col><col><col><col style="width:13%"></colgroup>
+      <table class="evg" id="eTable"><colgroup><col style="width:33%"><col><col><col><col><col><col style="width:13%"></colgroup>
         <thead><tr><th>Criterio</th><th><span class="lg">Pulgar</span><span class="sm">P</span></th><th><span class="lg">Índice</span><span class="sm">Í</span></th><th><span class="lg">Corazón</span><span class="sm">C</span></th><th><span class="lg">Anular</span><span class="sm">A</span></th><th><span class="lg">Meñique</span><span class="sm">M</span></th><th>Total</th></tr></thead>
         <tbody id="eRows"></tbody>
         <tfoot><tr><td style="text-align:left">Total uña</td><td id="eC0"></td><td id="eC1"></td><td id="eC2"></td><td id="eC3"></td><td id="eC4"></td><td id="eHT"></td></tr></tfoot>
       </table>
       <h3>Penalizaciones</h3>
+      <div id="ePens"></div>
+      <div id="eGen">
       <div class="evpen"><span>Avisos (−1 cada uno)</span><span class="ct"><button id="ePaM">−</button><b id="ePa">0</b><button id="ePaP">+</button></span></div>
       <div class="evpen"><span>Normas no cumplidas (−5)</span><span class="ct"><button id="ePnM">−</button><b id="ePn">0</b><button id="ePnP">+</button></span></div>
+      </div>
       <div class="evtot"><span id="eTotL">Total de las dos manos</span><b id="eTot">0</b></div>
       <label class="evopt"><input type="checkbox" id="eShow" checked>Poner la hoja de puntos en la imagen al guardar o compartir</label>
       <div class="actions" style="justify-content:space-between;margin-top:6px"><button class="pill dan" id="eReset">Borrar puntuación</button><button class="pill pri" data-close="pEval">Listo</button></div>
@@ -328,7 +339,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.4)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.5)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -960,6 +971,21 @@ const CRIT = {
   otGrosor: ['Grosor del borde libre', 'Fino y uniforme en todo el borde libre, igual en las paredes laterales que en el centro (1).\nNo más de 1,5 mm donde se unen las zonas 2 y 3 (1).\nMáximo 2 por uña.'],
   otCurva: ['Curva C', 'Entre el 40 % y el 50 % de círculo (1).\nConcéntrica, como un semicírculo (1).\nMáximo 2 por uña. Puedes medirla con la herramienta Arco.', 'arc'],
   otLargo: ['Longitud', 'Extensión de al menos 1 cm y no más de 1,5 cm desde la parte superior del borde distal de la uña natural.\n1 punto por uña.'],
+  aDif: ['Nivel de dificultad', 'La complejidad del diseño se valora según el nivel de experiencia (la división).\n¿El diseño es simple, sin elaboración, o tiene más dificultad y experiencia en su creación?'],
+  aBal: ['Balance', 'El diseño no debe estar ni demasiado lleno ni demasiado vacío, y debe verse equilibrado en cada uña y en el conjunto.\nNo debe haber grandes zonas de la uña sin diseño.\nLa combinación de elementos artísticos da sensación de equilibrio o estabilidad (simetría o asimetría).'],
+  aComp: ['Composición', 'Cómo se ha proporcionado el trabajo.\nEl diseño debe tener movimiento para que la mirada pase de una uña a la siguiente.\nCada uña tiene su propio diseño, pero también representa el diseño completo.\nLa escena tiene distintas dimensiones según la perspectiva de cada pieza.'],
+  aOrig: ['Originalidad', 'El tema o diseño debe ser algo que no se haya visto antes, o una interpretación original de trabajos habituales.'],
+  aMedia: ['Media', 'Mínimo tres medios en cada uña, incorporados al diseño de forma coherente y creativa, usados como gradación para acentuar el trabajo.\nCada medio vale 1/3 de la nota; si se usan 4 o más, la nota se reparte entre los medios usados.'],
+  aCal: ['Calidad gráfica', 'La textura del diseño representa perfectamente el estilo elegido.\nLos medios crean énfasis y textura.\nLas líneas y los detalles deben estar hechos de forma limpia.'],
+  aCont: ['Continuidad del tema', 'El tema elegido debe verse en cada una de las uñas.\nEl diseño se complementa y tiene continuidad en todas las uñas.'],
+  aClar: ['Claridad del diseño', '¿El diseño es evidente, claro e identificable?\n¿Se puede identificar lo que se ve en cada uña?\nToda la representación artística debe ser clara e identificable.'],
+  aColor: ['Teoría del color', 'Cómo se ha aplicado la teoría del color.\nEl énfasis ayuda a ver la definición del trabajo.\nLos tonos complementan el diseño y fluyen o se gradúan sobre las uñas u objeto.\nUso de la saturación, de claros y oscuros.'],
+  aTrab: ['Trabajo total', 'Todos los elementos artísticos bien representados, con apariencia limpia y sin imperfecciones visibles: huellas en la pintura, restos de pegamento en los adornos, exceso de gel o polvo sin quitar se consideran trabajo mal terminado.'],
+  aCrea: ['Creatividad', 'Uso creativo de los medios.\nColaboración creativa entre los medios usados.\nInterpretación creativa del tema o diseño.'],
+  a3d: ['Presentación 3D', 'Presencia artística en cada uña.\nFormas en 3D limpias, con un estilo único y con textura.'],
+  aImp: ['Impresión total', 'La primera impresión de la obra completa.\nEl trabajo debe atraer la mirada e invitar a fijarse en los detalles.'],
+  aRitmo: ['Ritmo', 'Principio artístico que indica movimiento: elementos que se repiten con cuidado para crear un ritmo o tempo visual.'],
+  aVar: ['Variedad', 'Principio artístico de diversidad o contraste: se consigue con distintas formas, tamaños y colores en el trabajo.'],
   largoR: ['Longitud (igual que la otra mano)', 'Las uñas de las dos manos deben coincidir en largo, desde la cutícula hasta el borde libre.\n1 punto por uña.']
 };
 const BASE_ROWS = ['convexo', 'concavo', 'apex', 'tip', 'grosor', 'paredes', 'extension', 'curva', 'forma', 'suavidad', 'cuticula', 'abajo'];
@@ -976,6 +1002,20 @@ const FICHAS = {
     { n: 'Mano francesa', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'sonrisaM'] },
     { n: 'Mano roja', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'rojoM'] }
   ] },
+  ftb: { n: 'Fantasy Tip Box', group: 'sub', single: true, info: 'Hecho antes del concurso · todo sobre 1 tip, en caja de máx. 25 cm y 20 cm de alto · tridimensional · tema obligatorio · máx. 120',
+    pts: { aDif: 20 }, pens: [['Presentación más grande de lo permitido', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aBal', 'aComp', 'aOrig', 'aCal', 'aCont', 'aClar', 'aColor', 'aTrab', 'aCrea', 'a3d'] }] },
+  la: { n: 'Living Art', group: 'sub', single: true, info: 'Sobre objetos (pins, broches, llaveros, platos…) · máx. 10 cm de alto · soporte de máx. 20 × 14 cm, fondo negro, blanco o transparente · mínimo 3 medios · tema obligatorio · máx. 110',
+    pts: { aDif: 20 }, pens: [['Menos de 3 medios y técnicas', 5], ['Presentación más grande de lo permitido', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aComp', 'aBal', 'aColor', 'aCont', 'aCal', 'aClar', 'aOrig', 'aTrab', 'aMedia'] }] },
+  mmb: { n: 'Mixed Media Box', group: 'sub', single: true, info: '10 tips de distintos tamaños · 3 medios: pintura, 3D y embellecimiento · arte de máx. 1 cm · sin calcomanías, stamping ni moldes 3D · tema obligatorio · máx. 110',
+    pts: { aDif: 20 }, pens: [['Tips del mismo tamaño', 5], ['Falta uno de los 3 medios', 5], ['Arte de más de 1 cm desde la uña', 5], ['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aBal', 'aComp', 'aOrig', 'aMedia', 'aCal', 'aCont', 'aClar', 'aColor', 'aTrab'] }] },
+  fa: { n: 'Flat Art', group: 'sub', single: true, info: 'Tips unidos tipo cuadro · solo pintura totalmente plana (airbrush, acrílico, gel, esmalte) · sin rhinestones, perlas, foils, calcomanías ni stamping · tema obligatorio · máx. 100',
+    pts: { aDif: 20 }, pens: [['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aBal', 'aComp', 'aOrig', 'aMedia', 'aCal', 'aCont', 'aClar', 'aColor'] }] },
+  stm: { n: 'Salon Trend Manicure Tip Box', group: 'sub', single: true, info: '10 tips separados de máx. 2 cm y distintos tamaños · estilo salón con tendencias actuales · stamping sí, calcomanías no · sin tema · máx. 100',
+    pts: { aDif: 20 }, pens: [['Tips de un solo tamaño', 5], ['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'aBal', 'aCrea', 'aRitmo', 'aImp', 'aCal', 'aTrab', 'aVar'] }] },
+  rac: { n: 'Rhinestones Art Color', group: 'sub', single: true, info: 'Tips cuadrados u ovalados separados, de máx. 3,04 cm · solo rhinestones de distintos colores, formas y tamaños · máx. 5 mm de alto · base de un solo color · sin tema · máx. 90',
+    pts: { aDif: 20 }, pens: [['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'aCrea', 'aImp', 'aBal', 'aTrab', 'aRitmo', 'aVar'] }] },
+  sst: { n: 'Stamping Nail Art Tip Box', group: 'sub', single: true, info: '10 tips separados de máx. 2 cm y distintos tamaños · mínimo 50 % del arte en stamping · diseño extra de máx. 1 cm · sin calcomanías · sin tema · máx. 100',
+    pts: { aDif: 20 }, pens: [['Tips de un solo tamaño', 5], ['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'aCrea', 'aImp', 'aRitmo', 'aBal', 'aTrab', 'aMedia', 'aVar'] }] },
   ot: { n: 'One Tone Sculptured', info: '1 mano · 60 minutos · un solo tono (cobertura o natural), esculpida con molde · máx. 125 en todas las divisiones',
     pts: { otBrillo: 2, otAbajo: 2, otApex: 2, otForma: 2, otMolde: 2, otCut: 2, otConvexo: 2, otConcavo: 2, otParedes: 2, otExt: 2, otGrosor: 2, otCurva: 2, otLargo: 1 }, hands: [
     { n: 'Mano', rows: ['otBrillo', 'otAbajo', 'otApex', 'otForma', 'otMolde', 'otCut', 'otConvexo', 'otConcavo', 'otParedes', 'otExt', 'otGrosor', 'otCurva', 'otLargo'] }
@@ -991,7 +1031,7 @@ const FICHAS = {
     { n: 'Mano roja', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor1', 'paredes', 'extension', 'curvaA', 'forma', 'suavidad', 'cuticula', 'abajo', 'esmalteA', 'largoR'] }
   ] }
 };
-let evHand = 0;
+let evHand = 0, evOpen = null;
 const fmtP = v => (Math.round(v * 10) / 10).toString().replace('.', ',');
 function evalNew() { return { v: 2, f: 'ssf', div: 1, name: '', s: {}, pa: 0, pn: 0, show: true }; }
 function evalFix(E) {   // hojas de la versión anterior: el 0 era casilla vacía
@@ -1003,19 +1043,20 @@ function evalCur() { if (!S.eval) S.eval = evalNew(); return evalFix(S.eval); }
 const ART = new Set(['creatividad', 'impresion', 'dificultad']);   // nota del 1 al 10 para toda la mano
 function rowMax(k, E) { const F = FICHAS[E.f]; if (F && F.pts && F.pts[k]) return F.pts[k]; return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' ? E.div : 1; }
 function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [null, null, null, null, null]); }
-function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0); }
+function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0 || Object.values(E.pk || {}).some(Boolean)); }
 function evalSums(E) {
   const F = FICHAS[E.f], hands = F.hands.map((H, h) => {
     const rows = H.rows.map(k => {
-      if (ART.has(k)) { const v = cellsOf(E, h, k)[0]; return { k, art: true, v, c: [v], cv: [0, 0, 0, 0, 0], t: v || 0, max: 10, lost: v === null ? 0 : 10 - v }; }
+      if (ART.has(k) || F.single) { const mx = (F.pts && F.pts[k]) || 10, v = cellsOf(E, h, k)[0]; return { k, art: true, v, c: [v], cv: [0, 0, 0, 0, 0], t: v || 0, max: mx, lost: v === null ? 0 : mx - v }; }
       const mx = rowMax(k, E), c = cellsOf(E, h, k).map(v => v === null ? null : Math.min(v, mx)), cv = c.map(v => v || 0);
       return { k, c, cv, t: cv.reduce((a, b) => a + b, 0), max: mx * 5, lost: c.reduce((a, v) => a + (v === null ? 0 : mx - v), 0) };
     });
     const cols = [0, 1, 2, 3, 4].map(n => rows.reduce((a, r) => a + r.cv[n], 0));
     return { n: H.n, rows, cols, t: rows.reduce((a, r) => a + r.t, 0), max: rows.reduce((a, r) => a + r.max, 0) };
   });
-  const pen = E.pa + E.pn * 5, raw = hands.reduce((a, h) => a + h.t, 0), max = hands.reduce((a, h) => a + h.max, 0);
-  return { hands, pen, tot: Math.max(0, raw - pen), max };
+  const pk = (F.pens || []).filter((p, i) => E.pk && E.pk[E.f + ':' + i]);
+  const pen = (F.single ? 0 : E.pa + E.pn * 5) + pk.reduce((a, p) => a + p[1], 0), raw = hands.reduce((a, h) => a + h.t, 0), max = hands.reduce((a, h) => a + h.max, 0);
+  return { hands, pen, pk, tot: Math.max(0, raw - pen), max };
 }
 function evalMeasure(kind) {   // medidas que ya hay en la foto
   if (kind === 'arc') {
@@ -1037,9 +1078,25 @@ function evalRefresh() { if ($('#pEval') && $('#pEval').classList.contains('open
 function evalRender() {
   if (S.empty) return;
   const E = evalCur(), F = FICHAS[E.f], sm = evalSums(E);
-  const fs = $('#eFicha'); if (!fs.options.length) Object.keys(FICHAS).sort((a, b) => FICHAS[a].n.localeCompare(FICHAS[b].n)).forEach(k => fs.add(new Option(FICHAS[k].n, k)));
+  const fs = $('#eFicha');
+  if (!fs.options.length) for (const [g, lab] of [['hand', 'Hands On'], ['sub', 'Submitted']]) {   // categorías agrupadas
+    const og = document.createElement('optgroup'); og.label = lab;
+    Object.keys(FICHAS).filter(k => (FICHAS[k].group || 'hand') === g).sort((a, b) => FICHAS[a].n.localeCompare(FICHAS[b].n)).forEach(k => og.appendChild(new Option(FICHAS[k].n, k)));
+    fs.appendChild(og);
+  }
+  $('#eTable').classList.toggle('single', !!F.single);
+  $('#eHands').style.display = F.single ? 'none' : '';
+  $('#eGen').style.display = F.single ? 'none' : '';
+  const pb = $('#ePens'); pb.innerHTML = '';
+  (F.pens || []).forEach((p, i) => {
+    const l = document.createElement('label'); l.className = 'evchk';
+    l.innerHTML = '<input type="checkbox"><span></span>'; l.querySelector('span').textContent = `${p[0]} (−${p[1]})`;
+    const cb = l.querySelector('input'); cb.checked = !!(E.pk && E.pk[E.f + ':' + i]);
+    cb.onchange = () => { E.pk = E.pk || {}; E.pk[E.f + ':' + i] = cb.checked; evalChanged(); };
+    pb.appendChild(l);
+  });
   fs.value = E.f; $('#eDiv').value = String(E.div); $('#eInfo').textContent = F.info || '';
-  $('#eHint').textContent = (F.whole ? 'Toca una casilla: vacía → 0 → 1 → vacía (sin medios puntos).' : 'Toca una casilla: vacía → 0 → ½ → 1 → vacía.') + ' Toca el nombre de un criterio para ver qué se puntúa.';
+  $('#eHint').textContent = F.single ? 'Se juzga la obra completa. Toca la nota de un criterio y elige el número. Toca el nombre para ver qué se valora.' : (F.whole ? 'Toca una casilla: vacía → 0 → 1 → vacía (sin medios puntos).' : 'Toca una casilla: vacía → 0 → ½ → 1 → vacía.') + ' Toca el nombre de un criterio para ver qué se puntúa.';
   if (document.activeElement !== $('#eName')) $('#eName').value = E.name || '';
   $('#eShow').checked = E.show !== false;
   if (evHand >= F.hands.length) evHand = 0;
@@ -1056,16 +1113,21 @@ function evalRender() {
     cn.textContent = CRIT[r.k][0]; if (ms) { const sm2 = document.createElement('small'); sm2.textContent = ms; cn.appendChild(sm2); }
     cn.onclick = () => evalHelp(r.k); tr.appendChild(cn);
     const mx = rowMax(r.k, E);
-    if (r.art) {   // nota única para toda la mano
-      const td = document.createElement('td'); td.colSpan = 5;
-      td.innerHTML = '<div class="evart"><button aria-label="Bajar">−</button><b></b><button aria-label="Subir">+</button></div>';
-      td.querySelector('b').textContent = r.v === null ? '—' : r.v + ' / 10';
-      const [bm, bp] = td.querySelectorAll('button'), c = cellsOf(E, evHand, r.k);
-      bm.onclick = () => { c[0] = c[0] === null ? null : c[0] <= 0 ? null : c[0] - 1; evalChanged(); };
-      bp.onclick = () => { c[0] = c[0] === null ? 1 : Math.min(10, c[0] + 1); evalChanged(); };
-      tr.appendChild(td);
-      const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/10`; tr.appendChild(rt);
-      tb.appendChild(tr); return;
+    if (r.art) {   // nota única para toda la obra o la mano: se toca y se elige el número
+      const td = document.createElement('td'); td.colSpan = 5; td.style.textAlign = F.single ? 'right' : 'center';
+      const b = document.createElement('button'); b.className = 'evval' + (r.v !== null ? ' on' : '');
+      b.textContent = (r.v === null ? '—' : r.v) + ' / ' + r.max; b.onclick = () => { evOpen = evOpen === r.k ? null : r.k; evalRender(); };
+      td.appendChild(b); tr.appendChild(td);
+      const rt = document.createElement('td'); rt.className = 'rt'; rt.textContent = `${fmtP(r.t)}/${r.max}`; tr.appendChild(rt);
+      tb.appendChild(tr);
+      if (evOpen === r.k) {
+        const tr2 = document.createElement('tr'), td2 = document.createElement('td'); td2.colSpan = 7;
+        const pk = document.createElement('div'); pk.className = 'evpick';
+        for (let n = 0; n <= r.max; n++) { const k = document.createElement('button'); k.textContent = n; if (r.v === n) k.className = 'on'; k.onclick = () => { cellsOf(E, evHand, r.k)[0] = n; evOpen = null; evalChanged(); }; pk.appendChild(k); }
+        const cl = document.createElement('button'); cl.textContent = '—'; cl.title = 'Vaciar'; cl.onclick = () => { cellsOf(E, evHand, r.k)[0] = null; evOpen = null; evalChanged(); }; pk.appendChild(cl);
+        td2.appendChild(pk); tr2.appendChild(td2); tb.appendChild(tr2);
+      }
+      return;
     }
     r.c.forEach((v, n) => {
       const td = document.createElement('td'), b = document.createElement('button');
@@ -1082,7 +1144,7 @@ function evalRender() {
   $('#eHT').textContent = `${fmtP(H.t)}/${fmtP(H.max)}`;
   $('#ePa').textContent = E.pa; $('#ePn').textContent = E.pn;
   $('#eTot').textContent = `${fmtP(sm.tot)} / ${fmtP(sm.max)}`;
-  $('#eTotL').textContent = F.hands.length > 1 ? 'Total de las dos manos' : 'Total';
+  $('#eTotL').textContent = F.hands.length > 1 ? 'Total de las dos manos' : 'Total' + (sm.pen && F.single ? ` (penalizaciones −${sm.pen})` : '');
 }
 function evalHelp(k) {
   const c = CRIT[k];
@@ -1131,7 +1193,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
     const x0 = 40 + hi * (colW + 0), y0 = top;
     const ox = hi ? 1080 - 40 - colW : 40;
     T(h.n, ox, y0 + 18, 16, 700, ink);
-    ['P', 'Í', 'C', 'A', 'M'].forEach((f, n) => T(f, ox + nameW + n * cw + cw / 2, y0 + 18, 13, 700, mut, 'center'));
+    if (!F.single) ['P', 'Í', 'C', 'A', 'M'].forEach((f, n) => T(f, ox + nameW + n * cw + cw / 2, y0 + 18, 13, 700, mut, 'center'));
     T('Total', ox + colW, y0 + 18, 13, 700, mut, 'right');
     h.rows.forEach((r, ri) => {
       const y = y0 + 34 + ri * rh;
@@ -1140,9 +1202,10 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
         T(CRIT[r.k][0], ox, y + 19, fz, 500, ink); }
       const mx = rowMax(r.k, E);
       if (r.art) {
-        x.fillStyle = r.v === null ? '#f1ece3' : '#e3e0f4'; x.beginPath(); x.roundRect(ox + nameW + 4, y + 4, cw * 5 - 8, rh - 8, 5); x.fill();
-        if (r.v !== null) T(r.v + ' / 10', ox + nameW + cw * 2.5, y + 19, 14, 700, '#3c3489', 'center');
-        T(fmtP(r.t) + '/10', ox + colW, y + 19, 13, 600, mut, 'right');
+        const bw = cw * 5 - 8; x.fillStyle = '#f1ece3'; x.beginPath(); x.roundRect(ox + nameW + 4, y + 4, bw, rh - 8, 5); x.fill();
+        if (r.v !== null && r.v > 0) { x.fillStyle = '#e3e0f4'; x.beginPath(); x.roundRect(ox + nameW + 4, y + 4, Math.max(10, bw * r.v / r.max), rh - 8, 5); x.fill(); }
+        if (r.v !== null) T(r.v + ' / ' + r.max, ox + nameW + cw * 2.5, y + 19, 14, 700, '#3c3489', 'center');
+        T(fmtP(r.t) + '/' + r.max, ox + colW, y + 19, 13, 600, mut, 'right');
         return;
       }
       r.c.forEach((v, n) => {
@@ -1155,12 +1218,17 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
     });
     const yf = y0 + 34 + h.rows.length * rh;
     x.fillStyle = ink; x.fillRect(ox, yf, colW, 1.5);
-    T('Total uña', ox, yf + 21, 14, 700, ink);
-    h.cols.forEach((v, n) => T(fmtP(v), ox + nameW + n * cw + cw / 2, yf + 21, 13, 700, ink, 'center'));
+    T(F.single ? 'Total' : 'Total uña', ox, yf + 21, 14, 700, ink);
+    if (!F.single) h.cols.forEach((v, n) => T(fmtP(v), ox + nameW + n * cw + cw / 2, yf + 21, 13, 700, ink, 'center'));
     T(fmtP(h.t) + '/' + fmtP(h.max), ox + colW, yf + 21, 14, 800, ink, 'right');
   });
   let y = top + tableH + 14;
-  if (sm.pen) { T(`Penalizaciones: −${sm.pen}` + (E.pa ? ` (${E.pa} aviso${E.pa > 1 ? 's' : ''})` : '') + (E.pn ? ` (${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''})` : ''), 40, y + 10, 15, 700, '#b3261e'); y += 30; }
+  if (sm.pen) {
+    const det = F.single ? sm.pk.map(p => `${p[0].toLowerCase()} −${p[1]}`).join(' · ') : [E.pa ? `${E.pa} aviso${E.pa > 1 ? 's' : ''}` : '', E.pn ? `${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''}` : '', ...sm.pk.map(p => p[0].toLowerCase())].filter(Boolean).join(' · ');
+    x.font = '700 15px Montserrat, system-ui, sans-serif'; let line = `Penalizaciones: −${fmtP(sm.pen)} (${det})`;
+    while (x.measureText(line).width > 1000 && line.length > 20) line = line.slice(0, -2);
+    T(line, 40, y + 10, 15, 700, '#b3261e'); y += 30;
+  }
   if (lost.length) {
     T('A mejorar', 40, y + 14, 14, 700, gold);
     const txt = lost.slice(0, 6).map(l => `${l.n} (−${fmtP(l.l)})`).join(' · ');
