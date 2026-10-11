@@ -326,7 +326,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.2)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.3)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -461,12 +461,13 @@ function render() {
     const ax = axisObj(); if (ax) { const md = mirrorObj(draft, ax); if (md) drawObj(ictx, md); }
   }
   drawPairs(ictx);
-  drawLegend(ictx); LEGEND = null;
+  const scrLegend = LEGEND; LEGEND = null;
   $('#bSym').classList.toggle('on', !!axisObj());
   ictx.restore();
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.drawImage(ink, 0, 0);
+  drawLegendScreen(scrLegend);
   drawSelection();
   drawMarquee();
   placeSelbar();
@@ -491,7 +492,7 @@ function placeSelbar() {   // pone Duplicar/Eliminar/Listo en la esquina que men
   const rh = rotHandlePos(); if (rh) obs.push({ x1: rh.x - 30, y1: rh.y - 30, x2: rh.x + 30, y2: rh.y + 30, w: 8 });
   const one = single();
   if (one) for (const [, h] of handlesOf(one)) { const p = toScreen(h[0], h[1]); obs.push({ x1: p.x - 30, y1: p.y - 30, x2: p.x + 30, y2: p.y + 30, w: 8 }); }
-  if (LEGEND_RECT) { const [lx, ly, lw, lh] = LEGEND_RECT, q2 = [[lx, ly], [lx + lw, ly], [lx, ly + lh], [lx + lw, ly + lh]].map(p => toScreen(p[0], p[1])); obs.push({ x1: Math.min(...q2.map(p => p.x)), y1: Math.min(...q2.map(p => p.y)), x2: Math.max(...q2.map(p => p.x)), y2: Math.max(...q2.map(p => p.y)), w: 4 }); }
+  if (LEGEND_RECT) { const [lx, ly, lw, lh] = LEGEND_RECT; obs.push({ x1: lx, y1: ly, x2: lx + lw, y2: ly + lh, w: 4 }); }
   for (const t of TAG_LOG || []) if (t.owner && t.owner.some(o => S.sel.includes(o))) obs.push({ x1: t.x1 - 6, y1: t.y1 - 6, x2: t.x2 + 6, y2: t.y2 + 6, w: 3 });
   const L = m, C = (W - bw) / 2, R = W - bw - m, T = m, B = H - bh - m;
   const cand = [[C, T], [C, B], [L, T], [R, T], [L, B], [R, B], [L, (H - bh) / 2], [R, (H - bh) / 2]];
@@ -641,29 +642,50 @@ function measTag(c, objs, full, short, x, y, fs, color, anc, opt, lg) {   // nú
   const n = LEGEND.length + 1; LEGEND.push({ n, text: lg || full, color });
   drawTag(c, x, y, `${n} · ${short}`, fs * 0.85, color, anc, opt);
 }
-function legendMetrics() { const fs = Math.max(12, Math.min(S.docW, S.docH) * 0.026, EXPORTING ? 0 : 13 / S.view.s); /* en pantalla siempre legible */ return { fs, lh: fs * 1.55, pad: fs * 0.7, r: fs * 0.55, m: fs * 0.6 }; }
+const LG_SCREEN = 14;   // tamaño de letra del recuadro en pantalla (px)
+function legendMetrics(fs) { fs = fs || Math.max(12, Math.min(S.docW, S.docH) * 0.026); return { fs, lh: fs * 1.55, pad: fs * 0.7, r: fs * 0.55, m: fs * 0.6 }; }
+function legendScreenOrigin() {   // arriba a la izquierda de la imagen tal como se ve (aunque esté girada)
+  const q = [[0, 0], [S.docW, 0], [0, S.docH], [S.docW, S.docH]].map(p => toScreen(p[0], p[1]));
+  const W = stage.clientWidth, H = stage.clientHeight;
+  return [clamp(Math.min(...q.map(p => p.x)), 0, W) + 8, clamp(Math.min(...q.map(p => p.y)), 0, H) + 8];
+}
 function reserveLegend() {   // las etiquetas de las medidas no se ponen debajo del recuadro de arriba
   if (!MEAS_N || !TAG_PLACED) return;
-  const L = legendMetrics(), h = MEAS_N * L.lh + L.pad * 1.2, w = S.docW * 0.75;
-  TAG_PLACED.push({ x: L.m + w / 2, y: L.m + h / 2, pw: w, ph: h });
+  if (EXPORTING) {
+    const L = legendMetrics(), h = MEAS_N * L.lh + L.pad * 1.2, w = S.docW * 0.75;
+    TAG_PLACED.push({ x: L.m + w / 2, y: L.m + h / 2, pw: w, ph: h }); return;
+  }
+  const L = legendMetrics(LG_SCREEN), [x0, y0] = legendScreenOrigin(), h = MEAS_N * L.lh + L.pad * 1.2, w = Math.min(stage.clientWidth - x0 - 8, 340);
+  const c = toDocS(x0 + w / 2, y0 + h / 2);
+  TAG_PLACED.push({ x: c.x, y: c.y, pw: w / S.view.s, ph: h / S.view.s });
 }
-function drawLegend(c) {   // recuadro con los resultados numerados, siempre arriba
-  if (!EXPORTING) LEGEND_RECT = null;
-  if (!LEGEND || !LEGEND.length) return;
-  const { fs, lh, pad, r, m } = legendMetrics();
+function paintLegend(c, entries, x0, y0, fs, maxW) {
+  const { lh, pad, r } = legendMetrics(fs);
   c.save(); c.setLineDash([]); c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`;
-  let tw = 0; for (const e of LEGEND) tw = Math.max(tw, c.measureText(e.text).width);
-  const w = Math.min(S.docW - 2 * m, tw + pad * 2 + r * 2 + fs * 0.6), h = LEGEND.length * lh + pad * 1.2;
-  const x0 = m, y0 = m;   // siempre arriba
-  if (!EXPORTING) LEGEND_RECT = [x0, y0, w, h];
+  let tw = 0; for (const e of entries) tw = Math.max(tw, c.measureText(e.text).width);
+  const w = Math.min(maxW, tw + pad * 2 + r * 2 + fs * 0.6), h = entries.length * lh + pad * 1.2;
   c.globalAlpha = 1; c.fillStyle = 'rgba(20,19,24,.88)'; c.beginPath(); c.roundRect(x0, y0, w, h, fs * 0.4); c.fill();
-  LEGEND.forEach((e, i) => {
+  entries.forEach((e, i) => {
     const cy = y0 + pad * 0.6 + lh * i + lh / 2, cx = x0 + pad + r;
     c.fillStyle = e.color; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.fill();
     c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = `700 ${fs * 0.75}px Montserrat, system-ui, sans-serif`; c.fillText(String(e.n), cx, cy + fs * 0.02);
     c.textAlign = 'left'; c.font = `700 ${fs}px Montserrat, system-ui, sans-serif`; c.fillText(e.text, cx + r + fs * 0.5, cy, w - pad * 2 - r * 2 - fs * 0.5);
   });
   c.restore();
+  return [x0, y0, w, h];
+}
+function drawLegend(c) {   // en la imagen guardada: arriba a la izquierda de la imagen
+  if (!LEGEND || !LEGEND.length) return;
+  const L = legendMetrics();
+  paintLegend(c, LEGEND, L.m, L.m, L.fs, S.docW - 2 * L.m);
+}
+function drawLegendScreen(entries) {   // en pantalla: siempre derecho y arriba, gire como gire la imagen
+  LEGEND_RECT = null;
+  if (!entries || !entries.length) return;
+  const [x0, y0] = legendScreenOrigin();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  LEGEND_RECT = paintLegend(ctx, entries, x0, y0, LG_SCREEN, stage.clientWidth - x0 - 8);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 function objSegs(o) {   // tramos rectos de una forma (para que las etiquetas no los tapen)
   const S2 = [];
