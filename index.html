@@ -133,6 +133,11 @@ table.evg th .sm{display:none}
 .evchk{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evchk input{width:22px;height:22px;accent-color:#e57373;flex:0 0 auto}
 .evnote{font-size:11.5px;color:var(--mut);line-height:1.4;margin-top:-2px}
+#cMm{width:100px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px;font:inherit;font-size:16px;user-select:text;-webkit-user-select:text}
+.chip.on{background:var(--acc);color:#141318;border-color:var(--acc)}
+.cmline{display:block;font-size:11px;color:#9fd3ff;font-style:italic;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#hCmBox textarea,#eNote{width:100%;min-height:64px;background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px;font:inherit;font-size:15px;resize:vertical;user-select:text;-webkit-user-select:text}
+.evpdf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evinfo{font-size:12px;color:var(--acc);margin:-2px 0 6px}
 .evpen{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 .evpen .ct{display:flex;align-items:center;gap:6px}
@@ -195,6 +200,7 @@ table.evg th .sm{display:none}
       <button class="btn" id="sRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>Girar 1°</button>
       <button class="btn" id="sSmaller"><svg viewBox="0 0 24 24"><path d="M3 18l5-12 5 12M5 14h6"/><path d="M15 12h6"/></svg>Reducir</button>
       <button class="btn" id="sBigger"><svg viewBox="0 0 24 24"><path d="M3 18l5-12 5 12M5 14h6"/><path d="M15 12h6M18 9v6"/></svg>Ampliar</button>
+      <button class="btn" id="sCal"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg>Medida regla</button>
       <button class="btn" id="sEdit"><svg viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16z"/></svg>Editar</button>
       <button class="btn" id="sDup"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg>Duplicar</button>
       <button class="btn" id="sDel"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Eliminar</button>
@@ -251,7 +257,10 @@ table.evg th .sm{display:none}
       <div class="evpen"><span>Avisos (−1 cada uno)</span><span class="ct"><button id="ePaM">−</button><b id="ePa">0</b><button id="ePaP">+</button></span></div>
       <div class="evpen"><span>Normas no cumplidas (−5)</span><span class="ct"><button id="ePnM">−</button><b id="ePn">0</b><button id="ePnP">+</button></span></div>
       </div>
+      <h3>Comentario general</h3>
+      <textarea id="eNote" placeholder="Comentario para la alumna (sale en la hoja)"></textarea>
       <div class="evtot"><span id="eTotL">Total de las dos manos</span><b id="eTot">0</b></div>
+      <div class="evpdf"><span style="flex:1">Hoja de evaluación en PDF</span><button class="pill" id="ePdfSave">Guardar PDF</button><button class="pill" id="ePdfShare">Compartir PDF</button></div>
       <label class="evopt"><input type="checkbox" id="eShow" checked>Poner la hoja de puntos en la imagen al guardar o compartir</label>
       <div class="actions" style="justify-content:space-between;margin-top:6px"><button class="pill dan" id="eReset">Borrar puntuación</button><button class="pill pri" data-close="pEval">Listo</button></div>
     </aside>
@@ -281,6 +290,7 @@ table.evg th .sm{display:none}
       <button class="btn" data-tool="angle"><svg viewBox="0 0 24 24"><path d="M4 20h16M4 20L15 5"/><path d="M10 20a6 6 0 0 0-2.4-4.8"/></svg>Ángulo</button>
       <button class="btn" data-tool="ratio"><svg viewBox="0 0 24 24"><path d="M3 12h18M3 8v8M14 9v6M21 8v8"/></svg>Proporción</button>
       <button class="btn" data-tool="ratio2"><svg viewBox="0 0 24 24"><path d="M7 3v11M4 3h6M4 14h6M16 10v11M13 10h6M13 21h6"/></svg>Almendra</button>
+      <button class="btn" data-tool="mm"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg>Milímetros</button>
       <button class="btn" id="bSym"><svg viewBox="0 0 24 24"><path d="M12 3v18" stroke-dasharray="2 2"/><path d="M9 7L4 12l5 5M15 7l5 5-5 5"/></svg>Simetría</button>
 
     </div>
@@ -327,6 +337,14 @@ table.evg th .sm{display:none}
     <div class="actions"><button class="pill pri" id="gClose">Cerrar</button></div>
   </div>
 </div>
+<div class="modal" id="mCalib">
+  <div class="card">
+    <h2>¿Cuánto mide lo que has marcado en la regla?</h2>
+    <div class="chips" id="cChips"></div>
+    <label style="display:flex;gap:8px;align-items:center;font-size:14px">Otra medida <input id="cMm" type="number" step="0.5" min="0.5" inputmode="decimal"> mm</label>
+    <div class="actions"><button class="pill" id="cCancel">Cancelar</button><button class="pill pri" id="cOk">Aceptar</button></div>
+  </div>
+</div>
 <div class="modal" id="mConfirm">
   <div class="card">
     <h2 id="cTitle">¿Seguro?</h2>
@@ -341,7 +359,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.6)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.7)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -349,7 +367,7 @@ const ink = document.createElement('canvas'), ictx = ink.getContext('2d');
 let dpr = 1, W = 0, H = 0;
 
 const COLORS = ['#111111','#ffffff','#e53935','#ff9800','#fdd835','#43a047','#1e88e5','#8e24aa','#ec407a','#795548'];
-const SHAPES = ['line','arrow','arc','ellipse','rect','angle','ratio','ratio2'];
+const SHAPES = ['line','arrow','arc','ellipse','rect','angle','ratio','ratio2','mm','calib'];
 const STAMPS = ['ok','ko'];
 const MIRRORABLE = ['pen','marker','hl','eraser','line','arrow','arc','ellipse','rect'];
 const STROKES = ['pen','marker','hl','eraser'];
@@ -359,7 +377,7 @@ const HANDLE_HIT = 20;    // radio de toque de los puntos de la forma (px)
 const ROT_TYPES = ['rect', 'ellipse', 'text', 'overlay'];   // formas que guardan su propio ángulo
 const LINE_P = [2, 4, 7, 12];
 const PRESETS = {   // 4 tamaños por herramienta: fino, medio, grueso, muy grueso
-  pen: LINE_P, line: LINE_P, arrow: LINE_P, arc: LINE_P, ellipse: LINE_P, rect: LINE_P, angle: LINE_P, ratio: LINE_P, ratio2: LINE_P,
+  pen: LINE_P, line: LINE_P, arrow: LINE_P, arc: LINE_P, ellipse: LINE_P, rect: LINE_P, angle: LINE_P, ratio: LINE_P, ratio2: LINE_P, mm: LINE_P, calib: LINE_P,
   ok: [28, 40, 56, 80], ko: [28, 40, 56, 80], stamp: [28, 40, 56, 80],
   marker: [8, 12, 18, 26], hl: [16, 26, 40, 60], eraser: [14, 28, 50, 80], erase: [14, 28, 50, 80],
   text: [18, 28, 44, 68]
@@ -378,7 +396,7 @@ const S = {
   view: { x: 0, y: 0, s: 1, r: 0 },   // r = giro en radianes
   tool: 'pen',
   color: '#e53935',
-  sizes: { pen: 4, marker: 12, hl: 26, eraser: 28, erase: 28, line: 4, arrow: 4, arc: 4, ellipse: 4, rect: 4, text: 28, angle: 3, ratio: 3, ratio2: 3, ok: 40, ko: 40 },
+  sizes: { pen: 4, marker: 12, hl: 26, eraser: 28, erase: 28, line: 4, arrow: 4, arc: 4, ellipse: 4, rect: 4, text: 28, angle: 3, ratio: 3, ratio2: 3, mm: 3, ok: 40, ko: 40 },
   pressure: true,
   sel: [],               // objetos seleccionados
   projectId: null,
@@ -622,6 +640,8 @@ function drawObj(c, o) {
     case 'angle': drawAngle(c, o); break;
     case 'ratio': drawRatio(c, o); break;
     case 'ratio2': drawRatio2(c, o); break;
+    case 'calib': drawCalib(c, o); break;
+    case 'mm': drawMm(c, o); break;
     case 'axis': {
       if (EXPORTING) break;
       const dx = o.b[0] - o.a[0], dy = o.b[1] - o.a[1], L = Math.hypot(dx, dy) || 1, E = 1e5;
@@ -648,7 +668,7 @@ function tplImg(f) {
 const fmt1 = v => v.toFixed(1).replace('.', ',');
 let TAG_LOG = null, TAG_OWNER = null, TAG_PLACED = null, ALL_SEGS = null, MEAS_N = 0, LEGEND = null, LEGEND_RECT = null;
 function countMeas() {   // cuántas medidas hay (ángulo, proporción, almendra y parejas de simetría)
-  let n = S.objects.filter(o => (o.t === 'angle' && o.c) || o.t === 'ratio' || (o.t === 'ratio2' && o.c)).length;
+  let n = S.objects.filter(o => (o.t === 'angle' && o.c) || o.t === 'ratio' || (o.t === 'ratio2' && o.c) || o.t === 'mm').length;
   if (axisObj()) { const g = {}; for (const o of S.objects) if (o.pair) g[o.pair] = (g[o.pair] || 0) + 1; n += Object.values(g).filter(v => v === 2).length; }
   return n;
 }
@@ -705,7 +725,7 @@ function drawLegendScreen(entries) {   // en pantalla: siempre derecho y arriba,
 }
 function objSegs(o) {   // tramos rectos de una forma (para que las etiquetas no los tapen)
   const S2 = [];
-  if (['line', 'arrow', 'axis'].includes(o.t)) S2.push([o.a, o.b]);
+  if (['line', 'arrow', 'axis', 'mm', 'calib'].includes(o.t)) S2.push([o.a, o.b]);
   else if (o.t === 'angle' || o.t === 'ratio2') { S2.push([o.a, o.b]); if (o.c) S2.push([o.c, o.d]); }
   else if (o.t === 'ratio') S2.push([o.a, o.m], [o.m, o.b]);
   else if (o.t === 'arc') { const P = arcPoints(o, 16); for (let i = 1; i < P.length; i++) S2.push([P[i - 1], P[i]]); }
@@ -901,6 +921,63 @@ function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde
   measTag(c, [o], `Almendra ${p1} % · Borde libre ${p2} %`, `${p1}/${p2}`, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, o.fs, o.color, o.d, tagOpt(o, [ux, uy]));
   later.forEach(f => f());
 }
+/* ---------- milímetros: regla calibrada en la foto ---------- */
+function calibObj() { return S.objects.find(o => o.t === 'calib' && o.mm > 0) || null; }
+function fmtMm(v) { const t = v.toFixed(1).replace('.', ',') + ' mm'; return v >= 10 ? `${t} (${(v / 10).toFixed(1).replace('.', ',')} cm)` : t; }
+function lineTicks(c, o, tk) {
+  const L = dist(o.a[0], o.a[1], o.b[0], o.b[1]) || 1, nx = -(o.b[1] - o.a[1]) / L, ny = (o.b[0] - o.a[0]) / L;
+  c.beginPath(); c.moveTo(o.a[0], o.a[1]); c.lineTo(o.b[0], o.b[1]);
+  for (const p of [o.a, o.b]) { c.moveTo(p[0] - nx * tk, p[1] - ny * tk); c.lineTo(p[0] + nx * tk, p[1] + ny * tk); }
+  c.stroke();
+  return { L, nx, ny, ux: (o.b[0] - o.a[0]) / L, uy: (o.b[1] - o.a[1]) / L };
+}
+function drawCalib(c, o) {   // la regla de referencia: línea amarilla discontinua
+  const col = '#f9a825', fs = o.fs || 18 / S.view.s;
+  c.save(); c.strokeStyle = col; c.lineWidth = o.w; c.setLineDash([o.w * 3, o.w * 2]);
+  const g = lineTicks(c, o, Math.max(o.w * 4, fs * 0.6)); c.restore();
+  const mx = (o.a[0] + o.b[0]) / 2, my = (o.a[1] + o.b[1]) / 2;
+  drawTag(c, mx + g.nx * fs * 3, my + g.ny * fs * 3, o.mm > 0 ? `Regla = ${fmtMm(o.mm)}` : 'Regla: ¿cuánto mide?', fs * 0.8, col, [mx, my], tagOpt(o, [g.nx, g.ny]));
+}
+function drawMm(c, o) {   // medida en milímetros con la escala de la regla
+  c.lineWidth = o.w;
+  const fs = o.fs || 18 / S.view.s, g = lineTicks(c, o, Math.max(o.w * 4, fs * 0.6)), cal = calibObj();
+  let full = 'Calibra primero la regla', short = '? mm';
+  if (cal) { const v = g.L / (dist(cal.a[0], cal.a[1], cal.b[0], cal.b[1]) / cal.mm); full = 'Medida ≈ ' + fmtMm(v); short = '≈ ' + v.toFixed(1).replace('.', ',') + ' mm'; }
+  measTag(c, [o], full, short, o.b[0] + g.ux * fs * 3.6, o.b[1] + g.uy * fs * 3.6, fs, o.color, o.b, tagOpt(o, [g.ux, g.uy]));
+}
+let calibTarget = null, calibNew = false;
+function askCalib(o, isNew) {
+  calibTarget = o; calibNew = isNew;
+  const box = $('#cChips'); box.innerHTML = '';
+  [[1, '1 mm'], [2, '2 mm'], [5, '5 mm'], [10, '1 cm'], [15, '1,5 cm'], [20, '2 cm'], [30, '3 cm'], [50, '5 cm']].forEach(([v, l]) => {
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = l;
+    b.onclick = () => { $('#cMm').value = v; box.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)); };
+    box.appendChild(b);
+  });
+  $('#cMm').value = o.mm || '';
+  $('#mCalib').classList.add('show');
+}
+$('#cOk').onclick = () => {
+  const v = parseFloat(String($('#cMm').value).replace(',', '.'));
+  if (!(v > 0)) { toast('Elige o escribe cuánto mide'); return; }
+  calibTarget.mm = v; $('#mCalib').classList.remove('show'); commit();
+  toast(calibNew ? 'Regla calibrada. Ahora traza las medidas con Milímetros' : 'Medida de la regla cambiada', 2600);
+  calibTarget = null;
+};
+$('#cCancel').onclick = () => {
+  $('#mCalib').classList.remove('show');
+  if (calibNew && calibTarget && !(calibTarget.mm > 0)) { S.objects = S.objects.filter(x => x !== calibTarget); select(null); commit(); }
+  calibTarget = null;
+};
+const MM_FIG = '<svg viewBox="0 0 680 300" width="100%" style="display:block;margin:6px 0 4px" xmlns="http://www.w3.org/2000/svg"><g font-family="sans-serif" font-size="15" fill="#FAF7F1">'
+ + '<text x="110" y="18" text-anchor="middle" font-weight="700">1 · Grosor (de frente)</text><rect x="20" y="28" width="180" height="200" rx="10" fill="#e8e4dd"/><ellipse cx="100" cy="180" rx="52" ry="46" fill="#f2c9b5"/><path d="M44 142 Q100 88 156 142 Q100 124 44 142 Z" fill="#fff" stroke="#c8a99a"/><rect x="166" y="62" width="22" height="150" fill="#f7e27a" stroke="#b49b2c"/><path d="M166 72h10M166 87h6M166 102h10M166 117h6M166 132h10M166 147h6M166 162h10M166 177h6M166 192h10" stroke="#5a4a10"/><line x1="100" y1="110" x2="100" y2="140" stroke="#e53935" stroke-width="3"/><text x="110" y="252" text-anchor="middle">Regla de pie, tocando</text><text x="110" y="270" text-anchor="middle">la punta del dedo</text>'
+ + '<text x="340" y="18" text-anchor="middle" font-weight="700">2 · Largo (desde arriba)</text><rect x="250" y="28" width="180" height="200" rx="10" fill="#e8e4dd"/><rect x="300" y="50" width="62" height="180" rx="30" fill="#f2c9b5"/><rect x="310" y="62" width="42" height="80" rx="16" fill="#f6d2d6"/><rect x="310" y="50" width="42" height="22" rx="4" fill="#fff"/><rect x="372" y="40" width="22" height="180" fill="#f7e27a" stroke="#b49b2c"/><path d="M372 50h10M372 65h6M372 80h10M372 95h6M372 110h10M372 125h6M372 140h10M372 155h6M372 170h10" stroke="#5a4a10"/><text x="340" y="252" text-anchor="middle">Regla tumbada junto al</text><text x="340" y="270" text-anchor="middle">dedo, a la altura de la uña</text>'
+ + '<text x="570" y="18" text-anchor="middle" font-weight="700">✗ Mal</text><rect x="480" y="28" width="180" height="200" rx="10" fill="#e8e4dd"/><rect x="530" y="50" width="62" height="140" rx="30" fill="#f2c9b5"/><rect x="540" y="62" width="42" height="80" rx="16" fill="#f6d2d6"/><rect x="490" y="200" width="160" height="16" fill="#f7e27a" stroke="#b49b2c" opacity=".75"/><path d="M490 32L650 226M650 32L490 226" stroke="#e53935" stroke-width="3"/><text x="570" y="252" text-anchor="middle">Regla en la mesa, lejos</text><text x="570" y="270" text-anchor="middle">de la uña: mide mal</text></g></svg>';
+function maybeMmHelp() {   // la primera vez que se elige Milímetros, se explica cómo hacer la foto
+  let seen = false; try { seen = localStorage.getItem('zalestudio-mm-help') === '1'; localStorage.setItem('zalestudio-mm-help', '1'); } catch (_) {}
+  if (!seen) showHelp('mm');
+}
+
 /* ---------- evaluación: hoja de puntos del concurso ---------- */
 const FINGERS = ['Pulgar', 'Índice', 'Corazón', 'Anular', 'Meñique'];
 const CRIT = {
@@ -1045,7 +1122,7 @@ function evalCur() { if (!S.eval) S.eval = evalNew(); return evalFix(S.eval); }
 const ART = new Set(['creatividad', 'impresion', 'dificultad']);   // nota del 1 al 10 para toda la mano
 function rowMax(k, E) { const F = FICHAS[E.f]; if (F && F.pts && F.pts[k]) return F.pts[k]; return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' ? E.div : 1; }
 function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [null, null, null, null, null]); }
-function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0 || Object.values(E.pk || {}).some(Boolean)); }
+function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0 || Object.values(E.pk || {}).some(Boolean) || !!(E.note && E.note.trim()) || Object.keys(E.cm || {}).length > 0); }
 function evalSums(E) {
   const F = FICHAS[E.f], hands = F.hands.map((H, h) => {
     const rows = H.rows.map(k => {
@@ -1101,6 +1178,7 @@ function evalRender() {
   $('#eHint').textContent = F.single ? 'Se juzga la obra completa. Toca la nota de un criterio y elige el número. Toca el nombre para ver qué se valora.' : (F.whole ? 'Toca una casilla: vacía → 0 → 1 → vacía (sin medios puntos).' : 'Toca una casilla: vacía → 0 → ½ → 1 → vacía.') + ' Toca el nombre de un criterio para ver qué se puntúa.';
   if (document.activeElement !== $('#eName')) $('#eName').value = E.name || '';
   $('#eShow').checked = E.show !== false;
+  if (document.activeElement !== $('#eNote')) $('#eNote').value = E.note || '';
   if (evHand >= F.hands.length) evHand = 0;
   const hb = $('#eHands'); hb.innerHTML = '';
   sm.hands.forEach((H, i) => {
@@ -1113,7 +1191,9 @@ function evalRender() {
     const tr = document.createElement('tr'), cn = document.createElement('td'); cn.className = 'cn';
     const ms = '';   // las medidas se ven en la foto, no en la hoja
     cn.textContent = CRIT[r.k][0]; if (ms) { const sm2 = document.createElement('small'); sm2.textContent = ms; cn.appendChild(sm2); }
-    cn.onclick = () => evalHelp(r.k); tr.appendChild(cn);
+    const cmt = (E.cm || {})[`${E.f}:${evHand}:${r.k}`];
+    if (cmt) { const cl = document.createElement('span'); cl.className = 'cmline'; cl.textContent = '💬 ' + cmt; cn.appendChild(cl); }
+    cn.onclick = () => evalHelp(r.k, evHand); tr.appendChild(cn);
     const mx = rowMax(r.k, E);
     if (r.art) {   // nota única para toda la obra o la mano: se toca y se elige el número
       const td = document.createElement('td'); td.colSpan = 5; td.style.textAlign = F.single ? 'right' : 'center';
@@ -1148,18 +1228,29 @@ function evalRender() {
   $('#eTot').textContent = `${fmtP(sm.tot)} / ${fmtP(sm.max)}`;
   $('#eTotL').textContent = F.hands.length > 1 ? 'Total de las dos manos' : 'Total' + (sm.pen && F.single ? ` (penalizaciones −${sm.pen})` : '');
 }
-function evalHelp(k) {
+let helpCmKey = null;
+function evalHelp(k, h) {
   const c = CRIT[k];
   $('#hTitle').textContent = c[0];
   const body = $('#hBody'); body.innerHTML = '';
   c[1].split('\n').forEach(t => { const p = document.createElement('p'); p.style.margin = '0 0 8px'; p.textContent = t; body.appendChild(p); });
   const F = FICHAS[evalCur().f];
   if (F.whole) { const t = document.createElement('div'); t.className = 'tipbox'; t.textContent = `En ${F.n} (1 mano) no hay medios puntos: cada uña vale 0 o 1 y tiene que cumplir todos los requisitos. Máximo 5 por criterio.`; body.appendChild(t); }
+  if (h !== undefined) {   // comentario del juez para este criterio
+    const E = evalCur(); helpCmKey = `${E.f}:${h}:${k}`;
+    const box = document.createElement('div'); box.id = 'hCmBox'; box.style.marginTop = '10px';
+    box.innerHTML = '<div style="font-size:13px;color:var(--acc);margin-bottom:4px">Comentario del juez (sale en la hoja)</div><textarea placeholder="Por ejemplo: ápex demasiado atrás"></textarea>';
+    box.querySelector('textarea').value = (E.cm || {})[helpCmKey] || '';
+    body.appendChild(box);
+  }
   $('#mHelp').classList.add('show');
 }
 $('#eFicha').onchange = e => { evalCur().f = e.target.value; evalChanged(); };
 $('#eDiv').onchange = e => { evalCur().div = +e.target.value; evalChanged(); };
 $('#eName').oninput = e => { evalCur().name = e.target.value; scheduleSave(); };
+$('#ePdfSave').onclick = () => evalPdf(false);
+$('#ePdfShare').onclick = () => evalPdf(true);
+$('#eNote').oninput = e => { evalCur().note = e.target.value; scheduleSave(); };
 $('#eShow').onchange = e => { evalCur().show = e.target.checked; scheduleSave(); };
 $('#ePaP').onclick = () => { evalCur().pa++; evalChanged(); };
 $('#ePaM').onclick = () => { const E = evalCur(); E.pa = Math.max(0, E.pa - 1); evalChanged(); };
@@ -1171,13 +1262,73 @@ $('#eReset').onclick = async () => {
     const E = evalCur(); E.s = {}; E.pa = 0; E.pn = 0; evalChanged();
   }
 };
+function pdfFromJpegs(imgs) {   // PDF mínimo: una página A4 por imagen JPEG
+  const enc = new TextEncoder(), parts = [], offs = []; let len = 0;
+  const push = x => { const b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
+  const obj = (num, body) => { offs[num] = len; push(`${num} 0 obj\n`); body(); push('\nendobj\n'); };
+  push('%PDF-1.4\n%âãÏÓ\n');
+  const n = imgs.length;
+  obj(1, () => push('<< /Type /Catalog /Pages 2 0 R >>'));
+  obj(2, () => push(`<< /Type /Pages /Kids [${imgs.map((_, i) => `${3 + 3 * i} 0 R`).join(' ')}] /Count ${n} >>`));
+  imgs.forEach((im, i) => {
+    const p = 3 + 3 * i, cs = `q 595.28 0 0 841.89 0 0 cm /Im${i} Do Q`;
+    obj(p, () => push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im${i} ${p + 2} 0 R >> >> /Contents ${p + 1} 0 R >>`));
+    obj(p + 1, () => { push(`<< /Length ${cs.length} >>\nstream\n`); push(cs); push('\nendstream'); });
+    obj(p + 2, () => { push(`<< /Type /XObject /Subtype /Image /Width ${im.w} /Height ${im.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.jpg.length} >>\nstream\n`); push(im.jpg); push('\nendstream'); });
+  });
+  const xref = len, total = 3 + 3 * n;
+  push(`xref\n0 ${total}\n0000000000 65535 f \n`);
+  for (let k = 1; k < total; k++) push(String(offs[k]).padStart(10, '0') + ' 00000 n \n');
+  push(`trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
+  return new Blob(parts, { type: 'application/pdf' });
+}
+async function evalPdfBlob() {
+  const E = S.eval, F = FICHAS[E.f], sm = evalSums(E), PW = 1654, PH = 2339, M = 90;
+  const jpg = c => new Promise(r => c.toBlob(b => b.arrayBuffer().then(a => r({ jpg: new Uint8Array(a), w: c.width, h: c.height })), 'image/jpeg', 0.9));
+  // página 1: cabecera + foto con las marcas
+  const p1 = document.createElement('canvas'); p1.width = PW; p1.height = PH;
+  const x = p1.getContext('2d'); x.fillStyle = '#fbf8f2'; x.fillRect(0, 0, PW, PH); x.fillStyle = '#a8862f'; x.fillRect(0, 0, PW, 10);
+  const T = (t, px, py, size, wgt, col, al) => { x.font = `${wgt} ${size}px Montserrat, system-ui, sans-serif`; x.fillStyle = col; x.textAlign = al || 'left'; x.fillText(t, px, py); };
+  T('ZALESTUDIO · HOJA DE EVALUACIÓN', M, 80, 22, 700, '#a8862f');
+  T(F.n + (F.single ? '' : ' · División ' + E.div), M, 135, 44, 700, '#1f1d24');
+  T((E.name ? 'Alumna: ' + E.name + ' · ' : '') + new Date().toLocaleDateString('es-ES'), M, 185, 28, 500, '#6f6a73');
+  T(fmtP(sm.tot) + ' / ' + fmtP(sm.max), PW - M, 140, 64, 800, '#1f1d24', 'right');
+  T(Math.round(sm.tot / sm.max * 100) + ' %', PW - M, 188, 30, 700, '#a8862f', 'right');
+  const top = 240, aw = PW - 2 * M, ah = PH - top - M, sc = Math.min(aw / S.docW, ah / S.docH), img = renderDoc(sc);
+  x.drawImage(img, (PW - img.width) / 2, top + (ah - img.height) / 2);
+  T('© ZALESYA® · ZaleStudio', PW - M, PH - 40, 18, 600, '#6f6a73', 'right');
+  // página 2: hoja de puntos (con comentarios)
+  const p2 = document.createElement('canvas'); p2.width = PW; p2.height = PH;
+  const y = p2.getContext('2d'); y.fillStyle = '#fbf8f2'; y.fillRect(0, 0, PW, PH);
+  const st = renderEvalStrip(PW), k = Math.min(1, PH / st.height);
+  y.drawImage(st, (PW - st.width * k) / 2, 0, st.width * k, st.height * k);
+  return pdfFromJpegs([await jpg(p1), await jpg(p2)]);
+}
+async function evalPdf(share) {
+  if (!evalHasScores()) { toast('Pon alguna nota antes de sacar el PDF'); return; }
+  toast('Preparando el PDF…', 1500);
+  const blob = await evalPdfBlob(), E = S.eval;
+  const name = `evaluacion-${(E.name || 'zalestudio').trim().replace(/[^\wáéíóúñü-]+/gi, '-').toLowerCase()}-${fileStamp()}.pdf`;
+  const file = new File([blob], name, { type: 'application/pdf' });
+  if (share && navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: 'Evaluación ZaleStudio' }); } catch (_) {} return; }
+  if (share) toast('Este navegador no permite compartir PDF: se descarga');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  await saveNow(true);
+}
 function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
   const E = S.eval, F = FICHAS[E.f], sm = evalSums(E), u = W / 1080;
   const rowsN = Math.max(...sm.hands.map(h => h.rows.length));
   const lost = [];
   sm.hands.forEach(h => h.rows.forEach(r => { if (r.lost > 0) { const nm = CRIT[r.k][0], ex = lost.find(l => l.n === nm); if (ex) ex.l += r.lost; else lost.push({ n: nm, l: r.lost }); } }));
   lost.sort((a, b) => b.l - a.l);
-  const rh = 27, top = 150, tableH = 34 + rowsN * rh + 32, extra = (sm.pen ? 30 : 0) + (lost.length ? 60 : 0);
+  const cms = [];   // comentarios: general + por criterio
+  if (E.note && E.note.trim()) cms.push('General: ' + E.note.trim());
+  sm.hands.forEach((h, hi) => h.rows.forEach(r => { const t = (E.cm || {})[`${E.f}:${hi}:${r.k}`]; if (t) cms.push(`${CRIT[r.k][0]}${sm.hands.length > 1 ? ' (' + h.n.toLowerCase() + ')' : ''}: ${t}`); }));
+  const mc = document.createElement('canvas').getContext('2d'); mc.font = '500 15px Montserrat, system-ui, sans-serif';
+  const cmLines = [];
+  for (const t of cms) { let cur = ''; for (const w of t.split(/\s+/)) { const tt = cur ? cur + ' ' + w : w; if (cur && mc.measureText(tt).width > 1000) { cmLines.push(cur); cur = '   ' + w; } else cur = tt; } if (cur) cmLines.push(cur); }
+  const rh = 27, top = 150, tableH = 34 + rowsN * rh + 32, extra = (sm.pen ? 30 : 0) + (lost.length ? 60 : 0) + (cmLines.length ? 34 + cmLines.length * 21 : 0);
   const Hh = Math.round((top + tableH + extra + 56) * u);
   const c = document.createElement('canvas'); c.width = W; c.height = Hh;
   const x = c.getContext('2d'); x.scale(u, u);
@@ -1240,6 +1391,10 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
     T(line1, 40, y + 36, 15, 500, ink); if (line2) T(line2, 40, y + 56, 15, 500, ink);
     y += 60;
   }
+  if (cmLines.length) {
+    T('Comentarios del juez', 40, y + 18, 14, 700, gold); y += 26;
+    cmLines.forEach(l => { T(l, 40, y + 16, 15, 500, ink); y += 21; });
+  }
   T('© ZALESYA® · ZaleStudio', 1040, Hh / u - 22, 12, 600, mut, 'right');
   return c;
 }
@@ -1280,6 +1435,8 @@ const HELP = {
   ko: ['Corregir', 'Cada toque pone un sello rojo ✗ para marcar lo que hay que corregir.'],
   angle: ['Ángulo', 'Dibuja una línea sobre un lateral: aparece otra para colocar en el otro lateral. Indica los grados entre las dos (0° = paralelas). Sirve para laterales, coffin, inclinación de la smile line o comprobar si una stiletto está recta. ' + MOVE_TIP],
   ratio: ['Proporción', 'Dibuja desde la cutícula hasta la punta y coloca el punto dorado en la smile line. Indica el borde libre en % del lecho. ' + MOVE_TIP],
+  mm: ['Milímetros', 'Mide en milímetros sobre la foto (medida aproximada). 1) Haz la foto con una regla pegada a la uña: transparente, metálica o cinta métrica, con las rayas bien visibles y a la misma distancia del móvil que la uña. 2) Calibra: traza una línea entre dos rayas de la regla y di cuánto mide (por ejemplo 1 cm). 3) Mide: traza la línea sobre el grosor del borde libre o sobre el largo y verás "≈ 1,4 mm". Cada foto se calibra aparte. Para volver a calibrar, toca la regla amarilla y pulsa "Medida regla" o elimínala. Ampliar o reducir la imagen no cambia la medida.'],
+  sCal: ['Medida regla', 'Cambia cuánto mide el tramo que marcaste en la regla. Todas las medidas en milímetros de la foto se recalculan.'],
   ratio2: ['Almendra', 'Primera medida: de la cutícula a la sonrisa (centro). Segunda: del punto más alto de la sonrisa al borde libre. Indica el reparto, por ejemplo "Almendra 50 % · Borde libre 50 %". ' + MOVE_TIP],
   bSym: ['Simetría', 'Pone un eje azul: colócalo en el centro de la uña. Lo que dibujes en un lado se refleja en el otro. Si después ajustas una línea o las dos a los laterales reales, indica la desviación en grados y la diferencia de distancia al eje en %. Pulsa otra vez para quitarlo.'],
   bPressure: ['Presión', 'Solo con lápiz activo: el trazo se afina o engorda según aprietes.'],
@@ -1300,8 +1457,8 @@ const GUIDE = [
   ['Trabajo e imagen', ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
   ['Dibujar', ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
   ['Formas y texto', ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
-  ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
-  ['Al seleccionar un elemento', ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
+  ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'mm', 'bSym']],
+  ['Al seleccionar un elemento', ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sCal', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
 ];
 function helpKey(el) { return el.dataset.tool || (el.classList.contains('arcp') ? 'arcp' : el.id); }
 function showHelp(k) {
@@ -1309,9 +1466,18 @@ function showHelp(k) {
   $('#hTitle').textContent = h[0];
   const body = $('#hBody'); body.textContent = h[1].replace(' ' + MOVE_TIP, '');
   if (h[1].includes(MOVE_TIP)) { const t = document.createElement('div'); t.className = 'tipbox'; t.textContent = '💡 ' + MOVE_TIP; body.appendChild(t); }
+  if (k === 'mm') body.insertAdjacentHTML('beforeend', MM_FIG);
   $('#mHelp').classList.add('show');
 }
-$('#hClose').onclick = () => $('#mHelp').classList.remove('show');
+$('#hClose').onclick = () => {
+  $('#mHelp').classList.remove('show');
+  if (helpCmKey) {   // guarda el comentario del criterio
+    const ta = document.querySelector('#hCmBox textarea'), E = evalCur(); E.cm = E.cm || {};
+    const v = ta ? ta.value.trim() : '';
+    if (v) E.cm[helpCmKey] = v; else delete E.cm[helpCmKey];
+    helpCmKey = null; evalChanged();
+  }
+};
 function iconFor(k) {
   if (k === 'arcp') return '<span>%</span>';
   const el = document.querySelector(`[data-tool="${k}"] svg`) || document.querySelector(`#${k} svg`);
@@ -1666,7 +1832,7 @@ function hitsObj(o, x, y, tolPx) {
     for (let j = 3; j < p.length; j += 3) if (segDist(x, y, p[j-3], p[j-2], p[j], p[j+1]) < r) return true;
     return false;
   }
-  if (o.t === 'line' || o.t === 'arrow') return segDist(x, y, o.a[0], o.a[1], o.b[0], o.b[1]) < r;
+  if (o.t === 'line' || o.t === 'arrow' || o.t === 'mm' || o.t === 'calib') return segDist(x, y, o.a[0], o.a[1], o.b[0], o.b[1]) < r;
   if (o.t === 'arc') {
     const P = arcPoints(o, 48);
     for (let j = 1; j < P.length; j++) if (segDist(x, y, P[j-1][0], P[j-1][1], P[j][0], P[j][1]) < r) return true;
@@ -1716,6 +1882,7 @@ function select(list) {
   const txtSel = S.sel.length > 0 && S.sel.every(o => TXT_TYPES.includes(o.t));
   $('#sSmaller').style.display = $('#sBigger').style.display = txtSel ? '' : 'none';
   $('#sEdit').style.display = one && TXT_TYPES.includes(one.t) ? '' : 'none';
+  $('#sCal').style.display = one && one.t === 'calib' ? '' : 'none';
   $('#sFade').style.display = $('#sSolid').style.display = $('#sRotL').style.display = $('#sRotR').style.display = one && one.t === 'overlay' ? '' : 'none';
   $('#selN').textContent = S.sel.length > 1 ? `${S.sel.length} elementos` : '';
   $('#selN').style.display = S.sel.length > 1 ? '' : 'none';
@@ -1739,6 +1906,7 @@ function updUndo() { $('#bUndo').disabled = hIdx <= 0; $('#bRedo').disabled = hI
 
 /* ---------- herramientas y propiedades ---------- */
 function setTool(t) {
+  if (t === 'mm' && S.tool !== 'mm') setTimeout(maybeMmHelp, 50);
   S.tool = t;
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
   if (t !== 'select') select(null);   // al cambiar de herramienta se suelta la selección
@@ -1931,8 +2099,8 @@ function startTool(e, sx, sy) {
     act = { ...base, kind: 'stampTap' }; return;
   }
   if (SHAPES.includes(t)) {
-    draft = { t, color: S.color, w: S.sizes[t] / s, a: [pt.x, pt.y], b: [pt.x, pt.y] };
-    if (t === 'angle' || t === 'ratio' || t === 'ratio2') draft.fs = 18 / s;
+    draft = { t: t === 'mm' && !calibObj() ? 'calib' : t, color: S.color, w: S.sizes[t] / s, a: [pt.x, pt.y], b: [pt.x, pt.y] };   // sin regla calibrada, la primera línea es la regla
+    if (t === 'angle' || t === 'ratio' || t === 'ratio2' || t === 'mm') draft.fs = 18 / s;
     if (t === 'ratio') draft.m = [pt.x, pt.y];
     if (t === 'arc') draft.m = [pt.x, pt.y];
     act = { ...base, kind: 'shape', hadSel: S.sel.length > 0 }; return;
@@ -2074,7 +2242,9 @@ function finishAct(e) {
     }
     S.objects.push(o);
     const ax = axisObj(); if (ax) { const md = mirrorObj(o, ax); if (md) { o.pair = md.pair = newPair(); S.objects.push(md); } }
-    commit(); select(o); return;
+    commit(); select(o);
+    if (o.t === 'calib') askCalib(o, true);
+    return;
   }
   if (a.kind === 'stampTap') {
     const p = toDocS(a.sx, a.sy), k = S.tool === 'ko' ? 'ko' : 'ok';
@@ -2448,6 +2618,7 @@ async function addOverlay(t) {
 }
 $('#sFade').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.alpha = Math.max(0.1, Math.round((o.alpha - 0.1) * 10) / 10); commit(); toast(`Calco ${Math.round(o.alpha * 100)} %`, 1200); } };
 $('#sSolid').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.alpha = Math.min(2, Math.round((o.alpha + 0.1) * 10) / 10); commit(); toast(`Calco ${Math.round(o.alpha * 100)} %`, 1200); } };
+$('#sCal').onclick = () => { const o = single(); if (o && o.t === 'calib') askCalib(o, false); };
 $('#sRotL').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.rot = (o.rot || 0) - Math.PI / 180; commit(); } };
 $('#sRotR').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.rot = (o.rot || 0) + Math.PI / 180; commit(); } };
 $('#bSym').onclick = () => {
