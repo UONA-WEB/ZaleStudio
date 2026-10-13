@@ -290,7 +290,6 @@ table.evg th .sm{display:none}
       <button class="btn" data-tool="angle"><svg viewBox="0 0 24 24"><path d="M4 20h16M4 20L15 5"/><path d="M10 20a6 6 0 0 0-2.4-4.8"/></svg>Ángulo</button>
       <button class="btn" data-tool="ratio"><svg viewBox="0 0 24 24"><path d="M3 12h18M3 8v8M14 9v6M21 8v8"/></svg>Proporción</button>
       <button class="btn" data-tool="ratio2"><svg viewBox="0 0 24 24"><path d="M7 3v11M4 3h6M4 14h6M16 10v11M13 10h6M13 21h6"/></svg>Almendra</button>
-      <button class="btn" data-tool="mm"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg>Milímetros</button>
       <button class="btn" id="bSym"><svg viewBox="0 0 24 24"><path d="M12 3v18" stroke-dasharray="2 2"/><path d="M9 7L4 12l5 5M15 7l5 5-5 5"/></svg>Simetría</button>
 
     </div>
@@ -359,7 +358,7 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.7)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.8)
    ========================================================= */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -1457,8 +1456,8 @@ const GUIDE = [
   ['Trabajo e imagen', ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
   ['Dibujar', ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
   ['Formas y texto', ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
-  ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'mm', 'bSym']],
-  ['Al seleccionar un elemento', ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sCal', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
+  ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
+  ['Al seleccionar un elemento', ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
 ];
 function helpKey(el) { return el.dataset.tool || (el.classList.contains('arcp') ? 'arcp' : el.id); }
 function showHelp(k) {
@@ -1906,7 +1905,6 @@ function updUndo() { $('#bUndo').disabled = hIdx <= 0; $('#bRedo').disabled = hI
 
 /* ---------- herramientas y propiedades ---------- */
 function setTool(t) {
-  if (t === 'mm' && S.tool !== 'mm') setTimeout(maybeMmHelp, 50);
   S.tool = t;
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
   if (t !== 'select') select(null);   // al cambiar de herramienta se suelta la selección
