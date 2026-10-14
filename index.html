@@ -20,6 +20,12 @@ footer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel)}
 #stage{position:relative;flex:1 1 auto;overflow:hidden;background:#0d0c10;touch-action:none}
 #cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
 .brand{font-weight:700;letter-spacing:.14em;font-size:13px;padding:0 10px 0 6px;color:var(--acc);flex:0 0 auto}
+.brandbox{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:0 0 auto;padding:0 6px 0 2px}
+.brandbox .brand{padding:0}
+.langbtn{display:flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--panel2);color:var(--mut);border-radius:999px;padding:4px 9px;font:inherit;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap}
+.langbtn b{font-weight:700;color:var(--mut)}
+.langbtn b.on{color:var(--acc)}
+.langbtn:active{background:var(--line)}
 .btn{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:54px;height:52px;padding:4px 6px;border:0;border-radius:10px;background:transparent;color:var(--txt);font:inherit;font-size:10.5px;cursor:pointer}
 .btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .btn:active{background:var(--panel2)}
@@ -163,7 +169,7 @@ table.evg th .sm{display:none}
 <body>
 <div id="app">
   <header>
-    <span class="brand">ZALESTUDIO</span>
+    <div class="brandbox"><span class="brand">ZALESTUDIO</span><button id="bLang" class="langbtn" aria-label="Idioma / Language"><span id="langL">Idioma</span><b data-l="es">ES</b>/<b data-l="en">EN</b></button></div>
     <button class="btn" id="bOpen"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Abrir foto</button>
     <button class="btn" id="bTpl"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/><rect x="14" y="15" width="7" height="6" rx="1.5"/></svg>Plantillas</button>
     <button class="btn" id="bLbl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="13" height="8" rx="2"/><path d="M11 11l7 8M18 19l-4-.5M18 19l-.6-4"/></svg>Etiquetas</button>
@@ -358,9 +364,62 @@ table.evg th .sm{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v3.9)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.0 · ES/EN)
    ========================================================= */
 const $ = s => document.querySelector(s);
+/* ---------- idioma ES / EN ---------- */
+let LANG = 'es'; try { if (localStorage.getItem('zalestudio-lang') === 'en') LANG = 'en'; } catch (_) {}
+const EN = LANG === 'en';
+const TT = (es, en) => EN ? en : es;          // texto en español o en inglés
+const DEC = EN ? '.' : ',';                     // separador decimal
+const LOC = EN ? 'en-GB' : 'es-ES';             // formato de fecha (día/mes/año)
+const STATIC_EN = {   // textos fijos de la página
+  'Abrir foto': 'Open photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Evaluar': 'Evaluate',
+  'Lienzo': 'Canvas', 'Trabajos': 'Projects', 'Deshacer': 'Undo', 'Rehacer': 'Redo', 'Ajustar': 'Fit', 'Borrar todo': 'Clear all',
+  'Guardar imagen': 'Save image', 'Compartir': 'Share', 'Presentar': 'Present', 'Guía': 'Guide', 'Salir': 'Exit',
+  'Curva C': 'C-curve', 'Invertir': 'Flip', 'Más suave': 'Lighter', 'Más visible': 'Darker', 'Girar 1°': 'Rotate 1°',
+  'Reducir': 'Smaller', 'Ampliar': 'Larger', 'Medida regla': 'Ruler size', 'Editar': 'Edit', 'Duplicar': 'Duplicate',
+  'Eliminar': 'Delete', 'Listo': 'Done',
+  'Lienzo en blanco': 'Blank canvas', 'Mis trabajos': 'My projects', 'Guía de uso': 'User guide', 'Cerrar': 'Close',
+  'Abrir como trabajo': 'Open as project', 'Poner encima (calco)': 'Place on top (overlay)',
+  'Toca un nombre para ponerlo sobre la imagen. Arrastra la caja para moverla y el punto de la flecha para señalar la zona.': 'Tap a name to place it on the image. Drag the box to move it and the arrow point to mark the area.',
+  'Anatomía': 'Anatomy', 'Estructura': 'Structure',
+  'Categoría': 'Category',
+  'Ultimate Nail Art Challenge, Team Relay y Fantasy Total Look no se evalúan aquí: son categorías de grupo y presenciales, sin práctica.': 'Ultimate Nail Art Challenge, Team Relay and Fantasy Total Look are not evaluated here: they are on-site group categories, with no practice.',
+  'División': 'Division', 'División 1': 'Division 1', 'División 2': 'Division 2', 'División 3': 'Division 3',
+  'Alumna': 'Student', 'Nombre': 'Name',
+  'Toca una casilla: vacía → 0 → ½ → 1 → vacía. Toca el nombre de un criterio para ver qué se puntúa.': 'Tap a cell: empty → 0 → ½ → 1 → empty. Tap a criterion name to see what is scored.',
+  'Criterio': 'Criterion', 'Pulgar': 'Thumb', 'Índice': 'Index', 'Corazón': 'Middle', 'Anular': 'Ring', 'Meñique': 'Pinky',
+  'Total uña': 'Nail total', 'Penalizaciones': 'Penalties', 'Avisos (−1 cada uno)': 'Warnings (−1 each)',
+  'Normas no cumplidas (−5)': 'Rules not followed (−5)', 'Comentario general': 'General comment',
+  'Comentario para la alumna (sale en la hoja)': 'Comment for the student (shown on the sheet)',
+  'Total de las dos manos': 'Total for both hands', 'Hoja de evaluación en PDF': 'Score sheet as PDF',
+  'Guardar PDF': 'Save PDF', 'Compartir PDF': 'Share PDF',
+  'Poner la hoja de puntos en la imagen al guardar o compartir': 'Add the score sheet to the image when saving or sharing',
+  'Borrar puntuación': 'Clear scores',
+  'Mover': 'Move', 'Seleccionar': 'Select', 'Bolígrafo': 'Pen', 'Rotulador': 'Marker', 'Subrayador': 'Highlighter',
+  'Borrador': 'Eraser', 'Borrar zona': 'Erase area', 'Línea': 'Line', 'Flecha': 'Arrow', 'Arco': 'Arc', 'Círculo': 'Circle',
+  'Rectángulo': 'Rectangle', 'Texto': 'Text', 'Bien': 'Good', 'Corregir': 'Fix', 'Ángulo': 'Angle', 'Proporción': 'Proportion',
+  'Almendra': 'Pink/White', 'Simetría': 'Symmetry', 'Presión': 'Pressure',
+  'Escribe aquí…': 'Type here…', 'Cancelar': 'Cancel', 'Aceptar': 'OK', 'Entendido': 'Got it', 'Guía de ZaleStudio': 'ZaleStudio guide',
+  '¿Cuánto mide lo que has marcado en la regla?': 'How long is the section you marked on the ruler?', 'Otra medida': 'Other size',
+  '¿Seguro?': 'Are you sure?', 'Sí': 'Yes'
+};
+function translateStatic() {   // pasa a inglés los textos fijos (solo en inglés: en español no se toca nada)
+  document.documentElement.lang = LANG;
+  $('#langL').textContent = TT('Idioma', 'Language');
+  document.querySelectorAll('#bLang b').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
+  if (!EN) return;
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+  for (const n of nodes) {
+    if (n.parentNode && (n.parentNode.closest('script,style,#bLang'))) continue;
+    const k = n.nodeValue.trim(); if (k && STATIC_EN[k]) n.nodeValue = n.nodeValue.replace(k, STATIC_EN[k]);
+  }
+  for (const a of ['placeholder', 'aria-label', 'title']) document.querySelectorAll(`[${a}]`).forEach(el => { const v = el.getAttribute(a); if (STATIC_EN[v]) el.setAttribute(a, STATIC_EN[v]); });
+  document.querySelectorAll('#eTable thead .sm').forEach((s, i) => s.textContent = 'TIMRP'[i]);
+}
+translateStatic();
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
 const ink = document.createElement('canvas'), ictx = ink.getContext('2d');
 let dpr = 1, W = 0, H = 0;
@@ -381,10 +440,12 @@ const PRESETS = {   // 4 tamaños por herramienta: fino, medio, grueso, muy grue
   marker: [8, 12, 18, 26], hl: [16, 26, 40, 60], eraser: [14, 28, 50, 80], erase: [14, 28, 50, 80],
   text: [18, 28, 44, 68]
 };
-const SIZE_NAMES = ['Fino', 'Medio', 'Grueso', 'Muy grueso'];
-const TEMPLATES = [{"f": "plantilla-02-ovalada.jpg", "n": "Oval"}, {"f": "plantilla-03-ovalada-extension.jpg", "n": "Oval larga"}, {"f": "plantilla-04-perfil-natural.jpg", "n": "Perfil natural"}, {"f": "plantilla-05-perfil-almendra.jpg", "n": "Perfil oval"}, {"f": "plantilla-06-natural-corta.jpg", "n": "Natural corta"}, {"f": "plantilla-07-squoval.jpg", "n": "Squoval"}, {"f": "plantilla-08-cuadrada.jpg", "n": "Cuadrada"}, {"f": "plantilla-09-cuadrada-extension.jpg", "n": "Cuadrada larga"}, {"f": "plantilla-18-curva-c-30.jpg", "n": "Curva C 30 %"}, {"f": "plantilla-19-curva-c-40.jpg", "n": "Curva C 40 %"}, {"f": "plantilla-20-curva-c-50.jpg", "n": "Curva C 50 %"}, {"f": "plantilla-21-smile-line.jpg", "n": "Smile line"}, {"f": "plantilla-11-stiletto.jpg", "n": "Almond"}, {"f": "plantilla-17-stiletto.jpg", "n": "Stiletto"}, {"f": "plantilla-12-stiletto-perfil.jpg", "n": "Stiletto perfil"}, {"f": "plantilla-13-coffin.jpg", "n": "Coffin"}, {"f": "plantilla-14-formas.jpg", "n": "Formas de uña"}, {"f": "plantilla-15-onicofagia.jpg", "n": "Onicofagia"}, {"f": "plantilla-16-mano.jpg", "n": "Mano"}, {"f": "plantilla-22-anatomia.jpg", "n": "Anatomía"}, {"f": "plantilla-23-anatomia-sin-nombres.jpg", "n": "Anatomía (sin nombres)"}];
-const LABELS_ANAT = ['Cutícula','Eponiquio','Pterigión ungueal','Placa ungueal','Lecho','Matriz','Luna o lúnula','Hiponiquio','Paroniquio','Pliegue ungueal','Borde libre','Pliegue proximal','Sinus ungueal','Sonrisa (smile line)','Banda onicodérmica'];
-const LABELS_EST = ['Laterales','Sonrisa (smile line)','Curva C','Cóncavo','Convexo','Ápex','Hair line','Zona de estrés'];
+const SIZE_NAMES = EN ? ['Fine', 'Medium', 'Thick', 'Extra thick'] : ['Fino', 'Medio', 'Grueso', 'Muy grueso'];
+const TEMPLATES = [{"f": "plantilla-02-ovalada.jpg", "n": "Oval"}, {"f": "plantilla-03-ovalada-extension.jpg", "n": "Oval larga"}, {"f": "plantilla-04-perfil-natural.jpg", "n": "Perfil natural"}, {"f": "plantilla-05-perfil-almendra.jpg", "n": "Perfil oval"}, {"f": "plantilla-06-natural-corta.jpg", "n": "Natural corta"}, {"f": "plantilla-07-squoval.jpg", "n": "Squoval"}, {"f": "plantilla-08-cuadrada.jpg", "n": "Cuadrada"}, {"f": "plantilla-09-cuadrada-extension.jpg", "n": "Cuadrada larga"}, {"f": "plantilla-18-curva-c-30.jpg", "n": "Curva C 30 %"}, {"f": "plantilla-19-curva-c-40.jpg", "n": "Curva C 40 %"}, {"f": "plantilla-20-curva-c-50.jpg", "n": "Curva C 50 %"}, {"f": "plantilla-21-smile-line.jpg", "n": "Smile line"}, {"f": "plantilla-11-stiletto.jpg", "n": "Almond"}, {"f": "plantilla-17-stiletto.jpg", "n": "Stiletto"}, {"f": "plantilla-12-stiletto-perfil.jpg", "n": "Stiletto perfil"}, {"f": "plantilla-13-coffin.jpg", "n": "Coffin"}, {"f": "plantilla-14-formas.jpg", "n": "Formas de uña", "fe": "plantilla-14-formas-en.jpg"}, {"f": "plantilla-15-onicofagia.jpg", "n": "Onicofagia"}, {"f": "plantilla-16-mano.jpg", "n": "Mano"}, {"f": "plantilla-22-anatomia.jpg", "n": "Anatomía", "fe": "plantilla-22-anatomia-en.jpg"}, {"f": "plantilla-23-anatomia-sin-nombres.jpg", "n": "Anatomía (sin nombres)"}];
+const TPL_EN = { 'Oval larga': 'Long oval', 'Perfil natural': 'Natural profile', 'Perfil oval': 'Oval profile', 'Natural corta': 'Short natural', 'Cuadrada': 'Square', 'Cuadrada larga': 'Long square', 'Curva C 30 %': 'C-curve 30 %', 'Curva C 40 %': 'C-curve 40 %', 'Curva C 50 %': 'C-curve 50 %', 'Stiletto perfil': 'Stiletto profile', 'Formas de uña': 'Nail shapes', 'Onicofagia': 'Nail biting', 'Mano': 'Hand', 'Anatomía': 'Anatomy', 'Anatomía (sin nombres)': 'Anatomy (no labels)' };
+if (EN) TEMPLATES.forEach(t => { if (t.fe) t.f = t.fe; if (TPL_EN[t.n]) t.n = TPL_EN[t.n]; });
+const LABELS_ANAT = EN ? ['Cuticle', 'Eponychium', 'Pterygium', 'Nail plate', 'Nail bed', 'Matrix', 'Lunula', 'Hyponychium', 'Paronychium', 'Nail fold', 'Free edge', 'Proximal fold', 'Nail sinus', 'Smile line', 'Onychodermal band'] : ['Cutícula','Eponiquio','Pterigión ungueal','Placa ungueal','Lecho','Matriz','Luna o lúnula','Hiponiquio','Paroniquio','Pliegue ungueal','Borde libre','Pliegue proximal','Sinus ungueal','Sonrisa (smile line)','Banda onicodérmica'];
+const LABELS_EST = EN ? ['Sidewalls', 'Smile line', 'C-curve', 'Concave', 'Convex', 'Apex', 'Hair line', 'Stress area'] : ['Laterales','Sonrisa (smile line)','Curva C','Cóncavo','Convexo','Ápex','Hair line','Zona de estrés'];
 const TXT_TYPES = ['text', 'label'];
 let cursor = null;   // círculo que muestra dónde borra
 
@@ -416,7 +477,7 @@ function toast(msg, ms = 2400) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), ms);
 }
-function confirmBox(title, msg, yesLabel = 'Sí', danger = true) {
+function confirmBox(title, msg, yesLabel = TT('Sí', 'Yes'), danger = true) {
   return new Promise(res => {
     $('#cTitle').textContent = title; $('#cMsg').textContent = msg; $('#cYes').textContent = yesLabel;
     $('#cYes').className = 'pill ' + (danger ? 'dan' : 'pri');
@@ -427,7 +488,7 @@ function confirmBox(title, msg, yesLabel = 'Sí', danger = true) {
 }
 function nowName() {
   const d = new Date(), p = n => String(n).padStart(2, '0');
-  return `Trabajo ${p(d.getDate())}/${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  return `${TT('Trabajo', 'Project')} ${p(d.getDate())}/${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 function fileStamp() {
   const d = new Date(), p = n => String(n).padStart(2, '0');
@@ -664,7 +725,7 @@ function tplImg(f) {
   if (!TPL_IMG[f]) { const i = new Image(); i.onload = () => req(); i.src = f; TPL_IMG[f] = i; }
   return TPL_IMG[f];
 }
-const fmt1 = v => v.toFixed(1).replace('.', ',');
+const fmt1 = v => v.toFixed(1).replace('.', DEC);
 let TAG_LOG = null, TAG_OWNER = null, TAG_PLACED = null, ALL_SEGS = null, MEAS_N = 0, LEGEND = null, LEGEND_RECT = null;
 function countMeas() {   // cuántas medidas hay (ángulo, proporción, almendra y parejas de simetría)
   let n = S.objects.filter(o => (o.t === 'angle' && o.c) || o.t === 'ratio' || (o.t === 'ratio2' && o.c) || o.t === 'mm').length;
@@ -880,10 +941,11 @@ function drawAngle(c, o) {
     const ex = [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2];
     tx = ex[0] + ux * fs * 3.6; ty = ex[1] + uy * fs * 3.6; var anc = ex, pref = [ux, uy], ext = [];
   }
-  measTag(c, [o], ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`, `${fmt1(ang)}°`, tx, ty, fs, o.color, anc, tagOpt(o, pref, ext), 'Ángulo ' + (ang < 1 ? `${fmt1(ang)}° · paralelas` : `${fmt1(ang)}°`));
+  const par = TT('paralelas', 'parallel');
+  measTag(c, [o], ang < 1 ? `${fmt1(ang)}° · ${par}` : `${fmt1(ang)}°`, `${fmt1(ang)}°`, tx, ty, fs, o.color, anc, tagOpt(o, pref, ext), TT('Ángulo ', 'Angle ') + (ang < 1 ? `${fmt1(ang)}° · ${par}` : `${fmt1(ang)}°`));
 }
 const FRACS = [[1, 4], [1, 3], [1, 2], [2, 3], [3, 4], [1, 1], [4, 3], [3, 2], [2, 1]];
-function ratioText(q) { return `Borde libre = ${Math.round(q * 100)} % del lecho`; }
+function ratioText(q) { return EN ? `Free edge = ${Math.round(q * 100)} % of nail bed` : `Borde libre = ${Math.round(q * 100)} % del lecho`; }
 function drawRatio(c, o) {
   c.lineWidth = o.w;
   c.beginPath(); c.moveTo(o.a[0], o.a[1]); c.lineTo(o.m[0], o.m[1]); c.lineTo(o.b[0], o.b[1]); c.stroke();
@@ -895,8 +957,8 @@ function drawRatio(c, o) {
   const ticks = [o.a, o.m, o.b].map(p => [[p[0] - nx * tk, p[1] - ny * tk], [p[0] + nx * tk, p[1] + ny * tk]]);
   if (L1 > 0) measTag(c, [o], ratioText(L2 / L1), `${Math.round(L2 / L1 * 100)} %`, o.b[0] + ux / L * o.fs * 3.6, o.b[1] + uy / L * o.fs * 3.6, o.fs, o.color, o.b, tagOpt(o, [ux, uy], ticks));
   if (tagMode([o]) === 'full') {   // nombres de los tramos solo con el texto completo
-    drawTag(c, m1[0] + nx * off, m1[1] + ny * off, 'Lecho', small, o.color, m1, tagOpt(o, [nx, ny], ticks));
-    drawTag(c, m2[0] + nx * off, m2[1] + ny * off, 'Borde libre', small, o.color, m2, tagOpt(o, [nx, ny], ticks));
+    drawTag(c, m1[0] + nx * off, m1[1] + ny * off, TT('Lecho', 'Nail bed'), small, o.color, m1, tagOpt(o, [nx, ny], ticks));
+    drawTag(c, m2[0] + nx * off, m2[1] + ny * off, TT('Borde libre', 'Free edge'), small, o.color, m2, tagOpt(o, [nx, ny], ticks));
   }   // resultado más allá de la punta
 }
 function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde libre (punto alto de la sonrisa → punta)
@@ -912,17 +974,17 @@ function drawRatio2(c, o) {   // almendra (cutícula → sonrisa) frente a borde
     return { L };
   };
   const m2 = o.c ? [(o.c[0] + o.d[0]) / 2, (o.c[1] + o.d[1]) / 2] : null, m1 = [(o.a[0] + o.b[0]) / 2, (o.a[1] + o.b[1]) / 2];
-  const s1 = seg(o.a, o.b, 'Almendra', m2);
+  const s1 = seg(o.a, o.b, TT('Almendra', 'Pink'), m2);
   if (!o.c) { later.forEach(f => f()); return; }
-  const s2 = seg(o.c, o.d, 'Borde libre', m1);
+  const s2 = seg(o.c, o.d, TT('Borde libre', 'Free edge'), m1);
   const T = s1.L + s2.L, p1 = Math.round(s1.L / T * 100), p2 = 100 - p1;
   const ux = (o.d[0] - o.c[0]) / s2.L, uy = (o.d[1] - o.c[1]) / s2.L;
-  measTag(c, [o], `Almendra ${p1} % · Borde libre ${p2} %`, `${p1}/${p2}`, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, o.fs, o.color, o.d, tagOpt(o, [ux, uy]));
+  measTag(c, [o], EN ? `Pink ${p1} % · Free edge ${p2} %` : `Almendra ${p1} % · Borde libre ${p2} %`, `${p1}/${p2}`, o.d[0] + ux * o.fs * 3.6, o.d[1] + uy * o.fs * 3.6, o.fs, o.color, o.d, tagOpt(o, [ux, uy]));
   later.forEach(f => f());
 }
 /* ---------- milímetros: regla calibrada en la foto ---------- */
 function calibObj() { return S.objects.find(o => o.t === 'calib' && o.mm > 0) || null; }
-function fmtMm(v) { const t = v.toFixed(1).replace('.', ',') + ' mm'; return v >= 10 ? `${t} (${(v / 10).toFixed(1).replace('.', ',')} cm)` : t; }
+function fmtMm(v) { const t = v.toFixed(1).replace('.', DEC) + ' mm'; return v >= 10 ? `${t} (${(v / 10).toFixed(1).replace('.', DEC)} cm)` : t; }
 function lineTicks(c, o, tk) {
   const L = dist(o.a[0], o.a[1], o.b[0], o.b[1]) || 1, nx = -(o.b[1] - o.a[1]) / L, ny = (o.b[0] - o.a[0]) / L;
   c.beginPath(); c.moveTo(o.a[0], o.a[1]); c.lineTo(o.b[0], o.b[1]);
@@ -935,20 +997,20 @@ function drawCalib(c, o) {   // la regla de referencia: línea amarilla disconti
   c.save(); c.strokeStyle = col; c.lineWidth = o.w; c.setLineDash([o.w * 3, o.w * 2]);
   const g = lineTicks(c, o, Math.max(o.w * 4, fs * 0.6)); c.restore();
   const mx = (o.a[0] + o.b[0]) / 2, my = (o.a[1] + o.b[1]) / 2;
-  drawTag(c, mx + g.nx * fs * 3, my + g.ny * fs * 3, o.mm > 0 ? `Regla = ${fmtMm(o.mm)}` : 'Regla: ¿cuánto mide?', fs * 0.8, col, [mx, my], tagOpt(o, [g.nx, g.ny]));
+  drawTag(c, mx + g.nx * fs * 3, my + g.ny * fs * 3, o.mm > 0 ? `${TT('Regla', 'Ruler')} = ${fmtMm(o.mm)}` : TT('Regla: ¿cuánto mide?', 'Ruler: how long?'), fs * 0.8, col, [mx, my], tagOpt(o, [g.nx, g.ny]));
 }
 function drawMm(c, o) {   // medida en milímetros con la escala de la regla
   c.lineWidth = o.w;
   const fs = o.fs || 18 / S.view.s, g = lineTicks(c, o, Math.max(o.w * 4, fs * 0.6)), cal = calibObj();
-  let full = 'Calibra primero la regla', short = '? mm';
-  if (cal) { const v = g.L / (dist(cal.a[0], cal.a[1], cal.b[0], cal.b[1]) / cal.mm); full = 'Medida ≈ ' + fmtMm(v); short = '≈ ' + v.toFixed(1).replace('.', ',') + ' mm'; }
+  let full = TT('Calibra primero la regla', 'Calibrate the ruler first'), short = '? mm';
+  if (cal) { const v = g.L / (dist(cal.a[0], cal.a[1], cal.b[0], cal.b[1]) / cal.mm); full = TT('Medida ≈ ', 'Size ≈ ') + fmtMm(v); short = '≈ ' + v.toFixed(1).replace('.', DEC) + ' mm'; }
   measTag(c, [o], full, short, o.b[0] + g.ux * fs * 3.6, o.b[1] + g.uy * fs * 3.6, fs, o.color, o.b, tagOpt(o, [g.ux, g.uy]));
 }
 let calibTarget = null, calibNew = false;
 function askCalib(o, isNew) {
   calibTarget = o; calibNew = isNew;
   const box = $('#cChips'); box.innerHTML = '';
-  [[1, '1 mm'], [2, '2 mm'], [5, '5 mm'], [10, '1 cm'], [15, '1,5 cm'], [20, '2 cm'], [30, '3 cm'], [50, '5 cm']].forEach(([v, l]) => {
+  [[1, '1 mm'], [2, '2 mm'], [5, '5 mm'], [10, '1 cm'], [15, TT('1,5 cm', '1.5 cm')], [20, '2 cm'], [30, '3 cm'], [50, '5 cm']].forEach(([v, l]) => {
     const b = document.createElement('button'); b.className = 'chip'; b.textContent = l;
     b.onclick = () => { $('#cMm').value = v; box.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)); };
     box.appendChild(b);
@@ -958,9 +1020,9 @@ function askCalib(o, isNew) {
 }
 $('#cOk').onclick = () => {
   const v = parseFloat(String($('#cMm').value).replace(',', '.'));
-  if (!(v > 0)) { toast('Elige o escribe cuánto mide'); return; }
+  if (!(v > 0)) { toast(TT('Elige o escribe cuánto mide', 'Choose or type the size')); return; }
   calibTarget.mm = v; $('#mCalib').classList.remove('show'); commit();
-  toast(calibNew ? 'Regla calibrada. Ahora traza las medidas con Milímetros' : 'Medida de la regla cambiada', 2600);
+  toast(calibNew ? TT('Regla calibrada. Ahora traza las medidas con Milímetros', 'Ruler calibrated. Now draw the measurements') : TT('Medida de la regla cambiada', 'Ruler size changed'), 2600);
   calibTarget = null;
 };
 $('#cCancel').onclick = () => {
@@ -978,7 +1040,7 @@ function maybeMmHelp() {   // la primera vez que se elige Milímetros, se explic
 }
 
 /* ---------- evaluación: hoja de puntos del concurso ---------- */
-const FINGERS = ['Pulgar', 'Índice', 'Corazón', 'Anular', 'Meñique'];
+const FINGERS = EN ? ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'] : ['Pulgar', 'Índice', 'Corazón', 'Anular', 'Meñique'];
 const CRIT = {
   convexo: ['Convexo', 'El contorno exterior debe ser simétrico y la superficie sin irregularidades. Se mira de frente (zona 3) y desde atrás (zona 2), con un contorno simétrico hasta la zona 1.\n½ por cada zona correcta.'],
   concavo: ['Cóncavo', 'El túnel interior debe ser simétrico y concéntrico a lo largo de todo el borde libre (o hasta que el tubo de curvar toca la punta del dedo).\n½ por cada zona correcta.'],
@@ -1109,8 +1171,121 @@ const FICHAS = {
     { n: 'Mano roja', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor1', 'paredes', 'extension', 'curvaA', 'forma', 'suavidad', 'cuticula', 'abajo', 'esmalteA', 'largoR'] }
   ] }
 };
+const CRIT_EN = {   // criterios en inglés (el tercer dato, la herramienta para medir, se mantiene)
+  convexo: ['Convex', 'The outer contour must be symmetrical and the surface free of irregularities. Viewed from the front (zone 3) and from behind (zone 2), with a symmetrical contour up to zone 1.\n½ for each correct zone.'],
+  concavo: ['Concave', 'The inner tunnel must be symmetrical and concentric along the whole free edge (or until the curving tube touches the fingertip).\n½ for each correct zone.'],
+  apex: ['Arch or apex', 'Subtle, gradual slope in zone 2, neither too pronounced nor flat, and not set too far back when seen in profile.\n½ for each of the two requirements.'],
+  tip: ['Tip or form', 'With forms: no notches or gaps at the lateral folds where the extension starts (notches made with a file do not count).\nWith tips: perfect fit, no exposed sidewalls, no upward or downward tilt and no gaps.\n½ for each correct side.'],
+  grosor: ['Free edge thickness', 'Thin and even, with the same thickness at the sidewalls and in the center (½).\nNo more than 1.5 mm (½).'],
+  paredes: ['Sidewalls', 'The free edge comes straight out of the lateral folds, without widening or narrowing in profile, the same on each side, with no notches or cracks and with smooth, clean sides.\n½ for each side.'],
+  extension: ['Lateral extension', 'In profile: the free edge comes straight out of the natural fold, without dropping or lifting, symmetrical and without the natural fold exposed.\n½ for each side.'],
+  curva: ['C-curve', 'Between 30 % and 40 % of a circle and never more than 50 % (½).\nSymmetrical (½).\nYou can measure it with the Arc tool.'],
+  forma: ['Nail shape', 'Consistent, uniform shape. Free edge filed straight (½).\nExtension straight in relation to the nail (not the finger), not looking crooked or tilted, seen from the front (½).'],
+  suavidad: ['Surface smoothness', 'No file marks, smooth to the touch, everything filed and buffed.\n1 if perfect; ½ if a demarcation line remains that is almost impossible to see or feel.'],
+  cuticula: ['Cuticle area', 'No cuts or irritation, no excess product visible or felt at the folds, and the product covers the whole area without leaving a margin (if over-filed it scores nothing).\n1 if it meets everything; ½ if it meets at least two requirements.'],
+  abajo: ['Underside', 'Clean, with no debris, water, glue or polish (½).\nSmooth product underneath, without excess (½).\nPolish underneath is deducted by the polish judge.'],
+  brillo: ['High shine', 'Glassy shine over the whole nail, with no dull areas (½).\nSides, edges and cuticle also shiny (½).'],
+  control: ['Product control', 'Even application with the color division marked at the smile line; solid white, with no pink shadows or see-through areas; no bubbles or pitting.\n½ for the white and ½ for the pink.'],
+  largoF: ['Length (white 50 %)', 'Measured from the cuticle to the center of the smile line: the white must measure 50 % of that distance up to the tip. If the smile line points do not match, measure from the highest one.\n1 point per nail.\nYou can measure it with Proportion: the target is "Free edge = 50 % of nail bed".'],
+  sonrisa: ['Smile line', 'Division 1 (max. 1 per nail): consistent shape, clear division, uniform with the other nails.\nDivision 2 (max. 2): plus 1 point if it is centered and aligned, not tilted.\nDivision 3 (max. 3): plus 1 point if the points are parallel and match.'],
+  esmalte: ['Polish application', 'Two coats, even near the cuticle and without streaks (½).\nAnother ½ if it meets at least 2 of these 3: no polish on the skin, no polish behind the nail and all edges of the free edge polished.'],
+  molde: ['Form application', 'The free edge must have no notch near the form application (notches from the application process, not made with a file).\n½ for each side without a notch.'],
+  grosor1: ['Free edge thickness', 'Thin and even, with the same thickness at the sidewalls and in the center (½).\nNo more than 1 mm (½).'],
+  curvaA: ['C-curve', 'Division 1: between 40 % and 50 % of a circle (½) and concentric (½).\nDivision 2: the first ½ needs both, 40–50 % and concentric; the second ½ needs both sides to measure the same and be completely symmetrical.\nDivision 3: as Division 2, and the shape must also match the equivalent finger on the other hand; if it does not, neither nail gets that ½.\nYou can measure it with the Arc tool.'],
+  largoA: ['Length (white = pink)', 'From the cuticle to the center of the smile line must measure the same as from the free edge to the smile line points. If the points do not match, measure from the highest one.\n1 point per nail.\nYou can measure it with Pink/White: the target is "Pink 50 % · Free edge 50 %".'],
+  esmalteA: ['Polish application', 'No base, ridge filler or top coat: cream red polish only.\nTwo coats, even at the cuticle area and without streaks (½).\nAnother ½ if it meets at least 2 of these 3: no polish on the skin, no polish under the nail and all edges of the free edge polished.'],
+  suavidadG: ['Surface smoothness', 'No file marks, smooth to the touch, everything filed and buffed. If sealer gel is used: over the whole nail, with no unsealed parts and no bubbles.\n1 if perfect; ½ if a line remains that is almost impossible to see and cannot be felt.'],
+  brilloG: ['High shine', 'Brilliant shine over the whole nail of the French hand (½).\nSides, edges and cuticle also shiny (½).\nWith sealer gel: fully cured, not sticky or dull, and no inhibition layer left.'],
+  controlG: ['Product control', 'Even application with the color division marked at the smile line; solid white gel, with no pink shadows; the cover pink does not overlap the white or show the natural nail in the extension; no shadows, see-through areas, bubbles or pitting.\n½ for the white and ½ for the pink.'],
+  abajoG: ['Underside', 'Clean, with no debris, water, glue or polish (½).\nSmooth product underneath, without excess; with cover pink, a visible separation line and clean, opaque white (½).\nPolish underneath is deducted by the polish judge.'],
+  esmalteG: ['Polish application', 'Red (or colored) gel fully cured and sealed: two coats and one top coat, even at the cuticle area and without streaks (½).\nAnother ½ if it meets at least 2 of these 3: sides and tip sealed, no polish on the skin or behind the nail, and all edges of the free edge polished.'],
+  formaM: ['Nail shape', 'Symmetrical shape (½).\nTop of the free edge filed smooth (½).\nAny free edge shape is accepted, but it must be symmetrical.'],
+  aplicM: ['Product application', 'Clean application at the cuticle (½).\nNo excess product around the cuticle (½).'],
+  cutM: ['Cuticle maintenance', 'No cuts or irritation; all dead tissue removed; cuticle area well worked without over-removing or cutting live tissue; lateral folds undamaged.\n1 point per nail.'],
+  abajoM: ['Underside', 'No dust or debris (½).\nNo glue or product residue (½).'],
+  suavM: ['Surface smoothness', 'No file marks on the surface (½).\nSmooth as glass, with no unevenness (½).'],
+  brilloM: ['High shine', 'Glossy sealer over the whole surface (½).\nNo dull spots, no gel residue and not sticky (½).'],
+  rojoM: ['Red color application', 'Covers the whole nail evenly, without streaks and with solid color, no see-through areas (½).\nEven red around the cuticle and the tip of the free edge fully covered (½).'],
+  sonrisaM: ['Smile line', 'Requirements: 1) consistent shape on all nails; 2) matching points; 3) white without shadows; 4) white well defined and aligned; 5) tip of the free edge fully covered.\nDivision 1 (max. 1): 1 point if it meets 2 of 5.\nDivision 2 (max. 2): 1 point with 3 of 5, 2 points with 4 of 5.\nDivision 3 (max. 3): 1 point with 3 of 5, 2 with 4 of 5, 3 with 5 of 5.'],
+  grosorBB: ['Free edge thickness', 'Thin and even along the whole free edge, with the same thickness at the sidewalls and in the center.\nThe manual sets no maximum thickness for Baby Boomer.\n1 point per nail.'],
+  paredes1: ['Sidewalls', 'The free edge comes straight out of the lateral folds, without widening or narrowing, the same on each side, with no notches or ridges and with smooth, clean sides.\nIn 1-hand competitions both sides must be perfect to get the point.'],
+  extension1: ['Lateral extension', 'In profile: the free edge comes straight out of the natural fold, without dropping or lifting, symmetrical and without the natural fold exposed.\nIn 1-hand competitions the point is only given if both sides are correct.'],
+  curvaBB: ['C-curve', 'Concentric, symmetrical C-curve, with both sides equal.\nIn 1-hand competitions the nail must meet all requirements to get the point; no ½ points are given.\nThe manual sets no % of circle for Baby Boomer. You can measure it with the Arc tool.'],
+  formaBB: ['Shape uniformity', 'Any salon shape is allowed (soft square, coffin, ballerina, oval, almond…), but all 5 nails must be the same and uniform. Free edge filed straight and nail straight in relation to the natural nail, not crooked.\n1 point per nail.'],
+  largoBB: ['Length', 'Even, well-proportioned length on all 5 nails. In 1-hand competitions each nail gets 1 point for the accuracy of the extension; it is not compared with the other hand.'],
+  controlBB: ['Product control', 'Baby boomer effect: progressive fade of the French colors that gradually covers the line up to a white free edge, with no harsh breaks. Even application, with no unwanted shadows or see-through areas, no bubbles or pitting.\nThe nail must meet all requirements to get the point.'],
+  concavoS: ['Concave', 'The inner tunnel must be completely symmetrical.\n1 point per nail.'],
+  grosorS: ['Free edge thickness', 'Thin and even along the whole free edge, with the same thickness at the sidewalls and in the center, and no more than 1.5 mm.\n1 point per nail (5 in total), according to the official score sheet.'],
+  paredesS: ['Sidewalls', 'The free edge comes straight out of the lateral folds, even on each side, with no notches or ridges and with smooth, clean sides.\n½ for each side.'],
+  extensionS: ['Lateral extension', 'In profile: symmetrical, well-placed lateral extensions, without the natural fold exposed.\n½ for each side.'],
+  suavidadS: ['Surface smoothness', 'The whole surface without 3D design must be smooth, with no marks or product stains. If sealer gel is used, the whole nail is sealed with gel sealer or top coat.\n1 point per nail.'],
+  uniformS: ['Uniformity and consistency', 'All nails with a similar shape and style (½).\nShape straight from the base and seen from the front, aligned with the natural nail, not the finger (½).\nYou can check whether the stiletto is straight with the Angle tool.'],
+  largoS: ['Length', 'Measured from the cuticle to the tip of the free edge.\nIndex, middle and ring fingers must be the same length; thumb and pinky also equal to each other.\n1 point per nail.'],
+  abajoS: ['Underside', 'Underside of the free edge clean, with no debris or product (½).\nSmooth application, with no excess acrylic or gel and no drill marks; if top coat or gel sealer is used for see-through areas, smooth and without excess (½).'],
+  cuticulaS: ['Cuticle area', 'No new cuts or irritation, no excess product visible or felt, the product covers the whole area without leaving a margin and is not over-filed.\n1 if it meets everything; ½ if it meets at least two requirements.'],
+  controlS: ['Product control', 'Color applied evenly and cleanly; if glitter is used, controlled application (½).\nNo bubbles or pitting (½).'],
+  brilloS: ['High shine', 'Maximum 1 point per nail (5 in total).\nGlassy, brilliant shine over the whole nail, including sides, edges and cuticle. Sealer gel fully cured, not sticky or matte, with no inhibition layer.'],
+  creatividad: ['Design creativity', 'Score from 1 to 10 for the whole hand.\nEach nail must have a creative contribution from the art used, with artistic elements both inside and on the surface of the nail.\nPainting and embellishments (rhinestones and bullions) count for only 20 % of the art score.'],
+  impresion: ['Overall impression', 'Score from 1 to 10 for the whole hand.\nGeneral impression of the artistic element: each nail must represent it both as an individual nail and as a set, with no nail having more or less work than the others.'],
+  dificultad: ['Level of difficulty', 'Score from 1 to 10 for the whole hand.\nAssessed according to the level of difficulty of the division entered.'],
+  otBrillo: ['Surface and shine', 'The nail must feel completely smooth on the surface (1).\nSealer gel or top coat fully cured, with high shine (1).\nMaximum 2 points per nail.'],
+  otAbajo: ['Underside', 'No dust, product residue, water, glue or excess oil under the nail: clean appearance (1).\nSmooth product under the nail, without excess (1).\nIf oil drips from the finger, it is deducted here.\nMaximum 2 points per nail.'],
+  otApex: ['Arch and apex', 'Apex not too obvious, with a subtle, gradual slope always located in zone 2; arch neither too pronounced nor flat, and not too far forward or back in profile.\n1 point for each of the two requirements. Maximum 2 per nail.'],
+  otForma: ['Nail shape', 'Consistent, uniform shape (extreme square). Free edge filed straight, not uneven (1).\nNail applied straight in relation to the natural nail, not crooked or tilted, seen from the front (1).\nMaximum 2 per nail. ½ points are allowed.'],
+  otMolde: ['Form application', 'The extension must have no notches or gaps at the lateral folds where the free edge starts (notches from sculpting, not made with a file).\n1 point for each side without a notch. Maximum 2 per nail.'],
+  otCut: ['Cuticle area', 'No new cuts or irritation around the nail (1).\nNo excess product visible or felt near the proximal folds (½).\nVisible product covering the whole cuticle area, without leaving a margin and not over-filed (½).\nMaximum 2 per nail.'],
+  otConvexo: ['Convex', 'Completely symmetrical outer contour and surface free of irregularities, up to zone 1. Viewed from the front (zone 3) and from behind (zone 2).\n1 point for each correct zone. Maximum 2 per nail.'],
+  otConcavo: ['Concave', 'Symmetrical, concentric inner tunnel from the start of the C-curve to the distal edge.\n1 point if it is concentric where the free edge starts (the form follows the distal edge, without seeming to leave room for excess product).\n1 point if it is symmetrical along the whole free edge, with no irregularities in the tunnel.\nMaximum 2 per nail.'],
+  otParedes: ['Sidewalls', 'The free edge comes straight out of the lateral folds, without widening or narrowing seen from the front, the same on each side, with no ridges and with smooth, clean sides.\n1 point for each side. Maximum 2 per nail.'],
+  otExt: ['Lateral extension', 'In profile: the free edge comes straight out of the natural lateral fold, without dropping or tilting upward, symmetrical and without the lateral fold exposed.\n1 point for each side. Maximum 2 per nail.'],
+  otGrosor: ['Free edge thickness', 'Thin and even along the whole free edge, the same at the sidewalls as in the center (1).\nNo more than 1.5 mm where zones 2 and 3 meet (1).\nMaximum 2 per nail.'],
+  otCurva: ['C-curve', 'Between 40 % and 50 % of a circle (1).\nConcentric, like a semicircle (1).\nMaximum 2 per nail. You can measure it with the Arc tool.'],
+  otLargo: ['Length', 'Extension of at least 1 cm and no more than 1.5 cm from the top of the distal edge of the natural nail.\n1 point per nail.'],
+  aDif: ['Level of difficulty', 'The complexity of the design is assessed according to the level of experience (the division).\nIs the design simple, without elaboration, or does it show more difficulty and experience in its creation?'],
+  aBal: ['Balance', 'The design must be neither too full nor too empty, and must look balanced on each nail and as a whole.\nThere must be no large areas of the nail without design.\nThe combination of artistic elements gives a sense of balance or stability (symmetry or asymmetry).'],
+  aComp: ['Composition', 'How the work has been proportioned.\nThe design must have movement so the eye travels from one nail to the next.\nEach nail has its own design, but also represents the complete design.\nThe scene has different dimensions according to the perspective of each piece.'],
+  aOrig: ['Originality', 'The theme or design must be something not seen before, or an original interpretation of common work.'],
+  aMedia: ['Media', 'At least three media on each nail, incorporated into the design in a coherent, creative way, used as gradation to accent the work.\nEach medium is worth 1/3 of the score; if 4 or more are used, the score is shared among the media used.'],
+  aCal: ['Graphic quality', 'The texture of the design perfectly represents the chosen style.\nThe media create emphasis and texture.\nLines and details must be done cleanly.'],
+  aCont: ['Theme continuity', 'The chosen theme must be seen on every nail.\nThe design complements itself and has continuity across all nails.'],
+  aClar: ['Design clarity', 'Is the design evident, clear and identifiable?\nCan you identify what is shown on each nail?\nThe whole artistic representation must be clear and identifiable.'],
+  aColor: ['Color theory', 'How color theory has been applied.\nEmphasis helps to see the definition of the work.\nThe tones complement the design and flow or graduate over the nails or object.\nUse of saturation, lights and darks.'],
+  aTrab: ['Overall workmanship', 'All artistic elements well represented, with a clean appearance and no visible imperfections: fingerprints in the paint, glue residue on embellishments, or excess gel or dust left behind count as poorly finished work.'],
+  aCrea: ['Creativity', 'Creative use of the media.\nCreative collaboration between the media used.\nCreative interpretation of the theme or design.'],
+  a3d: ['3D presentation', 'Artistic presence on each nail.\nClean 3D shapes, with a unique style and texture.'],
+  aImp: ['Overall impression', 'The first impression of the complete work.\nThe work must catch the eye and invite you to look at the details.'],
+  aRitmo: ['Rhythm', 'Artistic principle that indicates movement: elements carefully repeated to create a visual rhythm or tempo.'],
+  aVar: ['Variety', 'Artistic principle of diversity or contrast: achieved with different shapes, sizes and colors in the work.'],
+  largoR: ['Length (same as the other hand)', 'The nails of both hands must match in length, from the cuticle to the free edge.\n1 point per nail.']
+};
+const FICHAS_EN = {   // categorías: descripción y penalizaciones en inglés
+  ssf: { info: '2 hands · 2 hours · gel or acrylic, tips or forms' },
+  fsg: { info: '2 hands · 3 hours · hard gel with forms, no tips' },
+  tgm: { info: '2 hands · 1 hour · natural nails, gel products only · max. 70 / 75 / 80' },
+  ftb: { info: 'Made before the competition · everything on 1 tip, in a box of max. 25 cm and 20 cm high · three-dimensional · mandatory theme · max. 120', pens: ['Presentation larger than allowed'] },
+  la: { info: 'On objects (pins, brooches, key rings, plates…) · max. 10 cm high · base of max. 20 × 14 cm, black, white or clear background · at least 3 media · mandatory theme · max. 110', pens: ['Fewer than 3 media and techniques', 'Presentation larger than allowed'] },
+  mmb: { info: '10 tips of different sizes · 3 media: painting, 3D and embellishment · art max. 1 cm · no decals, stamping or 3D molds · mandatory theme · max. 110', pens: ['Tips all the same size', 'One of the 3 media missing', 'Art more than 1 cm from the nail', 'Presentation over 254 mm'] },
+  fa: { info: 'Tips joined like a picture · completely flat paint only (airbrush, acrylic, gel, polish) · no rhinestones, pearls, foils, decals or stamping · mandatory theme · max. 100', pens: ['Presentation over 254 mm'] },
+  stm: { info: '10 separate tips of max. 2 cm and different sizes · salon style with current trends · stamping yes, decals no · no theme · max. 100', pens: ['Tips of only one size', 'Presentation over 254 mm'] },
+  rac: { info: 'Separate square or oval tips of max. 3.04 cm · rhinestones only, in different colors, shapes and sizes · max. 5 mm high · single-color base · no theme · max. 90', pens: ['Presentation over 254 mm'] },
+  sst: { info: '10 separate tips of max. 2 cm and different sizes · at least 50 % of the art in stamping · extra design max. 1 cm · no decals · no theme · max. 100', pens: ['Tips of only one size', 'Presentation over 254 mm'] },
+  ot: { info: '1 hand · 60 minutes · a single tone (cover or natural), sculpted with forms · max. 125 in all divisions' },
+  sna: { info: '1 hand · 2 hours · stiletto sculpted with forms, gel or acrylic · encapsulated or on-top art (max. 5 mm)' },
+  bb: { info: '1 hand · 90 minutes · 15 criteria of 5 points · each nail 0 or 1 · max. 75' },
+  fsa: { info: '2 hands · 2 h 30 min · acrylic sculpted with forms' }
+};
+const HANDS_EN = { 'Mano francesa': 'French hand', 'Mano roja': 'Red hand', 'Mano': 'Hand', 'Obra': 'Piece' };
+if (EN) {
+  for (const k in CRIT_EN) if (CRIT[k]) CRIT[k] = [CRIT_EN[k][0], CRIT_EN[k][1], CRIT[k][2]];
+  for (const k in FICHAS) {
+    const F = FICHAS[k], X = FICHAS_EN[k] || {};
+    if (X.info) F.info = X.info;
+    if (X.pens && F.pens) F.pens = F.pens.map((p, i) => [X.pens[i] || p[0], p[1]]);
+    F.hands.forEach(h => { if (HANDS_EN[h.n]) h.n = HANDS_EN[h.n]; });
+  }
+}
 let evHand = 0, evOpen = null;
-const fmtP = v => (Math.round(v * 10) / 10).toString().replace('.', ',');
+const fmtP = v => (Math.round(v * 10) / 10).toString().replace('.', DEC);
 function evalNew() { return { v: 2, f: 'ssf', div: 1, name: '', s: {}, pa: 0, pn: 0, show: true }; }
 function evalFix(E) {   // hojas de la versión anterior: el 0 era casilla vacía
   if (E && !E.v) { for (const k in E.s) E.s[k] = E.s[k].map(v => v > 0 ? v : null); E.v = 2; }
@@ -1174,7 +1349,9 @@ function evalRender() {
     pb.appendChild(l);
   });
   fs.value = E.f; $('#eDiv').value = String(E.div); $('#eInfo').textContent = F.info || '';
-  $('#eHint').textContent = F.single ? 'Se juzga la obra completa. Toca la nota de un criterio y elige el número. Toca el nombre para ver qué se valora.' : (F.whole ? 'Toca una casilla: vacía → 0 → 1 → vacía (sin medios puntos).' : 'Toca una casilla: vacía → 0 → ½ → 1 → vacía.') + ' Toca el nombre de un criterio para ver qué se puntúa.';
+  $('#eHint').textContent = EN
+    ? (F.single ? 'The complete piece is judged. Tap the score of a criterion and choose the number. Tap the name to see what is assessed.' : (F.whole ? 'Tap a cell: empty → 0 → 1 → empty (no half points).' : 'Tap a cell: empty → 0 → ½ → 1 → empty.') + ' Tap a criterion name to see what is scored.')
+    : (F.single ? 'Se juzga la obra completa. Toca la nota de un criterio y elige el número. Toca el nombre para ver qué se valora.' : (F.whole ? 'Toca una casilla: vacía → 0 → 1 → vacía (sin medios puntos).' : 'Toca una casilla: vacía → 0 → ½ → 1 → vacía.') + ' Toca el nombre de un criterio para ver qué se puntúa.');
   if (document.activeElement !== $('#eName')) $('#eName').value = E.name || '';
   $('#eShow').checked = E.show !== false;
   if (document.activeElement !== $('#eNote')) $('#eNote').value = E.note || '';
@@ -1205,7 +1382,7 @@ function evalRender() {
         const tr2 = document.createElement('tr'), td2 = document.createElement('td'); td2.colSpan = 7;
         const pk = document.createElement('div'); pk.className = 'evpick';
         for (let n = 0; n <= r.max; n++) { const k = document.createElement('button'); k.textContent = n; if (r.v === n) k.className = 'on'; k.onclick = () => { cellsOf(E, evHand, r.k)[0] = n; evOpen = null; evalChanged(); }; pk.appendChild(k); }
-        const cl = document.createElement('button'); cl.textContent = '—'; cl.title = 'Vaciar'; cl.onclick = () => { cellsOf(E, evHand, r.k)[0] = null; evOpen = null; evalChanged(); }; pk.appendChild(cl);
+        const cl = document.createElement('button'); cl.textContent = '—'; cl.title = TT('Vaciar', 'Clear'); cl.onclick = () => { cellsOf(E, evHand, r.k)[0] = null; evOpen = null; evalChanged(); }; pk.appendChild(cl);
         td2.appendChild(pk); tr2.appendChild(td2); tb.appendChild(tr2);
       }
       return;
@@ -1213,7 +1390,7 @@ function evalRender() {
     r.c.forEach((v, n) => {
       const td = document.createElement('td'), b = document.createElement('button');
       b.className = 'evc' + (v === null ? '' : v === 0 ? ' z' : v >= mx ? ' f' : ' h');
-      b.textContent = v === null ? '' : v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½');
+      b.textContent = v === null ? '' : v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(DEC + '5', '½');
       b.setAttribute('aria-label', CRIT[r.k][0] + ' ' + FINGERS[n]);
       b.onclick = () => { const c = cellsOf(E, evHand, r.k); c[n] = c[n] === null ? 0 : c[n] >= mx ? null : Math.min(mx, c[n] + (F.whole ? 1 : 0.5)); evalChanged(); };
       td.appendChild(b); tr.appendChild(td);
@@ -1225,7 +1402,7 @@ function evalRender() {
   $('#eHT').textContent = `${fmtP(H.t)}/${fmtP(H.max)}`;
   $('#ePa').textContent = E.pa; $('#ePn').textContent = E.pn;
   $('#eTot').textContent = `${fmtP(sm.tot)} / ${fmtP(sm.max)}`;
-  $('#eTotL').textContent = F.hands.length > 1 ? 'Total de las dos manos' : 'Total' + (sm.pen && F.single ? ` (penalizaciones −${sm.pen})` : '');
+  $('#eTotL').textContent = F.hands.length > 1 ? TT('Total de las dos manos', 'Total for both hands') : 'Total' + (sm.pen && F.single ? ` (${TT('penalizaciones', 'penalties')} −${sm.pen})` : '');
 }
 let helpCmKey = null;
 function evalHelp(k, h) {
@@ -1234,11 +1411,11 @@ function evalHelp(k, h) {
   const body = $('#hBody'); body.innerHTML = '';
   c[1].split('\n').forEach(t => { const p = document.createElement('p'); p.style.margin = '0 0 8px'; p.textContent = t; body.appendChild(p); });
   const F = FICHAS[evalCur().f];
-  if (F.whole) { const t = document.createElement('div'); t.className = 'tipbox'; t.textContent = `En ${F.n} (1 mano) no hay medios puntos: cada uña vale 0 o 1 y tiene que cumplir todos los requisitos. Máximo 5 por criterio.`; body.appendChild(t); }
+  if (F.whole) { const t = document.createElement('div'); t.className = 'tipbox'; t.textContent = EN ? `In ${F.n} (1 hand) there are no half points: each nail scores 0 or 1 and must meet all requirements. Maximum 5 per criterion.` : `En ${F.n} (1 mano) no hay medios puntos: cada uña vale 0 o 1 y tiene que cumplir todos los requisitos. Máximo 5 por criterio.`; body.appendChild(t); }
   if (h !== undefined) {   // comentario del juez para este criterio
     const E = evalCur(); helpCmKey = `${E.f}:${h}:${k}`;
     const box = document.createElement('div'); box.id = 'hCmBox'; box.style.marginTop = '10px';
-    box.innerHTML = '<div style="font-size:13px;color:var(--acc);margin-bottom:4px">Comentario del juez (sale en la hoja)</div><textarea placeholder="Por ejemplo: ápex demasiado atrás"></textarea>';
+    box.innerHTML = `<div style="font-size:13px;color:var(--acc);margin-bottom:4px">${TT('Comentario del juez (sale en la hoja)', 'Judge’s comment (shown on the sheet)')}</div><textarea placeholder="${TT('Por ejemplo: ápex demasiado atrás', 'For example: apex too far back')}"></textarea>`;
     box.querySelector('textarea').value = (E.cm || {})[helpCmKey] || '';
     body.appendChild(box);
   }
@@ -1257,7 +1434,7 @@ $('#ePnP').onclick = () => { evalCur().pn++; evalChanged(); };
 $('#ePnM').onclick = () => { const E = evalCur(); E.pn = Math.max(0, E.pn - 1); evalChanged(); };
 $('#eReset').onclick = async () => {
   if (!evalHasScores()) return;
-  if (await confirmBox('Borrar puntuación', 'Se pondrán a cero todas las casillas y penalizaciones de este trabajo.', 'Borrar')) {
+  if (await confirmBox(TT('Borrar puntuación', 'Clear scores'), TT('Se pondrán a cero todas las casillas y penalizaciones de este trabajo.', 'All cells and penalties in this project will be reset.'), TT('Borrar', 'Clear'))) {
     const E = evalCur(); E.s = {}; E.pa = 0; E.pn = 0; evalChanged();
   }
 };
@@ -1288,9 +1465,9 @@ async function evalPdfBlob() {
   const p1 = document.createElement('canvas'); p1.width = PW; p1.height = PH;
   const x = p1.getContext('2d'); x.fillStyle = '#fbf8f2'; x.fillRect(0, 0, PW, PH); x.fillStyle = '#a8862f'; x.fillRect(0, 0, PW, 10);
   const T = (t, px, py, size, wgt, col, al) => { x.font = `${wgt} ${size}px Montserrat, system-ui, sans-serif`; x.fillStyle = col; x.textAlign = al || 'left'; x.fillText(t, px, py); };
-  T('ZALESTUDIO · HOJA DE EVALUACIÓN', M, 80, 22, 700, '#a8862f');
-  T(F.n + (F.single ? '' : ' · División ' + E.div), M, 135, 44, 700, '#1f1d24');
-  T((E.name ? 'Alumna: ' + E.name + ' · ' : '') + new Date().toLocaleDateString('es-ES'), M, 185, 28, 500, '#6f6a73');
+  T(TT('ZALESTUDIO · HOJA DE EVALUACIÓN', 'ZALESTUDIO · SCORE SHEET'), M, 80, 22, 700, '#a8862f');
+  T(F.n + (F.single ? '' : TT(' · División ', ' · Division ') + E.div), M, 135, 44, 700, '#1f1d24');
+  T((E.name ? TT('Alumna: ', 'Student: ') + E.name + ' · ' : '') + new Date().toLocaleDateString(LOC), M, 185, 28, 500, '#6f6a73');
   T(fmtP(sm.tot) + ' / ' + fmtP(sm.max), PW - M, 140, 64, 800, '#1f1d24', 'right');
   T(Math.round(sm.tot / sm.max * 100) + ' %', PW - M, 188, 30, 700, '#a8862f', 'right');
   const top = 240, aw = PW - 2 * M, ah = PH - top - M, sc = Math.min(aw / S.docW, ah / S.docH), img = renderDoc(sc);
@@ -1304,13 +1481,13 @@ async function evalPdfBlob() {
   return pdfFromJpegs([await jpg(p1), await jpg(p2)]);
 }
 async function evalPdf(share) {
-  if (!evalHasScores()) { toast('Pon alguna nota antes de sacar el PDF'); return; }
-  toast('Preparando el PDF…', 1500);
+  if (!evalHasScores()) { toast(TT('Pon alguna nota antes de sacar el PDF', 'Add some scores before creating the PDF')); return; }
+  toast(TT('Preparando el PDF…', 'Preparing the PDF…'), 1500);
   const blob = await evalPdfBlob(), E = S.eval;
-  const name = `evaluacion-${(E.name || 'zalestudio').trim().replace(/[^\wáéíóúñü-]+/gi, '-').toLowerCase()}-${fileStamp()}.pdf`;
+  const name = `${TT('evaluacion', 'evaluation')}-${(E.name || 'zalestudio').trim().replace(/[^\wáéíóúñü-]+/gi, '-').toLowerCase()}-${fileStamp()}.pdf`;
   const file = new File([blob], name, { type: 'application/pdf' });
-  if (share && navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: 'Evaluación ZaleStudio' }); } catch (_) {} return; }
-  if (share) toast('Este navegador no permite compartir PDF: se descarga');
+  if (share && navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: TT('Evaluación ZaleStudio', 'ZaleStudio evaluation') }); } catch (_) {} return; }
+  if (share) toast(TT('Este navegador no permite compartir PDF: se descarga', 'This browser cannot share PDFs: it will be downloaded'));
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   await saveNow(true);
@@ -1323,7 +1500,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
   lost.sort((a, b) => b.l - a.l);
   const cms = [];   // comentarios: general + por criterio
   if (E.note && E.note.trim()) cms.push('General: ' + E.note.trim());
-  sm.hands.forEach((h, hi) => h.rows.forEach(r => { const t = (E.cm || {})[`${E.f}:${hi}:${r.k}`]; if (t) cms.push(`${CRIT[r.k][0]}${sm.hands.length > 1 ? ' (' + h.n.toLowerCase() + ')' : ''}: ${t}`); }));
+  sm.hands.forEach((h, hi) => h.rows.forEach(r => { const t = (E.cm || {})[`${E.f}:${hi}:${r.k}`]; if (t) cms.push(`${CRIT[r.k][0]}${sm.hands.length > 1 ? ' (' + (EN ? h.n : h.n.toLowerCase()) + ')' : ''}: ${t}`); }));
   const mc = document.createElement('canvas').getContext('2d'); mc.font = '500 15px Montserrat, system-ui, sans-serif';
   const cmLines = [];
   for (const t of cms) { let cur = ''; for (const w of t.split(/\s+/)) { const tt = cur ? cur + ' ' + w : w; if (cur && mc.measureText(tt).width > 1000) { cmLines.push(cur); cur = '   ' + w; } else cur = tt; } if (cur) cmLines.push(cur); }
@@ -1335,9 +1512,9 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
   x.fillStyle = '#fbf8f2'; x.fillRect(0, 0, 1080, Hh / u);
   x.fillStyle = gold; x.fillRect(0, 0, 1080, 6);
   const T = (t, px, py, size, wgt, col, al) => { x.font = `${wgt} ${size}px Montserrat, system-ui, sans-serif`; x.fillStyle = col; x.textAlign = al || 'left'; x.textBaseline = 'alphabetic'; x.fillText(t, px, py); };
-  T('ZALESTUDIO · HOJA DE PUNTOS', 40, 44, 14, 700, gold);
-  T(F.n + ' · División ' + E.div, 40, 84, 28, 700, ink);
-  T((E.name ? 'Alumna: ' + E.name + ' · ' : '') + new Date().toLocaleDateString('es-ES'), 40, 116, 17, 500, mut);
+  T(TT('ZALESTUDIO · HOJA DE PUNTOS', 'ZALESTUDIO · SCORE SHEET'), 40, 44, 14, 700, gold);
+  T(F.n + TT(' · División ', ' · Division ') + E.div, 40, 84, 28, 700, ink);
+  T((E.name ? TT('Alumna: ', 'Student: ') + E.name + ' · ' : '') + new Date().toLocaleDateString(LOC), 40, 116, 17, 500, mut);
   T(fmtP(sm.tot) + ' / ' + fmtP(sm.max), 1040, 86, 44, 800, ink, 'right');
   T(Math.round(sm.tot / sm.max * 100) + ' %', 1040, 118, 20, 700, gold, 'right');
   const colW = 485, nameW = 206, cw = 44;
@@ -1345,7 +1522,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
     const x0 = 40 + hi * (colW + 0), y0 = top;
     const ox = hi ? 1080 - 40 - colW : 40;
     T(h.n, ox, y0 + 18, 16, 700, ink);
-    if (!F.single) ['P', 'Í', 'C', 'A', 'M'].forEach((f, n) => T(f, ox + nameW + n * cw + cw / 2, y0 + 18, 13, 700, mut, 'center'));
+    if (!F.single) (EN ? ['T', 'I', 'M', 'R', 'P'] : ['P', 'Í', 'C', 'A', 'M']).forEach((f, n) => T(f, ox + nameW + n * cw + cw / 2, y0 + 18, 13, 700, mut, 'center'));
     T('Total', ox + colW, y0 + 18, 13, 700, mut, 'right');
     h.rows.forEach((r, ri) => {
       const y = y0 + 34 + ri * rh;
@@ -1364,25 +1541,25 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
         const cx = ox + nameW + n * cw + 4;
         x.fillStyle = v === null ? '#f1ece3' : v === 0 ? '#f8d9d9' : v >= mx ? '#d9efdc' : '#f6e7bf';
         x.beginPath(); x.roundRect(cx, y + 4, cw - 8, rh - 8, 5); x.fill();
-        if (v !== null) T(v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(',5', '½'), cx + (cw - 8) / 2, y + 19, 14, 700, v === 0 ? '#b3261e' : v >= mx ? '#1d6b2c' : '#7a5a0c', 'center');
+        if (v !== null) T(v === 0 ? '0' : v === 0.5 ? '½' : fmtP(v).replace(DEC + '5', '½'), cx + (cw - 8) / 2, y + 19, 14, 700, v === 0 ? '#b3261e' : v >= mx ? '#1d6b2c' : '#7a5a0c', 'center');
       });
       T(fmtP(r.t) + '/' + fmtP(r.max), ox + colW, y + 19, 13, 600, mut, 'right');
     });
     const yf = y0 + 34 + h.rows.length * rh;
     x.fillStyle = ink; x.fillRect(ox, yf, colW, 1.5);
-    T(F.single ? 'Total' : 'Total uña', ox, yf + 21, 14, 700, ink);
+    T(F.single ? 'Total' : TT('Total uña', 'Nail total'), ox, yf + 21, 14, 700, ink);
     if (!F.single) h.cols.forEach((v, n) => T(fmtP(v), ox + nameW + n * cw + cw / 2, yf + 21, 13, 700, ink, 'center'));
     T(fmtP(h.t) + '/' + fmtP(h.max), ox + colW, yf + 21, 14, 800, ink, 'right');
   });
   let y = top + tableH + 14;
   if (sm.pen) {
-    const det = F.single ? sm.pk.map(p => `${p[0].toLowerCase()} −${p[1]}`).join(' · ') : [E.pa ? `${E.pa} aviso${E.pa > 1 ? 's' : ''}` : '', E.pn ? `${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''}` : '', ...sm.pk.map(p => p[0].toLowerCase())].filter(Boolean).join(' · ');
-    x.font = '700 15px Montserrat, system-ui, sans-serif'; let line = `Penalizaciones: −${fmtP(sm.pen)} (${det})`;
+    const det = F.single ? sm.pk.map(p => `${p[0].toLowerCase()} −${p[1]}`).join(' · ') : (EN ? [E.pa ? `${E.pa} warning${E.pa > 1 ? 's' : ''}` : '', E.pn ? `${E.pn} rule${E.pn > 1 ? 's' : ''} not followed` : '', ...sm.pk.map(p => p[0].toLowerCase())] : [E.pa ? `${E.pa} aviso${E.pa > 1 ? 's' : ''}` : '', E.pn ? `${E.pn} norma${E.pn > 1 ? 's' : ''} no cumplida${E.pn > 1 ? 's' : ''}` : '', ...sm.pk.map(p => p[0].toLowerCase())]).filter(Boolean).join(' · ');
+    x.font = '700 15px Montserrat, system-ui, sans-serif'; let line = `${TT('Penalizaciones', 'Penalties')}: −${fmtP(sm.pen)} (${det})`;
     while (x.measureText(line).width > 1000 && line.length > 20) line = line.slice(0, -2);
     T(line, 40, y + 10, 15, 700, '#b3261e'); y += 30;
   }
   if (lost.length) {
-    T('A mejorar', 40, y + 14, 14, 700, gold);
+    T(TT('A mejorar', 'To improve'), 40, y + 14, 14, 700, gold);
     const txt = lost.slice(0, 6).map(l => `${l.n} (−${fmtP(l.l)})`).join(' · ');
     x.font = '500 15px Montserrat, system-ui, sans-serif';
     let line1 = '', line2 = '';
@@ -1391,7 +1568,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
     y += 60;
   }
   if (cmLines.length) {
-    T('Comentarios del juez', 40, y + 18, 14, 700, gold); y += 26;
+    T(TT('Comentarios del juez', 'Judge’s comments'), 40, y + 18, 14, 700, gold); y += 26;
     cmLines.forEach(l => { T(l, 40, y + 16, 15, 500, ink); y += 21; });
   }
   T('© ZALESYA® · ZaleStudio', 1040, Hh / u - 22, 12, 600, mut, 'right');
@@ -1399,7 +1576,7 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
 }
 
 /* ---------- ayuda: mantener pulsado un botón + guía ---------- */
-const MOVE_TIP = 'Para mover una forma, tócala y arrástrala sobre la línea de color, no sobre los puntos: los puntos sirven para cambiar la forma.';
+const MOVE_TIP = TT('Para mover una forma, tócala y arrástrala sobre la línea de color, no sobre los puntos: los puntos sirven para cambiar la forma.', 'To move a shape, touch it and drag it along the colored line, not the points: the points change the shape.');
 const HELP = {
   bOpen: ['Abrir foto', 'Abre una foto de la galería o haz una con la cámara para dibujar y corregir encima.'],
   bTpl: ['Plantillas', 'Abre el panel con las ilustraciones de uñas (formas, perfiles, curva C, smile line, mano…) para trabajar sobre ellas sin necesidad de foto.'],
@@ -1452,12 +1629,64 @@ const HELP = {
   sDel: ['Eliminar', 'Borra el elemento seleccionado.'],
   sOk: ['Listo', 'Termina la edición y quita la selección.']
 };
+if (EN) Object.assign(HELP, {   // ayuda en inglés
+  bOpen: ['Open photo', 'Open a photo from your gallery or take one with the camera to draw and correct on top of it.'],
+  bTpl: ['Templates', 'Opens the panel with nail illustrations (shapes, profiles, C-curve, smile line, hand…) so you can work on them without a photo.'],
+  bLbl: ['Labels', 'Opens the panel with anatomy and structure names. Tap one and a box with an arrow appears: drag the box to place it and the arrow point to mark the exact area.'],
+  bCalco: ['Overlay', 'Places a semi-transparent template on top of your photo to compare the shape. Move it, rotate it and resize it with the points; use "Lighter" and "Darker" to change the transparency.'],
+  bEval: ['Evaluate', 'Opens the competition score sheet (categories from the NIJ manual). Choose the category, division and student, and for each criterion tap the cell for each nail: one tap 0, two taps ½, three taps 1. The total adds up automatically, and when you save or share, the sheet appears below the photo. Ultimate Nail Art Challenge, Team Relay and Fantasy Total Look are not evaluated in the app: they are on-site group categories, with no practice.'],
+  bBlank: ['Canvas', 'Opens a blank sheet to draw or explain from scratch. Your current work stays saved in Projects.'],
+  bProjects: ['Projects', 'All your work saved on this device. From here you can open it to continue or delete it.'],
+  bUndo: ['Undo', 'Removes the last change. You can tap it several times.'],
+  bRedo: ['Redo', 'Puts back what you just undid.'],
+  bFit: ['Fit', 'Centers the image, straightens it and fits it to the screen.'],
+  bClear: ['Clear all', 'Deletes all drawings and marks. The photo or template stays. You can get them back with Undo.'],
+  bSave: ['Save image', 'Downloads the image with all your marks, saves it in Projects and leaves the screen ready for another job.'],
+  bShare: ['Share', 'Sends the image with your corrections via WhatsApp, email, etc.'],
+  bPresent: ['Present', 'Shows only the image full screen, without menus, to show it in class or on a projector. You can zoom, move and rotate with your fingers. To draw, exit the presentation.'],
+  bGuide: ['Guide', 'Opens this guide with all the buttons and what each one does. Tip: press and hold any button to see its explanation.'],
+  bExit: ['Exit', 'Saves your work and goes back to the start screen.'],
+  hand: ['Move', 'With one finger you move the image without drawing. With two fingers you can always zoom, move and rotate, with any tool.'],
+  select: ['Select', 'Tap an element to select it and move it, rotate it with the gold handle, change its color or size, duplicate it or delete it. Drag over an empty area to select several at once.'],
+  pen: ['Pen', 'Fine, sharp stroke for writing or marking. Choose the thickness with the buttons below.'],
+  marker: ['Marker', 'Thicker stroke for marking areas.'],
+  hl: ['Highlighter', 'Semi-transparent stroke: marks an area while letting the nail show through.'],
+  erase: ['Eraser', 'Go over a stroke, shape or text and it is erased completely in one go.'],
+  eraser: ['Erase area', 'Erases only the part you go over, like a rubber, for fine touch-ups.'],
+  line: ['Line', 'Draws a straight line by dragging from one point to another. ' + MOVE_TIP],
+  arrow: ['Arrow', 'Draws an arrow to point something out. ' + MOVE_TIP],
+  arc: ['Arc (C-curve)', 'Draws the C-curve from one end to the other. The 30 %, 40 % and 50 % buttons make it exact (50 % = half circle). The gold point changes the curvature and the turquoise one corrects the perspective in side photos (the % shows as "estimated"). Flip turns it the other way. ' + MOVE_TIP],
+  ellipse: ['Circle', 'Draws a circle or oval to surround an area. ' + MOVE_TIP],
+  rect: ['Rectangle', 'Draws a rectangle to frame an area. ' + MOVE_TIP],
+  text: ['Text', 'Tap where you want to write. Drag the text to place it and double-tap to edit it.'],
+  ok: ['Good', 'Each tap places a green ✓ stamp to mark what is done well.'],
+  ko: ['Fix', 'Each tap places a red ✗ stamp to mark what needs correcting.'],
+  angle: ['Angle', 'Draw a line along one sidewall: another appears for you to place on the other sidewall. It shows the degrees between them (0° = parallel). Useful for sidewalls, coffin, smile line tilt or checking whether a stiletto is straight. ' + MOVE_TIP],
+  ratio: ['Proportion', 'Draw from the cuticle to the tip and place the gold point on the smile line. It shows the free edge as a % of the nail bed. ' + MOVE_TIP],
+  mm: ['Millimeters', 'Measures in millimeters on the photo (approximate measurement), using a ruler photographed next to the nail.'],
+  sCal: ['Ruler size', 'Changes how long the section you marked on the ruler is. All millimeter measurements on the photo are recalculated.'],
+  ratio2: ['Pink/White', 'First measurement: from the cuticle to the smile line (center). Second: from the highest point of the smile line to the free edge. It shows the split, for example "Pink 50 % · Free edge 50 %". ' + MOVE_TIP],
+  bSym: ['Symmetry', 'Places a blue axis: put it in the center of the nail. Whatever you draw on one side is mirrored on the other. If you then adjust one or both lines to the real sidewalls, it shows the deviation in degrees and the difference in distance to the axis in %. Tap again to remove it.'],
+  bPressure: ['Pressure', 'Active stylus only: the stroke gets thinner or thicker depending on how hard you press.'],
+  sFlip: ['Flip', 'Turns the arc to the other side (concave / convex).'],
+  arcp: ['C-curve 30 · 40 · 50 %', 'Sets the arc to that exact curvature, seen from the front (50 % = half circle).'],
+  sFade: ['Lighter', 'Makes the overlay more transparent. Each tap lowers it by 10 %.'],
+  sSolid: ['Darker', 'Makes the overlay more visible. Each tap raises it by 10 %, and above 100 % it darkens the lines even more, up to 200 %.'],
+  sRotL: ['Rotate 1° left', 'Rotates the overlay 1 degree counterclockwise for precise adjustment. With the overlay selected you can also rotate, move and resize it with two fingers without the photo moving.'],
+  sRotR: ['Rotate 1° right', 'Rotates the overlay 1 degree clockwise for precise adjustment. With the overlay selected you can also rotate, move and resize it with two fingers without the photo moving.'],
+  sSmaller: ['Smaller', 'Makes the selected text or label smaller.'],
+  sBigger: ['Larger', 'Makes the selected text or label larger.'],
+  sEdit: ['Edit', 'Changes what the text or label says.'],
+  sDup: ['Duplicate', 'Makes a copy of the selected element.'],
+  sDel: ['Delete', 'Deletes the selected element.'],
+  sOk: ['Done', 'Finishes editing and clears the selection.']
+});
 const GUIDE = [
-  ['Trabajo e imagen', ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
-  ['Dibujar', ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
-  ['Formas y texto', ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
-  ['Corregir y medir', ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
-  ['Al seleccionar un elemento', ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
+  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
+  [TT('Dibujar', 'Drawing'), ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
+  [TT('Formas y texto', 'Shapes and text'), ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
+  [TT('Corregir y medir', 'Correct and measure'), ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
+  [TT('Al seleccionar un elemento', 'When an element is selected'), ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
 ];
 function helpKey(el) { return el.dataset.tool || (el.classList.contains('arcp') ? 'arcp' : el.id); }
 function showHelp(k) {
@@ -1485,8 +1714,9 @@ function iconFor(k) {
 function showGuide() {
   const g = $('#gBody'); g.innerHTML = '';
   const tips = document.createElement('div');
-  tips.innerHTML = '<div class="tipbox">💡 Mantén pulsado cualquier botón para ver qué hace.</div><div class="tipbox">💡 ' + MOVE_TIP + '</div>' +
-    '<div class="tipbox">💡 Con dos dedos amplías, mueves y giras la imagen con cualquier herramienta.</div>';
+  tips.innerHTML = '<div class="tipbox">💡 ' + TT('Mantén pulsado cualquier botón para ver qué hace.', 'Press and hold any button to see what it does.') + '</div><div class="tipbox">💡 ' + MOVE_TIP + '</div>' +
+    '<div class="tipbox">💡 ' + TT('Con dos dedos amplías, mueves y giras la imagen con cualquier herramienta.', 'With two fingers you zoom, move and rotate the image with any tool.') + '</div>' +
+    '<div class="tipbox">🌐 ' + TT('Para cambiar el idioma, toca ES / EN debajo de ZALESTUDIO, arriba a la izquierda. Tu trabajo se guarda antes de cambiar.', 'To change the language, tap ES / EN below ZALESTUDIO, top left. Your work is saved before switching.') + '</div>';
   g.appendChild(tips);
   for (const [title, keys] of GUIDE) {
     const h = document.createElement('h3'); h.textContent = title; g.appendChild(h);
@@ -1541,7 +1771,8 @@ function drawPairs(c) {   // compara cada pareja reflejada: inclinación (°) y 
       ang = Math.acos(Math.min(1, Math.abs((vp[0] * rq[0] + vp[1] * rq[1]) / (lp * lq)))) * 180 / Math.PI;
     }
     const ok = (ang === null || ang < 1) && pct < 3;
-    const txt = ok ? 'Simétricas ✓' : (ang !== null ? `Desviación ${fmt1(ang)}° · distancia al eje ${Math.round(pct)} %` : `Distancia al eje ${Math.round(pct)} %`);
+    const txt = EN ? (ok ? 'Symmetrical ✓' : (ang !== null ? `Deviation ${fmt1(ang)}° · distance to axis ${Math.round(pct)} %` : `Distance to axis ${Math.round(pct)} %`))
+                 : (ok ? 'Simétricas ✓' : (ang !== null ? `Desviación ${fmt1(ang)}° · distancia al eje ${Math.round(pct)} %` : `Distancia al eje ${Math.round(pct)} %`));
     // etiqueta sobre el eje, más allá del extremo de la pareja
     let tmax = -Infinity;
     for (const o of g) for (const pt of quadOf(o)) tmax = Math.max(tmax, along(pt));
@@ -1550,7 +1781,7 @@ function drawPairs(c) {   // compara cada pareja reflejada: inclinación (°) y 
     const op = { segs: [...objSegs(p), ...objSegs(q), [A.a, A.b]], pts: [...handlesOf(p), ...handlesOf(q), ...handlesOf(A)].map(h => h[1]), pref: [ux, uy] };
     if (!EXPORTING && g.some(o => S.sel.includes(o))) { const r = rotHandlePos(); if (r) { const d = toDocS(r.x, r.y); op.pts.push([d.x, d.y]); } }
     const short = ok ? '✓' : (ang !== null ? `${fmt1(ang)}° · ${Math.round(pct)} %` : `${Math.round(pct)} %`);
-    TAG_OWNER = g; measTag(c, g, txt, short, pos[0], pos[1], fs, ok ? '#2e9e48' : '#00bcd4', anc, op, 'Simetría: ' + txt.charAt(0).toLowerCase() + txt.slice(1)); TAG_OWNER = null;
+    TAG_OWNER = g; measTag(c, g, txt, short, pos[0], pos[1], fs, ok ? '#2e9e48' : '#00bcd4', anc, op, TT('Simetría: ', 'Symmetry: ') + txt.charAt(0).toLowerCase() + txt.slice(1)); TAG_OWNER = null;
   }
 }
 function reflectP(p, A) {
@@ -1618,12 +1849,12 @@ function drawLabel(c, o) {
   b.lines.forEach((ln, i) => c.fillText(ln, 0, y0 + i * lh));
 }
 function addLabel(text) {
-  if (S.empty) { toast('Abre primero una foto o una plantilla'); return; }
+  if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
   const s = S.view.s, n = (addLabel.n = ((addLabel.n || 0) + 1) % 6), off = n * 34;
   const bx = toDocS(W / 2 - 70 + off, H / 2 - 80 + off), tp = toDocS(W / 2 + 70 + off, H / 2 + 40 + off);   // posiciones en pantalla
   const o = { t: 'label', text, color: S.color, size: 22 / s, x: bx.x, y: bx.y, tip: [tp.x, tp.y] };
   S.objects.push(o); commit(); setTool('select'); select(o);
-  toast('Arrastra la caja y el punto de la flecha');
+  toast(TT('Arrastra la caja y el punto de la flecha', 'Drag the box and the arrow point'));
 }
 
 function drawStroke(c, o) {
@@ -1770,7 +2001,7 @@ function drawSelection() {
     const g = arcInfo(one);
     if (g) {
       const persp = Math.abs(g.k - 1) > 0.03;
-      const s = toScreen(one.m[0], one.m[1]), txt = `Curva C ${Math.round(g.pct * 100)} %${persp ? ' · estimada' : ''}`;
+      const s = toScreen(one.m[0], one.m[1]), txt = `${TT('Curva C', 'C-curve')} ${Math.round(g.pct * 100)} %${persp ? TT(' · estimada', ' · estimated') : ''}`;
       ctx.font = '600 13px Montserrat, system-ui, sans-serif'; const tw = ctx.measureText(txt).width;
       const sg = Math.sign(g.sag) || 1, off = 40 / S.view.s;   // la etiqueta va por fuera de la curva, sin tapar los puntos
       const lp = toScreen(one.m[0] + g.nx * sg * off, one.m[1] + g.ny * sg * off);
@@ -1883,7 +2114,7 @@ function select(list) {
   $('#sEdit').style.display = one && TXT_TYPES.includes(one.t) ? '' : 'none';
   $('#sCal').style.display = one && one.t === 'calib' ? '' : 'none';
   $('#sFade').style.display = $('#sSolid').style.display = $('#sRotL').style.display = $('#sRotR').style.display = one && one.t === 'overlay' ? '' : 'none';
-  $('#selN').textContent = S.sel.length > 1 ? `${S.sel.length} elementos` : '';
+  $('#selN').textContent = S.sel.length > 1 ? `${S.sel.length} ${TT('elementos', 'elements')}` : '';
   $('#selN').style.display = S.sel.length > 1 ? '' : 'none';
   syncSize();
   req();
@@ -2012,7 +2243,7 @@ function movePinch() {
 stage.addEventListener('pointerdown', e => {
   if (e.target !== cv || S.empty) return;   // los botones flotantes funcionan normal
   e.preventDefault();
-  if (e.pointerType === 'pen' && !penSeen) { penSeen = true; syncSize(); toast('Lápiz activo detectado: presión activada y la palma se ignora'); }
+  if (e.pointerType === 'pen' && !penSeen) { penSeen = true; syncSize(); toast(TT('Lápiz activo detectado: presión activada y la palma se ignora', 'Active stylus detected: pressure on and palm ignored')); }
   try { stage.setPointerCapture(e.pointerId); } catch (_) {}
   ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, t: e.pointerType });
   if (e.pointerType === 'touch' && touchPts().length === 1) gestureSel = S.sel.slice();
@@ -2162,7 +2393,7 @@ function moveAct(e) {
     act.last = ang; act.total += d;
     for (const o of S.sel) rotateObj(o, act.pivot.x, act.pivot.y, d);
     let deg = Math.round(act.total * 180 / Math.PI) % 360; if (deg > 180) deg -= 360; if (deg < -180) deg += 360;
-    toast(`Girando ${deg}°`, 700);
+    toast(`${TT('Girando', 'Rotating')} ${deg}°`, 700);
     req(); return;
   }
   if (act.kind === 'handle') {
@@ -2264,7 +2495,7 @@ function finishAct(e) {
       return Math.max(...xs) > x1 && Math.min(...xs) < x2 && Math.max(...ys) > y1 && Math.min(...ys) < y2;
     });
     select(found);
-    if (!found.length) toast('No hay nada dentro del recuadro');
+    if (!found.length) toast(TT('No hay nada dentro del recuadro', 'Nothing inside the box'));
     return;
   }
   if (a.kind === 'rotate') { if (a.started) commit(); req(); return; }
@@ -2324,7 +2555,7 @@ $('#tOk').onclick = () => {
   } else if (v) {
     const o = { t: 'text', text: v, color: S.color, size: S.sizes.text / S.view.s, x: textCtx.pt.x, y: textCtx.pt.y };
     S.objects.push(o); commit(); select(o);
-    toast('Arrastra el texto para colocarlo');
+    toast(TT('Arrastra el texto para colocarlo', 'Drag the text to place it'));
   }
   textCtx = null;
 };
@@ -2362,7 +2593,7 @@ $('#sDup').onclick = () => {
 /* ---------- grosor ---------- */
 $('#bPressure').onclick = () => {
   S.pressure = !S.pressure; $('#bPressure').classList.toggle('on', S.pressure);
-  toast(S.pressure ? 'Presión activada' : 'Presión desactivada');
+  toast(S.pressure ? TT('Presión activada', 'Pressure on') : TT('Presión desactivada', 'Pressure off'));
 };
 
 /* ---------- abrir imagen / lienzo ---------- */
@@ -2371,14 +2602,14 @@ function loadImg(src) {
 }
 async function askNew(what) {
   if (!hasWork()) return true;
-  return confirmBox(what, 'Se abrirá un trabajo nuevo. El que tienes ahora queda guardado en "Trabajos" y puedes volver a él cuando quieras.', 'Continuar', false);
+  return confirmBox(what, TT('Se abrirá un trabajo nuevo. El que tienes ahora queda guardado en "Trabajos" y puedes volver a él cuando quieras.', 'A new project will open. Your current one stays saved in "Projects" and you can go back to it whenever you like.'), TT('Continuar', 'Continue'), false);
 }
-$('#bOpen').onclick = async () => { if (await askNew('Abrir otra foto')) $('#file').click(); };
+$('#bOpen').onclick = async () => { if (await askNew(TT('Abrir otra foto', 'Open another photo'))) $('#file').click(); };
 $('#file').addEventListener('change', async e => {
   const f = e.target.files[0]; e.target.value = '';
   if (!f) return;
   try {
-    toast('Cargando imagen…');
+    toast(TT('Cargando imagen…', 'Loading image…'));
     await saveNow();
     const url = URL.createObjectURL(f);
     const img = await loadImg(url);
@@ -2390,14 +2621,14 @@ $('#file').addEventListener('change', async e => {
     const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
     const bg = await loadImg(URL.createObjectURL(blob));
     newDoc(w, h, bg, blob);
-    toast('Foto abierta. Dos dedos: ampliar, mover y girar');
-  } catch (err) { console.error(err); toast('No se pudo abrir la imagen'); }
+    toast(TT('Foto abierta. Dos dedos: ampliar, mover y girar', 'Photo open. Two fingers: zoom, move and rotate'));
+  } catch (err) { console.error(err); toast(TT('No se pudo abrir la imagen', 'Could not open the image')); }
 });
 $('#bBlank').onclick = async () => {
-  if (!(await askNew('Lienzo en blanco'))) return;
+  if (!(await askNew(TT('Lienzo en blanco', 'Blank canvas')))) return;
   await saveNow();
   newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null);
-  toast('Lienzo en blanco');
+  toast(TT('Lienzo en blanco', 'Blank canvas'));
 };
 function setEmpty(v) {
   S.empty = v;
@@ -2426,7 +2657,7 @@ $('#bUndo').onclick = undo;
 $('#bRedo').onclick = redo;
 $('#bClear').onclick = async () => {
   if (!S.objects.length) return;
-  if (await confirmBox('Borrar dibujos', 'Se borrarán todos los trazos (la foto se queda). Puedes recuperarlos con Deshacer.', 'Borrar')) {
+  if (await confirmBox(TT('Borrar dibujos', 'Clear drawings'), TT('Se borrarán todos los trazos (la foto se queda). Puedes recuperarlos con Deshacer.', 'All strokes will be deleted (the photo stays). You can get them back with Undo.'), TT('Borrar', 'Clear'))) {
     S.objects = []; select(null); commit();
   }
 };
@@ -2471,7 +2702,7 @@ $('#bSave').onclick = async () => {
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   goHome();
-  toast('Imagen guardada en Descargas. El trabajo queda en "Mis trabajos"', 3200);
+  toast(TT('Imagen guardada en Descargas. El trabajo queda en "Mis trabajos"', 'Image saved to Downloads. The project stays in "My projects"'), 3200);
 };
 $('#bShare').onclick = async () => {
   select(null);
@@ -2479,7 +2710,7 @@ $('#bShare').onclick = async () => {
   const file = new File([blob], `zalestudio-${fileStamp()}.png`, { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try { await navigator.share({ files: [file], title: 'ZaleStudio' }); } catch (_) {}
-  } else toast('Este navegador no permite compartir. Usa "Guardar imagen"');
+  } else toast(TT('Este navegador no permite compartir. Usa "Guardar imagen"', 'This browser cannot share. Use "Save image"'));
 };
 
 /* ---------- trabajos (IndexedDB, en la propia tablet) ---------- */
@@ -2520,7 +2751,7 @@ async function saveNow(force) {
     await DB.put({ id: S.projectId, name: S.projectName || nowName(), updated: Date.now(),
                    docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view }, eval: S.eval || null });
     localStorage.setItem('zalestudio-last', S.projectId);
-  } catch (err) { console.error(err); toast('No se pudo guardar el trabajo'); }
+  } catch (err) { console.error(err); toast(TT('No se pudo guardar el trabajo', 'Could not save the project')); }
 }
 async function openProject(id, keepView) {
   const p = await DB.get(id); if (!p) return false;
@@ -2537,18 +2768,18 @@ async function showProjects() {
   await saveNow();
   const list = (await DB.all()).sort((a, b) => b.updated - a.updated);
   const box = $('#plist'); box.innerHTML = '';
-  if (!list.length) box.innerHTML = '<div class="empty">Aún no hay trabajos guardados.<br>Se guardan solos mientras dibujas.</div>';
+  if (!list.length) box.innerHTML = '<div class="empty">' + TT('Aún no hay trabajos guardados.<br>Se guardan solos mientras dibujas.', 'No saved projects yet.<br>They save automatically while you draw.') + '</div>';
   for (const p of list) {
     const d = document.createElement('div'); d.className = 'pj' + (p.id === S.projectId ? ' cur' : '');
     const dt = new Date(p.updated);
-    d.innerHTML = `<img alt=""><div class="meta"></div><div class="row"><button class="pill pri">Abrir</button><button class="pill dan">Borrar</button></div>`;
+    d.innerHTML = `<img alt=""><div class="meta"></div><div class="row"><button class="pill pri">${TT('Abrir', 'Open')}</button><button class="pill dan">${TT('Borrar', 'Delete')}</button></div>`;
     d.querySelector('img').src = p.thumb;
-    d.querySelector('.meta').textContent = `${p.name} · ${dt.toLocaleDateString('es-ES')}`;
+    d.querySelector('.meta').textContent = `${p.name} · ${dt.toLocaleDateString(LOC)}`;
     const open = async () => { $('#mProjects').classList.remove('show'); await openProject(p.id); };
     d.querySelector('img').onclick = open;
     d.querySelector('.pill.pri').onclick = open;
     d.querySelector('.pill.dan').onclick = async () => {
-      if (!(await confirmBox('Borrar trabajo', `Se borrará "${p.name}" de esta tablet. No se puede deshacer.`, 'Borrar'))) return;
+      if (!(await confirmBox(TT('Borrar trabajo', 'Delete project'), EN ? `"${p.name}" will be deleted from this device. This cannot be undone.` : `Se borrará "${p.name}" de esta tablet. No se puede deshacer.`, TT('Borrar', 'Delete')))) return;
       await DB.del(p.id);
       if (p.id === S.projectId) goHome();
       showProjects();
@@ -2561,7 +2792,7 @@ $('#bProjects').onclick = showProjects;
 $('#pClose').onclick = () => $('#mProjects').classList.remove('show');
 
 $('#hOpen').onclick = () => $('#file').click();
-$('#hBlank').onclick = () => { newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null); toast('Lienzo en blanco'); };
+$('#hBlank').onclick = () => { newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null); toast(TT('Lienzo en blanco', 'Blank canvas')); };
 $('#hProjects').onclick = showProjects;
 $('#bGuide').onclick = showGuide;
 $('#hGuide').onclick = showGuide;
@@ -2581,7 +2812,7 @@ function togglePanel(id) { setPanel(id, !$('#' + id).classList.contains('open'))
 $('#bTpl').onclick = () => { setTplMode('open'); togglePanel('pTpl'); };
 $('#hTpl').onclick = () => { setTplMode('open'); setPanel('pTpl', true); };
 $('#bLbl').onclick = () => togglePanel('pLbl');
-$('#bEval').onclick = () => { if (S.empty) { toast('Abre primero una foto o una plantilla'); return; } togglePanel('pEval'); };
+$('#bEval').onclick = () => { if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; } togglePanel('pEval'); };
 document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => setPanel(b.dataset.close, false));
 (function buildPanels() {
   const g = $('#tplGrid');
@@ -2604,34 +2835,34 @@ function setTplMode(m) {
   $('#mOpen').classList.toggle('on', m === 'open'); $('#mCalco').classList.toggle('on', m === 'calco');
 }
 $('#mOpen').onclick = () => setTplMode('open');
-$('#mCalco').onclick = () => { if (S.empty) { toast('Abre primero una foto o una plantilla'); return; } setTplMode('calco'); };
-$('#bCalco').onclick = () => { if (S.empty) { toast('Abre primero una foto'); return; } setTplMode('calco'); setPanel('pTpl', true); };
+$('#mCalco').onclick = () => { if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; } setTplMode('calco'); };
+$('#bCalco').onclick = () => { if (S.empty) { toast(TT('Abre primero una foto', 'Open a photo first')); return; } setTplMode('calco'); setPanel('pTpl', true); };
 async function addOverlay(t) {
   const im = tplImg(t.f);
   if (!(im.complete && im.naturalWidth)) await new Promise((res, rej) => { im.addEventListener('load', res, { once: true }); im.addEventListener('error', rej, { once: true }); });
   const f = Math.min(0.7 * W / im.naturalWidth, 0.7 * H / im.naturalHeight), c = toDocS(W / 2, H / 2);
   const o = { t: 'overlay', f: t.f, n: t.n, x: c.x, y: c.y, iw: im.naturalWidth * f / S.view.s, ih: im.naturalHeight * f / S.view.s, rot: -S.view.r, alpha: 0.5 };
   S.objects.push(o); commit(); setTool('select'); select(o);
-  toast('Calco: muévelo, gíralo y ajusta el tamaño con los puntos');
+  toast(TT('Calco: muévelo, gíralo y ajusta el tamaño con los puntos', 'Overlay: move it, rotate it and resize it with the points'));
 }
-$('#sFade').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.alpha = Math.max(0.1, Math.round((o.alpha - 0.1) * 10) / 10); commit(); toast(`Calco ${Math.round(o.alpha * 100)} %`, 1200); } };
-$('#sSolid').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.alpha = Math.min(2, Math.round((o.alpha + 0.1) * 10) / 10); commit(); toast(`Calco ${Math.round(o.alpha * 100)} %`, 1200); } };
+$('#sFade').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.alpha = Math.max(0.1, Math.round((o.alpha - 0.1) * 10) / 10); commit(); toast(`${TT('Calco', 'Overlay')} ${Math.round(o.alpha * 100)} %`, 1200); } };
+$('#sSolid').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.alpha = Math.min(2, Math.round((o.alpha + 0.1) * 10) / 10); commit(); toast(`${TT('Calco', 'Overlay')} ${Math.round(o.alpha * 100)} %`, 1200); } };
 $('#sCal').onclick = () => { const o = single(); if (o && o.t === 'calib') askCalib(o, false); };
 $('#sRotL').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.rot = (o.rot || 0) - Math.PI / 180; commit(); } };
 $('#sRotR').onclick = () => { const o = single(); if (o && o.t === 'overlay') { o.rot = (o.rot || 0) + Math.PI / 180; commit(); } };
 $('#bSym').onclick = () => {
   if (S.empty) return;
   const ax = axisObj();
-  if (ax) { S.objects = S.objects.filter(o => o.t !== 'axis'); select(null); commit(); toast('Simetría desactivada'); return; }
+  if (ax) { S.objects = S.objects.filter(o => o.t !== 'axis'); select(null); commit(); toast(TT('Simetría desactivada', 'Symmetry off')); return; }
   const a = toDocS(W / 2, H * 0.08), b = toDocS(W / 2, H * 0.92);
   const o = { t: 'axis', a: [a.x, a.y], b: [b.x, b.y], w: 2 / S.view.s, color: '#00bcd4' };
   S.objects.push(o); commit(); setTool('select'); select(o);
-  toast('Simetría: coloca el eje en el centro de la uña. Lo que dibujes se refleja al otro lado');
+  toast(TT('Simetría: coloca el eje en el centro de la uña. Lo que dibujes se refleja al otro lado', 'Symmetry: place the axis in the center of the nail. Whatever you draw is mirrored on the other side'));
 };
 let presFS = false;
 function setPresent(v) {
   const c = W ? toDocS(W / 2, H / 2) : null;
-  if (v) { select(null); toast('Presentación: dedos para ampliar, mover y girar'); }
+  if (v) { select(null); toast(TT('Presentación: dedos para ampliar, mover y girar', 'Presentation: use your fingers to zoom, move and rotate')); }
   document.body.classList.toggle('present', v);
   setPanel('pTpl', false); setPanel('pLbl', false);
   try {
@@ -2648,24 +2879,31 @@ document.addEventListener('fullscreenchange', () => {
 });
 async function openTemplate(t) {
   setPanel('pTpl', false);
-  if (tplMode === 'calco' && !S.empty) { try { await addOverlay(t); } catch (err) { console.error(err); toast('No se pudo poner el calco'); } return; }
-  if (!(await askNew('Abrir plantilla'))) return;
+  if (tplMode === 'calco' && !S.empty) { try { await addOverlay(t); } catch (err) { console.error(err); toast(TT('No se pudo poner el calco', 'Could not place the overlay')); } return; }
+  if (!(await askNew(TT('Abrir plantilla', 'Open template')))) return;
   try {
-    toast('Cargando plantilla…');
+    toast(TT('Cargando plantilla…', 'Loading template…'));
     await saveNow();
     const r = await fetch(t.f); if (!r.ok) throw new Error(r.status);
     const blob = await r.blob(), img = await loadImg(URL.createObjectURL(blob));
     newDoc(img.naturalWidth, img.naturalHeight, img, blob);
     S.projectName = t.n; scheduleSave();
     toast(t.n);
-  } catch (err) { console.error(err); toast('No se pudo abrir la plantilla'); }
+  } catch (err) { console.error(err); toast(TT('No se pudo abrir la plantilla', 'Could not open the template')); }
 }
 $('#bExit').onclick = async () => {
   select(null);
   if (hasWork()) await saveNow(true);
   goHome();
   window.close();   // en Android, si el sistema no deja cerrar desde la app, se queda en la pantalla de inicio
-  setTimeout(() => toast('Trabajo guardado. Para cerrar del todo, desliza la app hacia arriba', 3500), 300);
+  setTimeout(() => toast(TT('Trabajo guardado. Para cerrar del todo, desliza la app hacia arriba', 'Project saved. To close the app completely, swipe it up'), 3500), 300);
+};
+
+$('#bLang').onclick = async () => {   // guarda el trabajo, cambia el idioma y recarga; el trabajo se vuelve a abrir
+  select(null);
+  if (hasWork()) { await saveNow(true); try { if (S.projectId) sessionStorage.setItem('zalestudio-reopen', S.projectId); } catch (_) {} }
+  try { localStorage.setItem('zalestudio-lang', EN ? 'es' : 'en'); } catch (_) {}
+  location.reload();
 };
 
 /* guardar al salir o pasar a segundo plano */
@@ -2680,6 +2918,10 @@ resize();
 setTool('pen');
 $('#bPressure').classList.toggle('on', S.pressure);
 goHome();
+(async () => {   // después de cambiar de idioma se vuelve al trabajo que estaba abierto
+  let id = null; try { id = sessionStorage.getItem('zalestudio-reopen'); sessionStorage.removeItem('zalestudio-reopen'); } catch (_) {}
+  if (id) { try { await openProject(id, true); } catch (err) { console.error(err); } }
+})();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
