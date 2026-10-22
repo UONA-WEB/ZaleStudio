@@ -749,7 +749,7 @@ const S = {
 
 let draft = null;          // objeto en construcción
 let marquee = null;        // rectángulo de selección (pantalla)
-let hist = [], hIdx = -1;  // deshacer / rehacer
+let hist = [], hIdx = -1, histMold = [];  // deshacer / rehacer
 let penSeen = false;       // se ha detectado un lápiz activo
 let lastTap = { o: null, t: 0 };
 
@@ -2182,17 +2182,17 @@ function moldPlace(k) {
   if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
   const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.3, 320) / S.view.s;
   S.mold = { k, x: c.x, y: c.y, rot: -S.view.r, u, op: 0.85, fixed: false };
-  moldImg(k); scheduleSave(); req();
+  moldImg(k); commit();
   toast(TT('Coloca el molde: arrástralo, y con dos dedos lo giras y lo amplías. Después pulsa Fijar', 'Place the form: drag it, and use two fingers to rotate and resize it. Then tap Fix'), 4000);
 }
 function moldFix(v) {
   if (!S.mold) return;
-  S.mold.fixed = v; scheduleSave(); req();
+  S.mold.fixed = v; commit();
   toast(v ? TT('Molde fijo: ya no se mueve al usar las herramientas', 'Form fixed: it no longer moves when you use the tools') : TT('Mueve el molde y pulsa Fijar cuando esté en su sitio', 'Move the form and tap Fix when it is in place'), 2500);
 }
 function moldOpacity(dv) {
   if (!S.mold) return;
-  S.mold.op = Math.round(clamp(S.mold.op + dv, 0.1, 1) * 10) / 10; scheduleSave(); req();
+  S.mold.op = Math.round(clamp(S.mold.op + dv, 0.1, 1) * 10) / 10; commit();
   toast(`${TT('Molde', 'Form')} ${Math.round(S.mold.op * 100)} %`, 900);
 }
 $('#bMold').onclick = () => {
@@ -2203,15 +2203,15 @@ $('#bMold').onclick = () => {
 };
 document.querySelectorAll('#mMold .mopt').forEach(b => b.onclick = () => { $('#mMold').classList.remove('show'); moldPlace(b.dataset.mold); });
 $('#moCancel').onclick = () => $('#mMold').classList.remove('show');
-$('#mRotL').onclick = () => { if (S.mold) { S.mold.rot -= Math.PI / 180; scheduleSave(); req(); } };
-$('#mRotR').onclick = () => { if (S.mold) { S.mold.rot += Math.PI / 180; scheduleSave(); req(); } };
-$('#mBig').onclick = () => { if (S.mold) { S.mold.u *= 1.05; scheduleSave(); req(); } };
-$('#mSmall').onclick = () => { if (S.mold) { S.mold.u /= 1.05; scheduleSave(); req(); } };
+$('#mRotL').onclick = () => { if (S.mold) { S.mold.rot -= Math.PI / 180; commit(); } };
+$('#mRotR').onclick = () => { if (S.mold) { S.mold.rot += Math.PI / 180; commit(); } };
+$('#mBig').onclick = () => { if (S.mold) { S.mold.u *= 1.05; commit(); } };
+$('#mSmall').onclick = () => { if (S.mold) { S.mold.u /= 1.05; commit(); } };
 $('#mFade').onclick = () => moldOpacity(-0.1);
 $('#mSolid').onclick = () => moldOpacity(0.1);
 $('#mFix').onclick = () => moldFix(true);
 $('#mMove').onclick = () => moldFix(false);
-$('#mClose').onclick = () => { S.mold = null; scheduleSave(); req(); };
+$('#mClose').onclick = () => { if (!S.mold) return; S.mold = null; commit(); toast(TT('Molde quitado. Si ha sido sin querer, pulsa Deshacer', 'Form removed. If it was a mistake, tap Undo'), 2500); };
 
 /* ---------- regla (solo en pantalla: va pegada a la foto y no sale al guardar) ---------- */
 const RULER_LEN = 15;   // marcas de 0 a 15
@@ -2669,16 +2669,17 @@ function select(list) {
 
 /* ---------- historial ---------- */
 function commit() {
-  hist = hist.slice(0, hIdx + 1);
-  hist.push(JSON.stringify(S.objects));
-  if (hist.length > 100) hist.shift();
+  hist = hist.slice(0, hIdx + 1); histMold = histMold.slice(0, hIdx + 1);
+  hist.push(JSON.stringify(S.objects)); histMold.push(JSON.stringify(S.mold || null));
+  if (hist.length > 100) { hist.shift(); histMold.shift(); }
   hIdx = hist.length - 1;
   // las referencias seleccionadas siguen siendo las mismas: nada que rehacer
   updUndo(); scheduleSave();
 }
-function resetHist() { hist = [JSON.stringify(S.objects)]; hIdx = 0; updUndo(); }
-function undo() { if (hIdx > 0) { hIdx--; S.objects = JSON.parse(hist[hIdx]); select(null); updUndo(); scheduleSave(); } }
-function redo() { if (hIdx < hist.length - 1) { hIdx++; S.objects = JSON.parse(hist[hIdx]); select(null); updUndo(); scheduleSave(); } }
+function resetHist() { hist = [JSON.stringify(S.objects)]; histMold = [JSON.stringify(S.mold || null)]; hIdx = 0; updUndo(); }
+function histMoldAt(i) { try { return JSON.parse(histMold[i] || 'null'); } catch (_) { return null; } }
+function undo() { if (hIdx > 0) { hIdx--; S.objects = JSON.parse(hist[hIdx]); S.mold = histMoldAt(hIdx); select(null); updUndo(); scheduleSave(); } }
+function redo() { if (hIdx < hist.length - 1) { hIdx++; S.objects = JSON.parse(hist[hIdx]); S.mold = histMoldAt(hIdx); select(null); updUndo(); scheduleSave(); } }
 function updUndo() { $('#bUndo').disabled = hIdx <= 0; $('#bRedo').disabled = hIdx >= hist.length - 1; req(); }
 
 /* ---------- herramientas y propiedades ---------- */
@@ -2852,7 +2853,7 @@ function endPointer(e, cancelled) {
   if (!ptrs.has(e.pointerId)) return;
   ptrs.delete(e.pointerId); if (!ptrs.size && S.sel.length) req();
   if (pinch) {
-    if (touchPts().length < 2) { const wasObj = !!pinch.obj; pinch = null; blockTouch = touchPts().length > 0; if (wasObj) commit(); else scheduleSave(); }
+    if (touchPts().length < 2) { const wasObj = !!pinch.obj || !!pinch.mold; pinch = null; blockTouch = touchPts().length > 0; if (wasObj) commit(); else scheduleSave(); }
     return;
   }
   if (blockTouch && touchPts().length === 0) blockTouch = false;
@@ -3027,7 +3028,8 @@ function moveAct(e) {
 
 function finishAct(e) {
   const a = act; act = null;
-  if (a.kind === 'ruler' || a.kind === 'mold') { scheduleSave(); req(); return; }
+  if (a.kind === 'mold') { commit(); return; }
+  if (a.kind === 'ruler') { scheduleSave(); req(); return; }
   if (a.kind === 'draw') {
     if (a.raw) { const p = draft.p, n = p.length; if (dist(a.raw.x, a.raw.y, p[n-3], p[n-2]) > 0.3 / S.view.s) p.push(a.raw.x, a.raw.y, a.raw.pr); }
     cursor = null; S.objects.push(draft);
