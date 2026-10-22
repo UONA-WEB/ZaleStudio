@@ -227,6 +227,19 @@ table.evg th .sm{display:none}
 #toast{z-index:9}
 #rulerbar{position:absolute;left:50%;top:8px;transform:translateX(-50%);display:none;flex-direction:row;align-items:center;max-width:calc(100% - 16px);gap:2px;z-index:4;background:rgba(31,29,36,.92);border:1px solid var(--line);border-radius:14px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
 #rulerbar.show{display:flex}
+#moldbar{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:none;flex-direction:row;align-items:center;gap:2px;z-index:4;background:rgba(31,29,36,.92);border:1px solid var(--line);border-radius:14px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.45);max-width:calc(100% - 16px);overflow-x:auto}
+#moldbar.show{display:flex}
+#moldbar .btn{min-width:46px;height:46px;font-size:10px;padding:0 2px;flex:none}
+#moldbar .btn svg{width:20px;height:20px}
+#moldbar .mfix{display:none}
+#moldbar.fixed .mplace{display:none}
+#moldbar.fixed .mfix{display:flex}
+#moldbar #mFix{color:var(--acc2)}
+body.present #moldbar{display:none}
+#mMold .mopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#mMold .mopt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--txt);font:600 13px Montserrat,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+#mMold .mopt img{width:100%;height:90px;object-fit:contain}
+#mMold .mopt.on{border-color:var(--acc)}
 #rulerbar #rShow{display:none}
 #rulerbar.mini{left:auto;right:8px;transform:none;padding:3px}
 #rulerbar.mini > *{display:none}
@@ -271,6 +284,7 @@ body.present #rulerbar{display:none}
     <button class="btn" id="bTpl"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/><rect x="14" y="15" width="7" height="6" rx="1.5"/></svg>Plantillas</button>
     <button class="btn" id="bLbl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="13" height="8" rx="2"/><path d="M11 11l7 8M18 19l-4-.5M18 19l-.6-4"/></svg>Etiquetas</button>
     <button class="btn" id="bCalco"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2" stroke-dasharray="3 2"/></svg>Calco</button>
+    <button class="btn" id="bMold"><svg viewBox="0 0 24 24"><path d="M3 7h3a4 4 0 0 0 8 0h7v7h-3a4 4 0 0 0-8 0v3H3z"/><path d="M14 9h6M14 11.5h6M16.5 7v7" stroke-width="1.2"/></svg>Moldes</button>
     <button class="btn" id="bEval"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 11l1.5 1.5 3-3M8.5 16.5h7"/></svg>Evaluar</button>
     <button class="btn" id="bBlank"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="M13 11v6M10 14h6"/></svg>Lienzo</button>
     <button class="btn" id="bProjects"><svg viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></svg>Trabajos</button>
@@ -311,6 +325,17 @@ body.present #rulerbar{display:none}
       <button class="btn" id="sOk"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Listo</button>
     </div>
     <div id="toast"></div>
+    <div id="moldbar">
+      <button class="btn mplace" id="mRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
+      <button class="btn mplace" id="mRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
+      <button class="btn mplace" id="mBig"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16 16l5 5"/></svg><span class="mlab">Ampliar</span></button>
+      <button class="btn mplace" id="mSmall"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16 16l5 5"/></svg><span class="mlab">Reducir</span></button>
+      <button class="btn" id="mFade"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/></svg><span class="mlab">Más suave</span></button>
+      <button class="btn" id="mSolid"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg><span class="mlab">Más visible</span></button>
+      <button class="btn mplace" id="mFix"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg><span class="mlab">Fijar</span></button>
+      <button class="btn mfix" id="mMove"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><span class="mlab">Mover molde</span></button>
+      <button class="btn" id="mClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="mlab">Quitar</span></button>
+    </div>
     <div id="rulerbar">
       <button class="btn" id="rRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
       <button class="btn" id="rRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
@@ -465,6 +490,16 @@ body.present #rulerbar{display:none}
     <div class="actions"><button class="pill" id="cCancel">Cancelar</button><button class="pill pri" id="cOk">Aceptar</button></div>
   </div>
 </div>
+<div class="modal" id="mMold">
+  <div class="card">
+    <h2 id="moTitle">Moldes</h2>
+    <div class="mopts">
+      <button class="mopt" data-mold="estructura"><img src="molde-estructura.png" alt=""><span id="moE">Molde de estructura</span></button>
+      <button class="mopt" data-mold="stiletto"><img src="molde-stiletto.png" alt=""><span id="moS">Molde de stiletto</span></button>
+    </div>
+    <div class="actions"><button class="pill" id="moCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="modal" id="mCamPerm">
   <div class="card" style="overflow:auto">
     <h2 id="cpTitle"></h2>
@@ -603,7 +638,7 @@ body.present #rulerbar{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.2 · ES/EN · regla · VERSIÓN DE PRUEBAS sin cuentas ni pagos)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.3 · ES/EN · regla · moldes · VERSIÓN DE PRUEBAS sin cuentas ni pagos)
    ========================================================= */
 const $ = s => document.querySelector(s);
 /* ---------- idioma ES / EN ---------- */
@@ -613,7 +648,7 @@ const TT = (es, en) => EN ? en : es;          // texto en español o en inglés
 const DEC = EN ? '.' : ',';                     // separador decimal
 const LOC = EN ? 'en-GB' : 'es-ES';             // formato de fecha (día/mes/año)
 const STATIC_EN = {   // textos fijos de la página
-  'Abrir foto': 'Open photo', 'Hacer foto': 'Take photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Evaluar': 'Evaluate',
+  'Abrir foto': 'Open photo', 'Hacer foto': 'Take photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Moldes': 'Forms', 'Evaluar': 'Evaluate',
   'Lienzo': 'Canvas', 'Trabajos': 'Projects', 'Deshacer': 'Undo', 'Rehacer': 'Redo', 'Ajustar': 'Fit', 'Borrar todo': 'Clear all',
   'Guardar imagen': 'Save image', 'Compartir': 'Share', 'Presentar': 'Present', 'Guía': 'Guide', 'Salir': 'Exit',
   'Curva C': 'C-curve', 'Invertir': 'Flip', 'Más suave': 'Lighter', 'Más visible': 'Darker', 'Girar 1°': 'Rotate 1°',
@@ -657,7 +692,8 @@ function translateStatic() {   // pasa a inglés los textos fijos (solo en ingl�
   }
   for (const a of ['placeholder', 'aria-label', 'title']) document.querySelectorAll(`[${a}]`).forEach(el => { const v = el.getAttribute(a); if (STATIC_EN[v]) el.setAttribute(a, STATIC_EN[v]); });
   document.querySelectorAll('#eTable thead .sm').forEach((s, i) => s.textContent = 'TIMRP'[i]);
-  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler' };
+  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler', Fijar: 'Fix', 'Mover molde': 'Move form' };
+  document.querySelectorAll('#moldbar .mlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
   document.querySelectorAll('#rulerbar .rlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
 }
 translateStatic();
@@ -789,6 +825,7 @@ function render() {
   ctx.fillRect(0, 0, S.docW, S.docH);
   if (S.bg) ctx.drawImage(S.bg, 0, 0, S.docW, S.docH);
   for (const o of S.objects) if (o.t === 'overlay') drawObj(ctx, o);
+  drawMold(ctx, true);
 
   ictx.setTransform(1, 0, 0, 1, 0, 0);
   ictx.clearRect(0, 0, ink.width, ink.height);
@@ -808,6 +845,9 @@ function render() {
   $('#bSym').classList.toggle('on', !!axisObj());
   $('#bRuler').classList.toggle('on', !!S.ruler);
   $('#rulerbar').classList.toggle('show', !!S.ruler);
+  $('#bMold').classList.toggle('on', !!S.mold);
+  $('#moldbar').classList.toggle('show', !!S.mold);
+  $('#moldbar').classList.toggle('fixed', !!(S.mold && S.mold.fixed));
   ictx.restore();
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -1940,6 +1980,16 @@ const HELP = {
   rHide: ['Ocultar la barra', 'Pliega la barra de la regla en un botón pequeño en la esquina de arriba a la derecha, para que no estorbe al ampliar la foto. La regla sigue puesta.'],
   rShow: ['Mostrar la barra', 'Vuelve a abrir la barra de botones de la regla.'],
   rClose: ['Quitar la regla', 'Quita la regla de la pantalla. Puedes volver a ponerla con el botón Regla.'],
+  bMold: ['Moldes', 'Pone un molde de estructura o de stiletto encima de la foto o de la plantilla. Primero se coloca: arrástralo, y con dos dedos sobre él lo giras y lo amplías (o usa los botones de abajo). Cuando esté en su sitio pulsa Fijar: el molde queda pegado a la imagen y ya no se mueve al usar cualquier herramienta, la regla incluida, así que puedes marcar líneas encima. Más suave y Más visible cambian su transparencia. Sale al guardar, compartir y en el PDF junto con lo que dibujes. Solo se puede poner un molde a la vez.'],
+  mRotL: ['Girar el molde 1° a la izquierda', 'Gira el molde 1 grado en sentido contrario a las agujas del reloj.'],
+  mRotR: ['Girar el molde 1° a la derecha', 'Gira el molde 1 grado en el sentido de las agujas del reloj.'],
+  mBig: ['Ampliar el molde', 'Hace el molde un poco más grande.'],
+  mSmall: ['Reducir el molde', 'Hace el molde un poco más pequeño.'],
+  mFade: ['Molde más suave', 'Hace el molde más transparente. Cada toque baja un 10 %.'],
+  mSolid: ['Molde más visible', 'Hace el molde menos transparente. Cada toque sube un 10 %.'],
+  mFix: ['Fijar el molde', 'Deja el molde fijo en su sitio. A partir de aquí no se mueve al usar las herramientas ni la regla. También se fija solo al elegir cualquier herramienta.'],
+  mMove: ['Mover el molde', 'Vuelve a soltar el molde para cambiarlo de sitio, girarlo o cambiar su tamaño. Después pulsa Fijar otra vez.'],
+  mClose: ['Quitar el molde', 'Quita el molde de la imagen. Puedes volver a ponerlo con el botón Moldes.'],
   bSym: ['Simetría', 'Pone un eje azul: colócalo en el centro de la uña. Lo que dibujes en un lado se refleja en el otro. Si después ajustas una línea o las dos a los laterales reales, indica la desviación en grados y la diferencia de distancia al eje en %. Pulsa otra vez para quitarlo.'],
   bPressure: ['Presión', 'Solo con lápiz activo: el trazo se afina o engorda según aprietes.'],
   sFlip: ['Invertir', 'Da la vuelta al arco hacia el otro lado (cóncavo / convexo).'],
@@ -2003,6 +2053,16 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   rHide: ['Hide the bar', 'Folds the ruler bar into a small button in the top right corner, so it does not get in the way when you zoom the photo. The ruler stays on.'],
   rShow: ['Show the bar', 'Opens the ruler button bar again.'],
   rClose: ['Remove the ruler', 'Removes the ruler from the screen. You can put it back with the Ruler button.'],
+  bMold: ['Forms', 'Places a structure or stiletto nail form over the photo or template. First you place it: drag it, and with two fingers on it you rotate and resize it (or use the buttons below). When it is in place, tap Fix: the form sticks to the image and no longer moves when you use any tool, including the ruler, so you can draw lines on top. Lighter and Darker change its transparency. It is included when you save, share and in the PDF, together with what you draw. Only one form can be placed at a time.'],
+  mRotL: ['Rotate the form 1° left', 'Rotates the form 1 degree counterclockwise.'],
+  mRotR: ['Rotate the form 1° right', 'Rotates the form 1 degree clockwise.'],
+  mBig: ['Enlarge the form', 'Makes the form a little bigger.'],
+  mSmall: ['Shrink the form', 'Makes the form a little smaller.'],
+  mFade: ['Lighter form', 'Makes the form more transparent. Each tap lowers it by 10 %.'],
+  mSolid: ['Darker form', 'Makes the form less transparent. Each tap raises it by 10 %.'],
+  mFix: ['Fix the form', 'Fixes the form in place. From now on it does not move when you use the tools or the ruler. It also fixes itself when you choose any tool.'],
+  mMove: ['Move the form', 'Releases the form again so you can move, rotate or resize it. Then tap Fix again.'],
+  mClose: ['Remove the form', 'Removes the form from the image. You can place it again with the Forms button.'],
   bSym: ['Symmetry', 'Places a blue axis: put it in the center of the nail. Whatever you draw on one side is mirrored on the other. If you then adjust one or both lines to the real sidewalls, it shows the deviation in degrees and the difference in distance to the axis in %. Tap again to remove it.'],
   bPressure: ['Pressure', 'Active stylus only: the stroke gets thinner or thicker depending on how hard you press.'],
   sFlip: ['Flip', 'Turns the arc to the other side (concave / convex).'],
@@ -2019,7 +2079,7 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   sOk: ['Done', 'Finishes editing and clears the selection.']
 });
 const GUIDE = [
-  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bCam', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bAcc', 'bExit']],
+  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bCam', 'bTpl', 'bLbl', 'bCalco', 'bMold', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bAcc', 'bExit']],
   [TT('Dibujar', 'Drawing'), ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
   [TT('Formas y texto', 'Shapes and text'), ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
   [TT('Corregir y medir', 'Correct and measure'), ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym', 'bRuler']],
@@ -2070,7 +2130,7 @@ function showGuide() {
 }
 $('#gClose').onclick = () => $('#mGuide').classList.remove('show');
 (function bindLongPress() {   // mantener pulsado = explicación (no se ejecuta el botón)
-  document.querySelectorAll('header .btn, footer .btn, #selbar .btn, #rulerbar .btn').forEach(el => {
+  document.querySelectorAll('header .btn, footer .btn, #selbar .btn, #rulerbar .btn, #moldbar .btn').forEach(el => {
     const k = helpKey(el); if (!HELP[k]) return;
     let t = 0, fired = false, sx = 0, sy = 0;
     el.addEventListener('pointerdown', e => { fired = false; sx = e.clientX; sy = e.clientY; clearTimeout(t); t = setTimeout(() => { fired = true; showHelp(k); }, 550); });
@@ -2080,6 +2140,67 @@ $('#gClose').onclick = () => $('#mGuide').classList.remove('show');
     el.addEventListener('contextmenu', e => e.preventDefault());
   });
 })();
+
+/* ---------- moldes: imagen del molde encima de la foto; mientras se coloca se mueve, después queda fijo ---------- */
+const MOLD_IMG = {};
+function moldImg(k) {
+  if (!MOLD_IMG[k]) { const im = new Image(); im.onload = () => req(); im.src = `molde-${k}.png`; MOLD_IMG[k] = im; }
+  return MOLD_IMG[k];
+}
+function moldSize(m) { const im = moldImg(m.k), r = im.naturalWidth ? im.naturalHeight / im.naturalWidth : 0.5; return { w: m.u, h: m.u * r }; }
+function moldHit(x, y) {
+  const m = S.mold; if (!m) return false;
+  const { w, h } = moldSize(m), c = Math.cos(-m.rot), n = Math.sin(-m.rot), dx = x - m.x, dy = y - m.y;
+  const lx = dx * c - dy * n, ly = dx * n + dy * c, pad = 10 / S.view.s;
+  return Math.abs(lx) <= w / 2 + pad && Math.abs(ly) <= h / 2 + pad;
+}
+function drawMold(c, screen) {
+  const m = S.mold; if (!m) return;
+  const im = moldImg(m.k); if (!im.complete || !im.naturalWidth) return;
+  const { w, h } = moldSize(m);
+  c.save(); c.translate(m.x, m.y); c.rotate(m.rot);
+  c.globalAlpha = clamp(m.op, 0.1, 1); c.imageSmoothingQuality = 'high';
+  c.drawImage(im, -w / 2, -h / 2, w, h);
+  c.globalAlpha = 1;
+  if (screen && !m.fixed && !document.body.classList.contains('present')) {   // mientras se coloca: recuadro dorado
+    c.setLineDash([8 / S.view.s, 6 / S.view.s]); c.lineWidth = 2 / S.view.s; c.strokeStyle = '#c9a84c'; c.strokeRect(-w / 2, -h / 2, w, h);
+  }
+  c.restore();
+}
+function moldPlace(k) {
+  if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
+  const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.8, 900) / S.view.s;
+  S.mold = { k, x: c.x, y: c.y, rot: -S.view.r, u, op: 0.85, fixed: false };
+  moldImg(k); scheduleSave(); req();
+  toast(TT('Coloca el molde: arrástralo, y con dos dedos lo giras y lo amplías. Después pulsa Fijar', 'Place the form: drag it, and use two fingers to rotate and resize it. Then tap Fix'), 4000);
+}
+function moldFix(v) {
+  if (!S.mold) return;
+  S.mold.fixed = v; scheduleSave(); req();
+  toast(v ? TT('Molde fijo: ya no se mueve al usar las herramientas', 'Form fixed: it no longer moves when you use the tools') : TT('Mueve el molde y pulsa Fijar cuando esté en su sitio', 'Move the form and tap Fix when it is in place'), 2500);
+}
+function moldOpacity(dv) {
+  if (!S.mold) return;
+  S.mold.op = Math.round(clamp(S.mold.op + dv, 0.1, 1) * 10) / 10; scheduleSave(); req();
+  toast(`${TT('Molde', 'Form')} ${Math.round(S.mold.op * 100)} %`, 900);
+}
+$('#bMold').onclick = () => {
+  if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
+  $('#moTitle').textContent = TT('Moldes', 'Forms'); $('#moE').textContent = TT('Molde de estructura', 'Structure form'); $('#moS').textContent = TT('Molde de stiletto', 'Stiletto form'); $('#moCancel').textContent = TT('Cancelar', 'Cancel');
+  document.querySelectorAll('#mMold .mopt').forEach(b => b.classList.toggle('on', !!S.mold && S.mold.k === b.dataset.mold));
+  $('#mMold').classList.add('show');
+};
+document.querySelectorAll('#mMold .mopt').forEach(b => b.onclick = () => { $('#mMold').classList.remove('show'); moldPlace(b.dataset.mold); });
+$('#moCancel').onclick = () => $('#mMold').classList.remove('show');
+$('#mRotL').onclick = () => { if (S.mold) { S.mold.rot -= Math.PI / 180; scheduleSave(); req(); } };
+$('#mRotR').onclick = () => { if (S.mold) { S.mold.rot += Math.PI / 180; scheduleSave(); req(); } };
+$('#mBig').onclick = () => { if (S.mold) { S.mold.u *= 1.05; scheduleSave(); req(); } };
+$('#mSmall').onclick = () => { if (S.mold) { S.mold.u /= 1.05; scheduleSave(); req(); } };
+$('#mFade').onclick = () => moldOpacity(-0.1);
+$('#mSolid').onclick = () => moldOpacity(0.1);
+$('#mFix').onclick = () => moldFix(true);
+$('#mMove').onclick = () => moldFix(false);
+$('#mClose').onclick = () => { S.mold = null; scheduleSave(); req(); };
 
 /* ---------- regla (solo en pantalla: va pegada a la foto y no sale al guardar) ---------- */
 const RULER_LEN = 15;   // marcas de 0 a 15
@@ -2130,6 +2251,7 @@ function drawRuler() {
   ctx.restore();
 }
 function rulerToggle() {
+  if (S.mold && !S.mold.fixed) moldFix(true);
   if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
   if (S.ruler) { S.ruler = null; scheduleSave(); req(); return; }
   const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.92, 760) / (RULER_LEN + 1) / S.view.s;
@@ -2544,6 +2666,7 @@ function updUndo() { $('#bUndo').disabled = hIdx <= 0; $('#bRedo').disabled = hI
 /* ---------- herramientas y propiedades ---------- */
 function setTool(t) {
   S.tool = t;
+  if (S.mold && !S.mold.fixed) moldFix(true);
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
   if (t !== 'select') select(null);   // al cambiar de herramienta se suelta la selección
   syncSize();
@@ -2610,7 +2733,7 @@ function setColor(c, live) {
 
 /* ---------- gestos ---------- */
 const ptrs = new Map();
-let act = null, pinch = null, blockTouch = false, gestureSel = null, rulerGesture = false;
+let act = null, pinch = null, blockTouch = false, gestureSel = null, rulerGesture = false, moldGesture = false;
 
 function touchPts() { return [...ptrs.values()].filter(p => p.t === 'touch'); }
 function startPinch() {
@@ -2618,7 +2741,8 @@ function startPinch() {
   const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
   pinch = { d: Math.max(1, dist(a.x, a.y, b.x, b.y)), ang: Math.atan2(b.y - a.y, b.x - a.x),
             s: S.view.s, r: S.view.r, anchor: toDocS(cx, cy) };
-  if (rulerGesture && S.ruler) { rulerGesture = false; pinch.ruler = { ...S.ruler }; return; }
+  if (rulerGesture && S.ruler) { rulerGesture = false; moldGesture = false; pinch.ruler = { ...S.ruler }; return; }
+  if (moldGesture && S.mold && !S.mold.fixed) { moldGesture = false; pinch.mold = { ...S.mold }; return; }
   const before = gestureSel || S.sel, o = before.length === 1 ? before[0] : null;   // lo que había seleccionado antes de poner los dedos
   if (o && o.t === 'overlay' && S.objects.includes(o) && !document.body.classList.contains('present')) {   // con el calco seleccionado, los dedos mueven el calco y no la foto
     if (single() !== o) select(o);
@@ -2638,6 +2762,13 @@ function movePinch() {
     S.ruler.x = m.x + vx * co - vy * si; S.ruler.y = m.y + vx * si + vy * co;
     S.ruler.u = clamp(P.u * f, 2, 1e5); S.ruler.rot = rulerSnap(P.rot + da);
     rulerDeg(); req(); return;
+  }
+  if (pinch.mold) {   // dos dedos sobre el molde sin fijar: se gira, se amplía y se mueve el molde (no la foto)
+    const P = pinch.mold, f = clamp(d / pinch.d, 0.1, 10), m = toDocS(cx, cy);
+    const vx = (P.x - pinch.anchor.x) * f, vy = (P.y - pinch.anchor.y) * f, co = Math.cos(da), si = Math.sin(da);
+    S.mold.x = m.x + vx * co - vy * si; S.mold.y = m.y + vx * si + vy * co;
+    S.mold.u = clamp(P.u * f, 5, 1e6); S.mold.rot = P.rot + da;
+    req(); return;
   }
   if (pinch.obj) {
     const P = pinch.obj, o = P.o, f = clamp(d / pinch.d, 0.05, 20), m = toDocS(cx, cy);
@@ -2665,6 +2796,7 @@ stage.addEventListener('pointerdown', e => {
 
   if (e.pointerType === 'touch' && touchPts().length >= 2) {
     if (act && act.ptype === 'pen') return;              // mano apoyada mientras se usa lápiz activo
+    moldGesture = !!(act && act.kind === 'mold') || (!!S.mold && !S.mold.fixed && !document.body.classList.contains('present') && touchPts().some(p => { const q = stageXY(p.x, p.y), d = toDocS(q.x, q.y); return moldHit(d.x, d.y); }));
     rulerGesture = !!(act && act.kind === 'ruler') || (!!S.ruler && !document.body.classList.contains('present') && touchPts().some(p => { const q = stageXY(p.x, p.y), d = toDocS(q.x, q.y); return rulerHit(d.x, d.y); }));   // si uno de los dos dedos toca la regla, los dedos mueven la regla
     if (act && act.kind !== 'pan') {
       const young = performance.now() - act.t0 < 250;
@@ -2679,6 +2811,10 @@ stage.addEventListener('pointerdown', e => {
   if (S.ruler && !document.body.classList.contains('present')) {   // con el dedo, el lápiz o el ratón sobre la regla, se mueve la regla
     const d = toDocS(sp.x, sp.y);
     if (rulerHit(d.x, d.y)) { act = { id: e.pointerId, kind: 'ruler', lx: d.x, ly: d.y, ptype: e.pointerType, t0: performance.now() }; return; }
+  }
+  if (S.mold && !S.mold.fixed && !document.body.classList.contains('present')) {   // molde sin fijar: se mueve tocándolo
+    const d = toDocS(sp.x, sp.y);
+    if (moldHit(d.x, d.y)) { act = { id: e.pointerId, kind: 'mold', lx: d.x, ly: d.y, ptype: e.pointerType, t0: performance.now() }; return; }
   }
   const pan = document.body.classList.contains('present') || S.tool === 'hand' || (e.pointerType === 'touch' && penSeen) || e.button === 1 || e.button === 2;
   if (pan) { act = { id: e.pointerId, kind: 'pan', lx: e.clientX, ly: e.clientY, ptype: e.pointerType, t0: performance.now() }; return; }
@@ -2772,6 +2908,10 @@ function moveAct(e) {
   if (act.kind === 'pan') {
     S.view.x += e.clientX - act.lx; S.view.y += e.clientY - act.ly;
     act.lx = e.clientX; act.ly = e.clientY; req(); return;
+  }
+  if (act.kind === 'mold') {
+    const d = toDocS(sp.x, sp.y);
+    S.mold.x += d.x - act.lx; S.mold.y += d.y - act.ly; act.lx = d.x; act.ly = d.y; req(); return;
   }
   if (act.kind === 'ruler') {
     const d = toDocS(sp.x, sp.y);
@@ -2868,7 +3008,7 @@ function moveAct(e) {
 
 function finishAct(e) {
   const a = act; act = null;
-  if (a.kind === 'ruler') { scheduleSave(); req(); return; }
+  if (a.kind === 'ruler' || a.kind === 'mold') { scheduleSave(); req(); return; }
   if (a.kind === 'draw') {
     if (a.raw) { const p = draft.p, n = p.length; if (dist(a.raw.x, a.raw.y, p[n-3], p[n-2]) > 0.3 / S.view.s) p.push(a.raw.x, a.raw.y, a.raw.pr); }
     cursor = null; S.objects.push(draft);
@@ -3115,7 +3255,7 @@ function setEmpty(v) {
   S.empty = v;
   $('#home').classList.toggle('show', v);
   $('#app').classList.toggle('is-empty', v);
-  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bCalco', 'bEval']) $('#' + id).disabled = v;
+  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bCalco', 'bMold', 'bEval']) $('#' + id).disabled = v;
   if (v) { $('#pEval').classList.remove('open'); $('#bEval').classList.remove('on'); }
   if (v) document.body.classList.remove('present');
   if (!v) updUndo();
@@ -3123,7 +3263,7 @@ function setEmpty(v) {
 function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en Trabajos)
   clearTimeout(saveT); dirty = false;
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
-  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null; S.ruler = null;
+  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null; S.ruler = null; S.mold = null;
   select(null); resetHist(); setEmpty(true); render();
   accHomeInfo();
 }
@@ -3131,7 +3271,7 @@ function newDoc(w, h, bg, blob) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   setEmpty(false);
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
-  S.objects = []; S.projectId = null; S.projectName = nowName(); S.eval = null; S.ruler = null; evalRefresh();
+  S.objects = []; S.projectId = null; S.projectName = nowName(); S.eval = null; S.ruler = null; S.mold = null; evalRefresh();
   select(null); resetHist(); fit(); scheduleSave();
 }
 $('#bFit').onclick = fit;
@@ -3153,7 +3293,7 @@ function renderDoc(scale) {
   if (S.bg) { x.imageSmoothingQuality = 'high'; x.drawImage(S.bg, 0, 0, w, h); }
   x.save(); x.setTransform(scale, 0, 0, scale, 0, 0);
   EXPORTING = true;
-  try { for (const o of S.objects) if (o.t === 'overlay') drawObj(x, o); } finally { EXPORTING = false; x.restore(); }
+  try { for (const o of S.objects) if (o.t === 'overlay') drawObj(x, o); drawMold(x, false); } finally { EXPORTING = false; x.restore(); }
   const k = document.createElement('canvas'); k.width = w; k.height = h;
   const kx = k.getContext('2d'); kx.setTransform(scale, 0, 0, scale, 0, 0);
   EXPORTING = true;
@@ -3231,7 +3371,7 @@ async function saveNow(force) {
     const sc = Math.min(1, 360 / Math.max(S.docW, S.docH));
     const thumb = renderDoc(sc).toDataURL('image/jpeg', 0.75);
     await DB.put({ id: S.projectId, name: S.projectName || nowName(), updated: Date.now(),
-                   docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view }, eval: S.eval || null, ruler: S.ruler || null });
+                   docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view }, eval: S.eval || null, ruler: S.ruler || null, mold: S.mold || null });
     localStorage.setItem('zalestudio-last', S.projectId);
   } catch (err) { console.error(err); toast(TT('No se pudo guardar el trabajo', 'Could not save the project')); }
 }
@@ -3240,7 +3380,7 @@ async function openProject(id, keepView) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   S.docW = p.docW; S.docH = p.docH; S.bgBlob = p.bg || null;
   S.bg = p.bg ? await loadImg(URL.createObjectURL(p.bg)) : null;
-  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = evalFix(p.eval || null); S.ruler = p.ruler || null; evalRefresh();
+  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = evalFix(p.eval || null); S.ruler = p.ruler || null; S.mold = p.mold || null; evalRefresh();
   setEmpty(false); select(null); resetHist();
   if (keepView && p.view) { S.view = { r: 0, ...p.view }; render(); } else fit();
   localStorage.setItem('zalestudio-last', p.id);
