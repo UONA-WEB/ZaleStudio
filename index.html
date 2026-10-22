@@ -164,6 +164,102 @@ table.evg th .sm{display:none}
 .pj .row button{flex:1;padding:7px 4px;font-size:12px}
 .pj.cur{border-color:var(--acc)}
 .empty{color:var(--mut);font-size:14px;padding:20px;text-align:center;grid-column:1/-1}
+/* ---------- acceso, cuenta y textos legales ---------- */
+#gate{position:fixed;inset:0;z-index:40;background:radial-gradient(ellipse at top,#2b2731 0%,var(--bg) 62%);overflow-y:auto;display:flex;justify-content:center;padding:28px 16px 20px;-webkit-overflow-scrolling:touch}
+#gate.hide{display:none}
+#gate .langbtn.gl{position:absolute;top:12px;right:12px;font-size:11px;padding:6px 11px}
+.gbox{width:min(430px,100%);display:flex;flex-direction:column;gap:14px;margin:auto 0}
+.ghead{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ghead img{width:86px;height:86px;border-radius:22px;box-shadow:0 10px 34px rgba(0,0,0,.5)}
+.ghead h1{margin:10px 0 0;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:32px}
+.ghead p{margin:0;color:var(--acc);letter-spacing:.2em;font-size:11.5px;text-transform:uppercase}
+.gcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.gv{display:flex;flex-direction:column;gap:10px}
+.gv[hidden]{display:none}
+.gv h2{margin:0;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:21px;color:var(--acc2)}
+.gv p{margin:0;font-size:13.5px;line-height:1.45;color:var(--txt)}
+.gv p.mut{color:var(--mut);font-size:12.5px}
+.gv label.gf{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--mut)}
+.gv input[type=email],.gv input[type=password],.gv input[type=text]{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit;font-size:16px;user-select:text;-webkit-user-select:text;width:100%}
+.gv input:focus{outline:2px solid var(--acc);outline-offset:0;border-color:var(--acc)}
+.gpw{position:relative}
+.gpw input{padding-right:52px!important}
+.gpw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--mut);font-size:18px;padding:6px 8px;cursor:pointer}
+.gv .pill{width:100%;padding:13px;font-size:15px}
+.gv .pill:disabled{opacity:.45}
+.glink{background:none;border:0;color:var(--acc2);font:inherit;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 2px}
+.grow2{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.gsep{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px}
+.gsep::before,.gsep::after{content:"";flex:1;height:1px;background:var(--line)}
+.gchk{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.45;color:var(--mut)}
+.gchk input{width:20px;height:20px;flex:0 0 auto;accent-color:var(--acc);margin-top:1px}
+.gchk .glink{font-size:12.5px;padding:0}
+.gmsg{font-size:13px;line-height:1.45;color:var(--mut)}
+.gmsg:empty{display:none}
+.gmsg.err{color:#ffb4b4}
+.gmsg.ok{color:#a5e5ad}
+.gprice{text-align:center;background:#2b2932;border:1px solid var(--line);border-radius:14px;padding:12px}
+.gprice b{display:block;font-size:30px;color:var(--acc2);font-weight:700}
+.gprice span{font-size:12.5px;color:var(--mut)}
+.gonly{font-size:12px;line-height:1.45;color:var(--mut);background:#3a3527;border:1px solid #6b5a2a;border-radius:10px;padding:9px 11px}
+.gspin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--acc);animation:gsp .9s linear infinite;align-self:center;margin:8px 0}
+@keyframes gsp{to{transform:rotate(360deg)}}
+.gfeat{display:grid;gap:7px;padding:2px 6px;margin:0;list-style:none}
+.gfeat[hidden]{display:none}
+.gfeat li{font-size:13px;line-height:1.4;color:var(--txt);display:flex;gap:9px}
+.gfeat li::before{content:"✦";color:var(--acc);flex:0 0 auto}
+.gtrial{text-align:center;font-size:13px;color:var(--acc2)}
+.gfoot{text-align:center;font-size:11.5px;color:var(--mut);line-height:1.8}
+.gfoot .glink{font-size:11.5px;color:var(--mut)}
+#mLegal{z-index:60}
+#mConfirm{z-index:70}
+#camBox{position:fixed;inset:0;z-index:80;background:#000;display:flex;flex-direction:column}
+#camBox[hidden]{display:none}
+#mCamPerm{z-index:85}
+#mCamPerm ol{margin:0;padding-left:20px;font-size:14px;line-height:1.5;color:var(--txt)}
+#mCamPerm li{margin-bottom:8px}
+#mCamPerm .actions{flex-wrap:wrap}
+#camVideo{flex:1;min-height:0;width:100%;object-fit:contain;background:#000}
+#camBar{display:flex;align-items:center;justify-content:space-around;padding:14px 10px calc(14px + env(safe-area-inset-bottom));background:#000}
+#camBar .cb{background:none;border:0;color:#fff;font:600 15px Montserrat,system-ui,sans-serif;min-width:90px;padding:12px}
+#camShot{width:74px;height:74px;border-radius:50%;border:5px solid #fff;background:#c9a84c;box-shadow:0 0 0 3px #000 inset}
+#camShot:active{transform:scale(.94)}
+#toast{z-index:9}
+#rulerbar{position:absolute;left:50%;top:8px;transform:translateX(-50%);display:none;flex-direction:row;align-items:center;max-width:calc(100% - 16px);gap:2px;z-index:4;background:rgba(31,29,36,.92);border:1px solid var(--line);border-radius:14px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.45)}
+#rulerbar.show{display:flex}
+#rulerbar #rShow{display:none}
+#rulerbar.mini{left:auto;right:8px;transform:none;padding:3px}
+#rulerbar.mini > *{display:none}
+#rulerbar.mini #rShow{display:flex}
+#rulerbar .btn{min-width:46px;height:46px;font-size:10px;padding:0 2px}
+#rulerbar .btn svg{width:20px;height:20px}
+#rulerbar .rbl{font-size:10px;color:var(--mut);text-align:center;min-width:38px;padding:0 4px 0 2px}
+body.present #rulerbar{display:none}
+#mLegal .card{width:min(760px,100%);height:min(90vh,900px)}
+.ltabs{display:flex;gap:6px;flex-wrap:wrap}
+.ltabs button{flex:1;min-width:110px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);border-radius:10px;padding:9px 8px;font:inherit;font-size:12.5px;cursor:pointer}
+.ltabs button.on{background:var(--acc);color:#141318;border-color:var(--acc)}
+#lBody{overflow-y:auto;min-height:0;flex:1 1 auto;font-size:14px;line-height:1.55;color:var(--txt);user-select:text;-webkit-user-select:text;padding-right:4px}
+#lBody h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin:18px 0 6px}
+#lBody p,#lBody li{margin:0 0 8px;color:#e6e1d8}
+#lBody ul{padding-left:20px;margin:0 0 8px}
+#lBody .upd{color:var(--mut);font-size:12px}
+#mAcc .card{gap:10px}
+.accinfo{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;line-height:1.55}
+.accinfo b{color:var(--acc2)}
+.accinfo small{display:block;color:var(--mut);font-size:12px;margin-top:4px}
+.accbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.accbtns .pill{padding:12px 10px;font-size:13.5px}
+.accbtns .wide{grid-column:1/-1}
+.acclegal{display:flex;gap:4px 10px;flex-wrap:wrap;justify-content:center}
+#hInfo{display:flex;flex-direction:column;gap:8px;width:min(320px,80vw);margin-top:10px}
+#hInfo:empty{display:none}
+.hnote{font-size:12.5px;line-height:1.45;border-radius:12px;padding:10px 12px;text-align:left}
+.hnote.trial{background:#2b2932;border:1px solid var(--line);color:var(--acc2)}
+.hnote.warn{background:#3a3527;border:1px solid #6b5a2a;color:var(--txt)}
+.hnote .glink{font-size:12.5px;padding:0 0 0 4px}
+.pbk{display:flex;gap:8px;flex-wrap:wrap;margin-right:auto}
+.pbk .pill{font-size:13px;padding:10px 14px}
 </style>
 </head>
 <body>
@@ -171,6 +267,7 @@ table.evg th .sm{display:none}
   <header>
     <div class="brandbox"><span class="brand">ZALESTUDIO</span><button id="bLang" class="langbtn" aria-label="Idioma / Language"><span id="langL">Idioma</span><b data-l="es">ES</b>/<b data-l="en">EN</b></button></div>
     <button class="btn" id="bOpen"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Abrir foto</button>
+    <button class="btn" id="bCam"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>Hacer foto</button>
     <button class="btn" id="bTpl"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/><rect x="14" y="15" width="7" height="6" rx="1.5"/></svg>Plantillas</button>
     <button class="btn" id="bLbl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="13" height="8" rx="2"/><path d="M11 11l7 8M18 19l-4-.5M18 19l-.6-4"/></svg>Etiquetas</button>
     <button class="btn" id="bCalco"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2" stroke-dasharray="3 2"/></svg>Calco</button>
@@ -188,6 +285,7 @@ table.evg th .sm{display:none}
     <span class="sep"></span>
     <button class="btn" id="bPresent"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg>Presentar</button>
     <button class="btn" id="bGuide"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17.2v.1"/></svg>Guía</button>
+    <button class="btn" id="bAcc"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Cuenta</button>
     <span class="sep"></span>
     <button class="btn" id="bExit"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Salir</button>
   </header>
@@ -213,6 +311,17 @@ table.evg th .sm{display:none}
       <button class="btn" id="sOk"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Listo</button>
     </div>
     <div id="toast"></div>
+    <div id="rulerbar">
+      <button class="btn" id="rRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
+      <button class="btn" id="rRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
+      <button class="btn" id="r90"><svg viewBox="0 0 24 24"><path d="M4 20V8M4 20h12"/><path d="M4 12a8 8 0 0 1 8 8"/></svg>90°</button>
+      <button class="btn" id="rBig"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16 16l5 5"/></svg><span class="rlab">Ampliar</span></button>
+      <button class="btn" id="rSmall"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16 16l5 5"/></svg><span class="rlab">Reducir</span></button>
+      <button class="btn" id="rClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="rlab">Quitar</span></button>
+      <div class="rbl" id="rDeg">0°</div>
+      <button class="btn" id="rHide"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg><span class="rlab">Ocultar</span></button>
+      <button class="btn" id="rShow"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1.5" transform="rotate(-30 12 12)"/><path d="M8.2 6.6l1 1.7M11.2 4.9l1.5 2.6M14.2 3.2l1 1.7" transform="translate(-1.5 3.2)"/></svg><span class="rlab">Regla</span></button>
+    </div>
     <div id="presbar">
       <button class="btn" id="pExit"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Salir</button>
     </div>
@@ -223,11 +332,13 @@ table.evg th .sm{display:none}
         <p>Nail Training · by ZALESYA</p>
         <div class="homebtns">
           <button class="pill pri big" id="hOpen">Abrir foto</button>
+          <button class="pill pri big" id="hCam">Hacer foto</button>
           <button class="pill big" id="hTpl">Plantillas</button>
           <button class="pill big" id="hBlank">Lienzo en blanco</button>
           <button class="pill big" id="hProjects">Mis trabajos</button>
           <button class="pill big" id="hGuide">Guía de uso</button>
         </div>
+        <div id="hInfo"></div>
       </div>
     </div>
     <aside class="side left" id="pTpl">
@@ -297,6 +408,7 @@ table.evg th .sm{display:none}
       <button class="btn" data-tool="ratio"><svg viewBox="0 0 24 24"><path d="M3 12h18M3 8v8M14 9v6M21 8v8"/></svg>Proporción</button>
       <button class="btn" data-tool="ratio2"><svg viewBox="0 0 24 24"><path d="M7 3v11M4 3h6M4 14h6M16 10v11M13 10h6M13 21h6"/></svg>Almendra</button>
       <button class="btn" id="bSym"><svg viewBox="0 0 24 24"><path d="M12 3v18" stroke-dasharray="2 2"/><path d="M9 7L4 12l5 5M15 7l5 5-5 5"/></svg>Simetría</button>
+      <button class="btn" id="bRuler"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1.5" transform="rotate(-30 12 12)"/><path d="M8.2 6.6l1 1.7M11.2 4.9l1.5 2.6M14.2 3.2l1 1.7" transform="translate(-1.5 3.2)"/></svg>Regla</button>
 
     </div>
     <div class="props">
@@ -308,6 +420,9 @@ table.evg th .sm{display:none}
 </div>
 
 <input type="file" id="file" accept="image/*" hidden>
+<input type="file" id="fileCam" accept="image/*" capture="environment" hidden>
+<div id="camBox" hidden><video id="camVideo" playsinline muted autoplay></video>
+  <div id="camBar"><button class="cb" id="camCancel">Cancelar</button><button id="camShot" aria-label="Hacer foto"></button><button class="cb" id="camFlip">Cambiar cámara</button></div></div>
 
 <div class="modal" id="mText">
   <div class="card">
@@ -324,7 +439,7 @@ table.evg th .sm{display:none}
   <div class="card">
     <h2>Mis trabajos</h2>
     <div id="plist"></div>
-    <div class="actions"><button class="pill" id="pClose">Cerrar</button></div>
+    <div class="actions"><div class="pbk"><button class="pill" id="pBk" data-i="Guardar copia|Save backup"></button><button class="pill" id="pRs" data-i="Restaurar copia|Restore backup"></button></div><button class="pill" id="pClose">Cerrar</button></div>
   </div>
 </div>
 
@@ -350,6 +465,18 @@ table.evg th .sm{display:none}
     <div class="actions"><button class="pill" id="cCancel">Cancelar</button><button class="pill pri" id="cOk">Aceptar</button></div>
   </div>
 </div>
+<div class="modal" id="mCamPerm">
+  <div class="card" style="overflow:auto">
+    <h2 id="cpTitle"></h2>
+    <div id="cpIntro" style="font-size:14px;color:var(--mut)"></div>
+    <ol><li id="cpS1"></li><li id="cpS2"></li><li id="cpS3"></li></ol>
+    <div id="cpEnd" style="font-size:14px;color:var(--mut)"></div>
+    <div class="actions">
+      <button class="pill" id="cpClose"></button>
+      <button class="pill pri" id="cpGallery"></button>
+    </div>
+  </div>
+</div>
 <div class="modal" id="mConfirm">
   <div class="card">
     <h2 id="cTitle">¿Seguro?</h2>
@@ -361,10 +488,122 @@ table.evg th .sm{display:none}
   </div>
 </div>
 
+<div id="gate" class="hide">
+  <button id="gLang" class="langbtn gl" aria-label="Idioma / Language"><span data-i="Idioma|Language"></span><b data-l="es">ES</b>/<b data-l="en">EN</b></button>
+  <div class="gbox">
+    <div class="ghead">
+      <img src="icon-192.png" alt="">
+      <h1>ZaleStudio</h1>
+      <p>Nail Training · by ZALESYA</p>
+    </div>
+    <div class="gcard">
+      <div class="gv" data-v="wait">
+        <div class="gspin"></div>
+        <p class="mut" style="text-align:center" id="gWaitT" data-i="Comprobando tu acceso…|Checking your access…"></p>
+      </div>
+      <div class="gv" data-v="login" hidden>
+        <h2 data-i="Entrar|Log in"></h2>
+        <label class="gf"><span data-i="Email|Email"></span><input type="email" id="gEmail" autocomplete="username" inputmode="email"></label>
+        <label class="gf"><span data-i="Contraseña|Password"></span><span class="gpw"><input type="password" id="gPass" autocomplete="current-password"><button type="button" class="geye" aria-label="👁">👁</button></span></label>
+        <button class="pill pri" id="gLoginB" data-i="Entrar|Log in"></button>
+        <div class="grow2"><button class="glink" id="gToForgot" data-i="¿Has olvidado tu contraseña?|Forgot your password?"></button><button class="glink" id="gResend" hidden data-i="Reenviar email de confirmación|Resend confirmation email"></button></div>
+        <div class="gsep" data-i="¿Aún no tienes cuenta?|No account yet?"></div>
+        <button class="pill" id="gToSignup" data-i="Crear cuenta y probar gratis|Create an account and try it free"></button>
+      </div>
+      <div class="gv" data-v="signup" hidden>
+        <h2 data-i="Crear cuenta|Create an account"></h2>
+        <p class="mut" id="gSignupT"></p>
+        <label class="gf"><span data-i="Email|Email"></span><input type="email" id="gSEmail" autocomplete="username" inputmode="email"></label>
+        <label class="gf"><span data-i="Contraseña (mínimo 6 caracteres)|Password (at least 6 characters)"></span><span class="gpw"><input type="password" id="gSPass" autocomplete="new-password"><button type="button" class="geye" aria-label="👁">👁</button></span></label>
+        <label class="gf"><span data-i="Repite la contraseña|Repeat the password"></span><span class="gpw"><input type="password" id="gSPass2" autocomplete="new-password"><button type="button" class="geye" aria-label="👁">👁</button></span></label>
+        <label class="gchk"><input type="checkbox" id="gSAcc"><span><span data-i="He leído y acepto la|I have read and accept the"></span> <button type="button" class="glink" data-legal="priv" data-i="política de privacidad|privacy policy"></button>, <span data-i="el|the"></span> <button type="button" class="glink" data-legal="aviso" data-i="aviso legal|legal notice"></button> <span data-i="y las|and the"></span> <button type="button" class="glink" data-legal="compra" data-i="condiciones de compra|purchase terms"></button>.</span></label>
+        <button class="pill pri" id="gSignupB" data-i="Crear cuenta|Create account"></button>
+        <button class="glink" data-go="login" data-i="Ya tengo cuenta: entrar|I already have an account: log in"></button>
+      </div>
+      <div class="gv" data-v="sent" hidden>
+        <h2 data-i="Revisa tu correo|Check your email"></h2>
+        <p id="gSentT"></p>
+        <p class="mut" data-i="Si no lo ves en unos minutos, mira en la carpeta de spam o promociones.|If you don’t see it in a few minutes, check your spam or promotions folder."></p>
+        <button class="pill" id="gResend2" data-i="Reenviar el email|Resend the email"></button>
+        <button class="glink" data-go="login" data-i="Ya lo he confirmado: entrar|I’ve confirmed it: log in"></button>
+      </div>
+      <div class="gv" data-v="forgot" hidden>
+        <h2 data-i="Recuperar contraseña|Reset your password"></h2>
+        <p class="mut" data-i="Escribe el email de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.|Enter your account email and we’ll send you a link to create a new password."></p>
+        <label class="gf"><span data-i="Email|Email"></span><input type="email" id="gFEmail" autocomplete="username" inputmode="email"></label>
+        <button class="pill pri" id="gForgotB" data-i="Enviar enlace|Send link"></button>
+        <button class="glink" data-go="login" data-i="Volver a entrar|Back to log in"></button>
+      </div>
+      <div class="gv" data-v="newpass" hidden>
+        <h2 data-i="Nueva contraseña|New password"></h2>
+        <p class="mut" data-i="Escribe tu nueva contraseña dos veces.|Type your new password twice."></p>
+        <label class="gf"><span data-i="Nueva contraseña (mínimo 6 caracteres)|New password (at least 6 characters)"></span><span class="gpw"><input type="password" id="gNPass" autocomplete="new-password"><button type="button" class="geye" aria-label="👁">👁</button></span></label>
+        <label class="gf"><span data-i="Repite la contraseña|Repeat the password"></span><span class="gpw"><input type="password" id="gNPass2" autocomplete="new-password"><button type="button" class="geye" aria-label="👁">👁</button></span></label>
+        <button class="pill pri" id="gNewPassB" data-i="Guardar contraseña|Save password"></button>
+      </div>
+      <div class="gv" data-v="buy" hidden>
+        <h2 id="gBuyH"></h2>
+        <p id="gBuyT"></p>
+        <div class="gprice"><b id="gBuyP"></b><span data-i="1 año de acceso · pago único, sin renovación automática|1 year of access · one-off payment, no automatic renewal"></span></div>
+        <div class="gonly" data-i="Este pago da acceso solo a ZaleStudio. No incluye ni da acceso a otras aplicaciones de ZALESYA®, que se compran por separado.|This payment gives access to ZaleStudio only. It does not include or give access to other ZALESYA® apps, which are sold separately."></div>
+        <label class="gchk"><input type="checkbox" id="gBAcc"><span><span data-i="Acepto las|I accept the"></span> <button type="button" class="glink" data-legal="compra" data-i="condiciones de compra|purchase terms"></button> <span data-i="y pido empezar ya: al ser un contenido digital de acceso inmediato, pierdo el derecho de desistimiento una vez activado el acceso.|and ask to start now: as this is digital content with immediate access, I lose the right of withdrawal once access is activated."></span></span></label>
+        <button class="pill pri" id="gBuyB" data-i="Pagar con tarjeta o Bizum|Pay by card or Bizum"></button>
+        <p class="mut" style="text-align:center" data-i="Pago seguro con Stripe. ZALESYA® no ve ni guarda los datos de tu tarjeta.|Secure payment with Stripe. ZALESYA® never sees or stores your card details."></p>
+        <div class="grow2"><button class="glink" id="gBack" hidden data-i="← Volver a la app|← Back to the app"></button><button class="glink" id="gOut" data-i="Cerrar sesión|Log out"></button></div>
+      </div>
+      <div class="gv" data-v="offline" hidden>
+        <h2 id="gOffH"></h2>
+        <p id="gOffT"></p>
+        <button class="pill pri" id="gRetry" data-i="Reintentar|Try again"></button>
+      </div>
+      <div class="gmsg" id="gMsg" role="status"></div>
+    </div>
+    <ul class="gfeat" id="gFeat" hidden>
+      <li data-i="Dibuja y corrige sobre las fotos de uñas con lápiz o con el dedo|Draw and correct on nail photos with a stylus or your finger"></li>
+      <li data-i="Mide curva C, proporciones, ángulos y simetría|Measure C-curve, proportions, angles and symmetry"></li>
+      <li data-i="Hojas de puntos de competición con categorías del manual NIJ y PDF|Competition score sheets with NIJ manual categories and PDF"></li>
+      <li data-i="Plantillas, calco y etiquetas de anatomía y estructura|Templates, overlay and anatomy and structure labels"></li>
+      <li data-i="En tablet, móvil y ordenador · en español e inglés|On tablet, phone and computer · in Spanish and English"></li>
+    </ul>
+    <div class="gtrial" id="gTrialT"></div>
+    <div class="gfoot">
+      <button class="glink" data-legal="priv" data-i="Privacidad|Privacy"></button> ·
+      <button class="glink" data-legal="aviso" data-i="Aviso legal|Legal notice"></button> ·
+      <button class="glink" data-legal="compra" data-i="Condiciones de compra|Purchase terms"></button><br>
+      © ZALESYA® · ZaleStudio
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="mLegal">
+  <div class="card">
+    <div class="ltabs"><button data-lt="priv" data-i="Privacidad|Privacy"></button><button data-lt="aviso" data-i="Aviso legal|Legal notice"></button><button data-lt="compra" data-i="Condiciones de compra|Purchase terms"></button></div>
+    <div id="lBody"></div>
+    <div class="actions"><button class="pill pri" id="lClose" data-i="Cerrar|Close"></button></div>
+  </div>
+</div>
+
+<div class="modal" id="mAcc">
+  <div class="card">
+    <h2 data-i="Tu cuenta|Your account"></h2>
+    <div class="accinfo" id="accInfo"></div>
+    <div class="accbtns">
+      <button class="pill pri wide" id="accBuy"></button>
+      <button class="pill" id="accBk" data-i="Guardar copia|Save backup"></button>
+      <button class="pill" id="accRs" data-i="Restaurar copia|Restore backup"></button>
+      <button class="pill dan wide" id="accOut" data-i="Cerrar sesión|Log out"></button>
+    </div>
+    <p class="evnote" data-i="Tus trabajos se guardan solo en este dispositivo. Guarda una copia de vez en cuando y súbela a tu nube o envíatela por correo.|Your projects are stored on this device only. Save a backup now and then and upload it to your cloud or email it to yourself."></p>
+    <div class="acclegal"><button class="glink" data-legal="priv" data-i="Privacidad|Privacy"></button><button class="glink" data-legal="aviso" data-i="Aviso legal|Legal notice"></button><button class="glink" data-legal="compra" data-i="Condiciones de compra|Purchase terms"></button></div>
+    <div class="actions"><button class="pill" id="accClose" data-i="Cerrar|Close"></button></div>
+  </div>
+</div>
+<input type="file" id="bkFile" accept=".json,application/json" hidden>
+
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.0 · ES/EN)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.2 · ES/EN · regla · VERSIÓN DE PRUEBAS sin cuentas ni pagos)
    ========================================================= */
 const $ = s => document.querySelector(s);
 /* ---------- idioma ES / EN ---------- */
@@ -374,7 +613,7 @@ const TT = (es, en) => EN ? en : es;          // texto en español o en inglés
 const DEC = EN ? '.' : ',';                     // separador decimal
 const LOC = EN ? 'en-GB' : 'es-ES';             // formato de fecha (día/mes/año)
 const STATIC_EN = {   // textos fijos de la página
-  'Abrir foto': 'Open photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Evaluar': 'Evaluate',
+  'Abrir foto': 'Open photo', 'Hacer foto': 'Take photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Evaluar': 'Evaluate',
   'Lienzo': 'Canvas', 'Trabajos': 'Projects', 'Deshacer': 'Undo', 'Rehacer': 'Redo', 'Ajustar': 'Fit', 'Borrar todo': 'Clear all',
   'Guardar imagen': 'Save image', 'Compartir': 'Share', 'Presentar': 'Present', 'Guía': 'Guide', 'Salir': 'Exit',
   'Curva C': 'C-curve', 'Invertir': 'Flip', 'Más suave': 'Lighter', 'Más visible': 'Darker', 'Girar 1°': 'Rotate 1°',
@@ -403,7 +642,7 @@ const STATIC_EN = {   // textos fijos de la página
   'Almendra': 'Pink/White', 'Simetría': 'Symmetry', 'Presión': 'Pressure',
   'Escribe aquí…': 'Type here…', 'Cancelar': 'Cancel', 'Aceptar': 'OK', 'Entendido': 'Got it', 'Guía de ZaleStudio': 'ZaleStudio guide',
   '¿Cuánto mide lo que has marcado en la regla?': 'How long is the section you marked on the ruler?', 'Otra medida': 'Other size',
-  '¿Seguro?': 'Are you sure?', 'Sí': 'Yes'
+  '¿Seguro?': 'Are you sure?', 'Sí': 'Yes', 'Cuenta': 'Account', 'Regla': 'Ruler', 'Quitar': 'Remove'
 };
 function translateStatic() {   // pasa a inglés los textos fijos (solo en inglés: en español no se toca nada)
   document.documentElement.lang = LANG;
@@ -418,6 +657,8 @@ function translateStatic() {   // pasa a inglés los textos fijos (solo en ingl�
   }
   for (const a of ['placeholder', 'aria-label', 'title']) document.querySelectorAll(`[${a}]`).forEach(el => { const v = el.getAttribute(a); if (STATIC_EN[v]) el.setAttribute(a, STATIC_EN[v]); });
   document.querySelectorAll('#eTable thead .sm').forEach((s, i) => s.textContent = 'TIMRP'[i]);
+  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler' };
+  document.querySelectorAll('#rulerbar .rlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
 }
 translateStatic();
 const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
@@ -524,6 +765,15 @@ function fit() {
 }
 function zoomAt(sx, sy, f) { const d = toDocS(sx, sy); S.view.s = clamp(S.view.s * f, 0.02, 40); placeView(d.x, d.y, sx, sy); req(); }
 function rotateAt(sx, sy, ang) { const d = toDocS(sx, sy); S.view.r += ang; placeView(d.x, d.y, sx, sy); req(); }
+let wheelRaw = null;
+function snapRight(r) { const q = Math.PI / 2, n = Math.round(r / q) * q; return Math.abs(r - n) < 3 * Math.PI / 180 ? n : r; }
+function wheelRotate(sx, sy, delta) {   // ordenador: cada paso de la rueda gira 2° y al pasar cerca de recto se queda derecha
+  if (wheelRaw === null || Math.abs(snapRight(wheelRaw) - S.view.r) > 1e-9) wheelRaw = S.view.r;
+  wheelRaw += clamp(delta, -100, 100) / 100 * 2 * Math.PI / 180;
+  const d = toDocS(sx, sy); S.view.r = snapRight(wheelRaw); placeView(d.x, d.y, sx, sy); req();
+  let g = Math.round(((S.view.r * 180 / Math.PI) % 360 + 360) % 360); if (g === 360) g = 0;
+  toast(`${TT('Giro', 'Rotation')} ${g}°`, 900);
+}
 
 /* ---------- dibujo ---------- */
 let raf = 0;
@@ -556,10 +806,13 @@ function render() {
   drawPairs(ictx);
   const scrLegend = LEGEND; LEGEND = null;
   $('#bSym').classList.toggle('on', !!axisObj());
+  $('#bRuler').classList.toggle('on', !!S.ruler);
+  $('#rulerbar').classList.toggle('show', !!S.ruler);
   ictx.restore();
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.drawImage(ink, 0, 0);
+  drawRuler();
   drawLegendScreen(scrLegend);
   drawSelection();
   drawMarquee();
@@ -945,7 +1198,8 @@ function drawAngle(c, o) {
   measTag(c, [o], ang < 1 ? `${fmt1(ang)}° · ${par}` : `${fmt1(ang)}°`, `${fmt1(ang)}°`, tx, ty, fs, o.color, anc, tagOpt(o, pref, ext), TT('Ángulo ', 'Angle ') + (ang < 1 ? `${fmt1(ang)}° · ${par}` : `${fmt1(ang)}°`));
 }
 const FRACS = [[1, 4], [1, 3], [1, 2], [2, 3], [3, 4], [1, 1], [4, 3], [3, 2], [2, 1]];
-function ratioText(q) { return EN ? `Free edge = ${Math.round(q * 100)} % of nail bed` : `Borde libre = ${Math.round(q * 100)} % del lecho`; }
+function ratioParts(q) { const p2 = Math.round(q / (1 + q) * 100); return [100 - p2, p2]; }   // q = borde libre / lecho → % de la uña completa
+function ratioText(q) { const [p1, p2] = ratioParts(q); return EN ? `Nail bed ${p1} % · Free edge ${p2} %` : `Lecho ${p1} % · Borde libre ${p2} %`; }
 function drawRatio(c, o) {
   c.lineWidth = o.w;
   c.beginPath(); c.moveTo(o.a[0], o.a[1]); c.lineTo(o.m[0], o.m[1]); c.lineTo(o.b[0], o.b[1]); c.stroke();
@@ -955,7 +1209,7 @@ function drawRatio(c, o) {
   const off = o.fs * 3.4, small = o.fs * 0.75;
   const m1 = [(o.a[0] + o.m[0]) / 2, (o.a[1] + o.m[1]) / 2], m2 = [(o.m[0] + o.b[0]) / 2, (o.m[1] + o.b[1]) / 2];
   const ticks = [o.a, o.m, o.b].map(p => [[p[0] - nx * tk, p[1] - ny * tk], [p[0] + nx * tk, p[1] + ny * tk]]);
-  if (L1 > 0) measTag(c, [o], ratioText(L2 / L1), `${Math.round(L2 / L1 * 100)} %`, o.b[0] + ux / L * o.fs * 3.6, o.b[1] + uy / L * o.fs * 3.6, o.fs, o.color, o.b, tagOpt(o, [ux, uy], ticks));
+  if (L1 > 0) measTag(c, [o], ratioText(L2 / L1), ratioParts(L2 / L1).join('/'), o.b[0] + ux / L * o.fs * 3.6, o.b[1] + uy / L * o.fs * 3.6, o.fs, o.color, o.b, tagOpt(o, [ux, uy], ticks));
   if (tagMode([o]) === 'full') {   // nombres de los tramos solo con el texto completo
     drawTag(c, m1[0] + nx * off, m1[1] + ny * off, TT('Lecho', 'Nail bed'), small, o.color, m1, tagOpt(o, [nx, ny], ticks));
     drawTag(c, m2[0] + nx * off, m2[1] + ny * off, TT('Borde libre', 'Free edge'), small, o.color, m2, tagOpt(o, [nx, ny], ticks));
@@ -1110,6 +1364,28 @@ const CRIT = {
   otExt: ['Extensión lateral', 'Vista de perfil: el borde libre sale directo del pliegue lateral natural, sin caer ni inclinarse hacia arriba, con simetría y sin el pliegue lateral expuesto.\n1 punto por cada lado. Máximo 2 por uña.'],
   otGrosor: ['Grosor del borde libre', 'Fino y uniforme en todo el borde libre, igual en las paredes laterales que en el centro (1).\nNo más de 1,5 mm donde se unen las zonas 2 y 3 (1).\nMáximo 2 por uña.'],
   otCurva: ['Curva C', 'Entre el 40 % y el 50 % de círculo (1).\nConcéntrica, como un semicírculo (1).\nMáximo 2 por uña. Puedes medirla con la herramienta Arco.', 'arc'],
+  g1Brillo: ['Alto brillo', 'Acabado de alto brillo en toda la superficie de la uña (1).\nGel sellador o top coat completamente curado antes de que acabe el tiempo: sin tacto pegajoso ni zonas opacas y sin restos de capa de inhibición (1).\nMáximo 2 por uña.'],
+  g1Control: ['Control del producto', 'Aplicación uniforme con una división nítida de color en la sonrisa. Gel blanco sólido, sin tono rosado ni sombras. Si se usa cover pink para extender la uña, no se monta sobre el blanco ni se ve desde arriba, y no deja ver la uña natural. Sin sombras, transparencias, burbujas ni picaduras.\n1 por el blanco y 1 por el rosa.'],
+  g1Suav: ['Suavidad de la superficie', 'Ninguna parte de la superficie expuesta sin sellar (1).\nSuave en toda la superficie, sin burbujas de aire ni ondulaciones (1).\nMáximo 2 por uña.'],
+  g1Abajo: ['Parte de abajo', 'Limpia: sin polvo, restos de producto, agua, pegamento ni exceso de aceite (1).\nProducto suave debajo de la uña, sin exceso (1).\nMáximo 2 por uña.'],
+  g1Apex: ['Arco y ápex', 'Ápex no demasiado marcado, con inclinación sutil y gradual en la zona 2; el arco ni muy pronunciado ni plano (1).\nEl arco no queda ni demasiado adelante ni demasiado atrás vista de perfil (1).\nMáximo 2 por uña.'],
+  g1Forma: ['Forma de la uña', 'Cuadrada extrema, consistente y uniforme. Borde libre limado recto, sin desigualdades (1).\nExtensión aplicada recta respecto a la uña natural (no al dedo), sin parecer torcida ni inclinada, mirada de frente (1).\nMáximo 2 por uña.'],
+  g1Molde: ['Aplicación del molde', 'Sin muescas ni espacios en los pliegues laterales donde empieza la extensión del borde libre (las muescas salen al aplicar el molde, no se hacen con la lima).\n1 por cada lado sin muesca.'],
+  g1Cut: ['Área de cutículas', 'Sin cortes ni irritación nuevos alrededor de toda la uña (1).\nSin exceso de producto que se vea o se note cerca de los pliegues proximales (½).\nEl producto cubre toda la zona de la cutícula sin dejar margen y no está demasiado limado (½).\nMáximo 2 por uña.'],
+  g1Sonrisa: ['Línea de la sonrisa', 'División 1 (máx. 1 por uña): simétrica y con división nítida (½); forma uniforme con las demás uñas (½).\nDivisión 2 (máx. 2): 1 si es simétrica, nítida y uniforme con las demás; 1 si está alineada y centrada.\nDivisión 3 (máx. 3): como la 2, y 1 más si las puntas son paralelas y coinciden perfectamente.\nSe hace de forma tradicional o por aplicación inversa; no se permite pintar con gel blanco.'],
+  g1Convexo: ['Convexo', 'Contorno exterior completamente simétrico y superficie sin irregularidades, simétrico a lo largo de toda la uña hasta la zona 1. Se mira de frente para la zona 3 y desde atrás para la zona 2.\n1 por cada zona correcta.'],
+  g1Concavo: ['Cóncavo', 'Túnel interior simétrico y concéntrico desde el inicio de la curva C hasta la punta del dedo.\nConcéntrico donde empieza el borde libre, con el molde siguiendo el borde distal y sin exceso de producto (1).\nSimétrico en todo el borde libre, sin irregularidades en el túnel (1).'],
+  g1Paredes: ['Paredes laterales', 'El borde libre sale recto desde los pliegues laterales, sin ensancharse ni estrecharse mirado de frente, igual en cada lado, sin rebordes y con los lados suaves y limpios.\n1 por cada lado.'],
+  g1Ext: ['Extensión lateral', 'Vista de perfil: el borde libre sale directo del pliegue natural, sin caer ni inclinarse hacia arriba, con las extensiones laterales simétricas y sin el pliegue natural expuesto.\n1 por cada lado.'],
+  g1Grosor: ['Grosor del borde libre', 'Fino y uniforme en todo el borde libre, con el mismo grosor en las paredes laterales y en el centro (1).\nNo más de 1,5 mm donde se unen las zonas 2 y 3 (1).'],
+  g1Curva: ['Curva C', 'Entre el 40 % y el 50 % de un círculo (1).\nConcéntrica, como un semicírculo (1).\nPuedes medirla con la herramienta Arco.', 'arc'],
+  g1Largo: ['Longitud (blanco = rosa)', 'De la cutícula al centro de la sonrisa debe medir lo mismo que del borde libre a las puntas de la sonrisa. Si las puntas no coinciden, se mide desde la más alta.\n1 punto por uña.\nPuedes medirlo con Almendra: el objetivo es "Almendra 50 % · Borde libre 50 %".', 'ratio2'],
+  a1Brillo: ['Alto brillo', 'Brillo intenso y reflectante, con aspecto de cristal, en toda la superficie de la uña (1).\nLos laterales, los bordes y la zona de la cutícula también brillantes (1).\nLas líneas de demarcación no cuentan aquí si el brillo es evidente. No se permite gel sellador.\nMáximo 2 por uña.'],
+  a1Control: ['Control del producto', 'Aplicación uniforme con una división nítida de color en la sonrisa. Acrílico blanco sólido en toda la uña, sin sombras rosadas, sombras ni transparencias. Sin burbujas de aire ni picaduras.\n1 por el blanco y 1 por el rosa.'],
+  a1Suav: ['Suavidad de la superficie', 'Sin líneas de lima ni demarcaciones; el producto terminado se ve y se siente suave, todo limado y pulido hasta quedar completamente liso (2).\nSi solo queda una línea de demarcación pequeña, casi imposible de ver y que no se nota al tacto: ½ o 1.'],
+  a1Molde: ['Aplicación del molde', 'Sin muescas ni espacios en los pliegues laterales donde empieza la extensión del borde libre (las muescas salen al esculpir, no se hacen con la lima).\n1 por cada lado sin muesca.'],
+  a1Grosor: ['Grosor del borde libre', 'Fino y uniforme en todo el borde libre, con el mismo grosor en las paredes laterales y en el centro (1).\nNo más de 1 mm donde se unen las zonas 2 y 3 (1).'],
+  a1Sonrisa: ['Línea de la sonrisa', 'División 1 (máx. 1 por uña): simétrica y con división nítida (½); forma uniforme con las demás uñas (½).\nDivisión 2 (máx. 2): 1 si es simétrica, nítida y uniforme con las demás; 1 si está alineada y centrada.\nDivisión 3 (máx. 3): como la 2, y 1 más si las puntas son paralelas y coinciden perfectamente.\nSe hace con pincel; se permite la aplicación inversa.'],
   otLargo: ['Longitud', 'Extensión de al menos 1 cm y no más de 1,5 cm desde la parte superior del borde distal de la uña natural.\n1 punto por uña.'],
   aDif: ['Nivel de dificultad', 'La complejidad del diseño se valora según el nivel de experiencia (la división).\n¿El diseño es simple, sin elaboración, o tiene más dificultad y experiencia en su creación?'],
   aBal: ['Balance', 'El diseño no debe estar ni demasiado lleno ni demasiado vacío, y debe verse equilibrado en cada uña y en el conjunto.\nNo debe haber grandes zonas de la uña sin diseño.\nLa combinación de elementos artísticos da sensación de equilibrio o estabilidad (simetría o asimetría).'],
@@ -1125,6 +1401,9 @@ const CRIT = {
   a3d: ['Presentación 3D', 'Presencia artística en cada uña.\nFormas en 3D limpias, con un estilo único y con textura.'],
   aImp: ['Impresión total', 'La primera impresión de la obra completa.\nEl trabajo debe atraer la mirada e invitar a fijarse en los detalles.'],
   aRitmo: ['Ritmo', 'Principio artístico que indica movimiento: elementos que se repiten con cuidado para crear un ritmo o tempo visual.'],
+  sTema: ['Tema', 'El trabajo debe representar el tema publicado en la web de cada competición.'],
+  sLimp: ['Limpieza del trabajo', 'Trabajo con apariencia limpia, sin imperfecciones visibles: huellas en el producto, restos de pegamento, exceso de gel o polvo sin eliminar.'],
+  sMedia: ['Media', 'Uso de las técnicas y productos de stamping permitidos (difuminados de stamping, stamping reverso, técnica en capas; gel de color o semipermanente, esmalte de stamping, pigmentos cromados o aurora boreal; máx. 3 rhinestones por uña), incorporados al diseño de forma coherente y creativa.'],
   aVar: ['Variedad', 'Principio artístico de diversidad o contraste: se consigue con distintas formas, tamaños y colores en el trabajo.'],
   largoR: ['Longitud (igual que la otra mano)', 'Las uñas de las dos manos deben coincidir en largo, desde la cutícula hasta el borde libre.\n1 punto por uña.']
 };
@@ -1134,11 +1413,15 @@ const FICHAS = {
     { n: 'Mano francesa', rows: BASE_ROWS.concat(['brillo', 'control', 'largoF', 'sonrisa']) },
     { n: 'Mano roja', rows: BASE_ROWS.concat(['esmalte', 'largoR']) }
   ] },
-  fsg: { n: 'French Sculptured Gel', info: '2 manos · 3 horas · hard gel con molde, sin tips', hands: [
+  fsg: { n: 'French Sculptured Gel (2 manos)', info: '2 manos · 3 horas · hard gel con molde, sin tips', hands: [
     { n: 'Mano francesa', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor', 'paredes', 'extension', 'curvaA', 'forma', 'suavidadG', 'cuticula', 'abajoG', 'brilloG', 'controlG', 'largoA', 'sonrisa'] },
     { n: 'Mano roja', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor', 'paredes', 'extension', 'curvaA', 'forma', 'suavidadG', 'cuticula', 'abajoG', 'esmalteG', 'largoR'] }
   ] },
-  tgm: { n: 'Traditional Gel Manicure', info: '2 manos · 1 hora · uñas naturales, solo productos gel · máx. 70 / 75 / 80', hands: [
+  fsg1: { n: 'French Sculptured Gel (1 mano)', info: '1 mano · 90 minutos · gel tradicional o acrigel con molde, sin tips · máx. 150 / 155 / 160',
+    pts: { g1Brillo: 2, g1Control: 2, g1Suav: 2, g1Abajo: 2, g1Apex: 2, g1Forma: 2, g1Molde: 2, g1Cut: 2, g1Convexo: 2, g1Concavo: 2, g1Paredes: 2, g1Ext: 2, g1Grosor: 2, g1Curva: 2, g1Largo: 1 }, hands: [
+    { n: 'Mano', rows: ['g1Brillo', 'g1Control', 'g1Suav', 'g1Abajo', 'g1Apex', 'g1Forma', 'g1Molde', 'g1Cut', 'g1Sonrisa', 'g1Convexo', 'g1Concavo', 'g1Paredes', 'g1Ext', 'g1Grosor', 'g1Curva', 'g1Largo'] }
+  ] },
+  tgm: { n: 'Traditional Gel Manicure', info: '2 manos · 1 hora · uñas naturales, solo productos gel · máx. 70 / 75 / 80', pens: [['Uñas de la modelo tratadas antes de la competición', 5]], hands: [
     { n: 'Mano francesa', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'sonrisaM'] },
     { n: 'Mano roja', rows: ['formaM', 'aplicM', 'cutM', 'abajoM', 'suavM', 'brilloM', 'rojoM'] }
   ] },
@@ -1148,14 +1431,14 @@ const FICHAS = {
     pts: { aDif: 20 }, pens: [['Menos de 3 medios y técnicas', 5], ['Presentación más grande de lo permitido', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aComp', 'aBal', 'aColor', 'aCont', 'aCal', 'aClar', 'aOrig', 'aTrab', 'aMedia'] }] },
   mmb: { n: 'Mixed Media Box', group: 'sub', single: true, info: '10 tips de distintos tamaños · 3 medios: pintura, 3D y embellecimiento · arte de máx. 1 cm · sin calcomanías, stamping ni moldes 3D · tema obligatorio · máx. 110',
     pts: { aDif: 20 }, pens: [['Tips del mismo tamaño', 5], ['Falta uno de los 3 medios', 5], ['Arte de más de 1 cm desde la uña', 5], ['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aBal', 'aComp', 'aOrig', 'aMedia', 'aCal', 'aCont', 'aClar', 'aColor', 'aTrab'] }] },
-  fa: { n: 'Flat Art', group: 'sub', single: true, info: 'Tips unidos tipo cuadro · solo pintura totalmente plana (airbrush, acrílico, gel, esmalte) · sin rhinestones, perlas, foils, calcomanías ni stamping · tema obligatorio · máx. 100',
-    pts: { aDif: 20 }, pens: [['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aBal', 'aComp', 'aOrig', 'aMedia', 'aCal', 'aCont', 'aClar', 'aColor'] }] },
-  stm: { n: 'Salon Trend Manicure Tip Box', group: 'sub', single: true, info: '10 tips separados de máx. 2 cm y distintos tamaños · estilo salón con tendencias actuales · stamping sí, calcomanías no · sin tema · máx. 100',
-    pts: { aDif: 20 }, pens: [['Tips de un solo tamaño', 5], ['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'aBal', 'aCrea', 'aRitmo', 'aImp', 'aCal', 'aTrab', 'aVar'] }] },
+  fa: { n: 'Flat Art', group: 'sub', single: true, info: '10 tips unidos, de distintos tamaños · solo pintura totalmente plana (airbrush, acrílico, gel, pintura a mano, pintura en gel) · sin rhinestones, perlas, bullion, foils, calcomanías ni diseños hechos · caja de máx. 25,4 cm · tema libre · máx. 110',
+    pts: { aDif: 20 }, pens: [['Presentación de más de 254 mm', 5], ['Tips de un solo tamaño', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aComp', 'aBal', 'aColor', 'aCont', 'aCal', 'aClar', 'aOrig', 'aMedia', 'aImp'] }] },
+  stm: { n: 'Salon Trend Manicure Tip Box', group: 'sub', single: true, info: 'Hecho antes del concurso · 10 tips separados, de distintos tamaños · tendencias actuales · airbrush, acrílico, gel, pintura a mano y soak off gel · se permiten rhinestones, perlas, bullion, foils y crushed shells · sin calcomanías ni diseños hechos · diseño de máx. 1 cm desde la uña · máx. 100',
+    pts: { aDif: 20 }, pens: [['Tips de un solo tamaño', 5], ['Diseño de más de 1 cm desde la uña', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aComp', 'aBal', 'aColor', 'aCal', 'aClar', 'aOrig', 'aMedia', 'aTrab'] }] },
   rac: { n: 'Rhinestones Art Color', group: 'sub', single: true, info: 'Tips cuadrados u ovalados separados, de máx. 3,04 cm · solo rhinestones de distintos colores, formas y tamaños · máx. 5 mm de alto · base de un solo color · sin tema · máx. 90',
     pts: { aDif: 20 }, pens: [['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'aCrea', 'aImp', 'aBal', 'aTrab', 'aRitmo', 'aVar'] }] },
-  sst: { n: 'Stamping Nail Art Tip Box', group: 'sub', single: true, info: '10 tips separados de máx. 2 cm y distintos tamaños · mínimo 50 % del arte en stamping · diseño extra de máx. 1 cm · sin calcomanías · sin tema · máx. 100',
-    pts: { aDif: 20 }, pens: [['Tips de un solo tamaño', 5], ['Presentación de más de 254 mm', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'aCrea', 'aImp', 'aRitmo', 'aBal', 'aTrab', 'aMedia', 'aVar'] }] },
+  sst: { n: 'Stamping Nail Art Tip Box', group: 'sub', single: true, info: '5 tips separados de 2,5 a 3 cm y distintos tamaños · solo técnicas de stamping · máx. 3 rhinestones por uña · sin spider gel, calcomanías, foils, mano alzada ni aerografía · caja con fondo negro de máx. 10–15 cm · texto con técnicas y productos · tema obligatorio · máx. 90',
+    pens: [['Tips de un solo tamaño', 5]], hands: [{ n: 'Obra', rows: ['aDif', 'aColor', 'sTema', 'aCrea', 'aOrig', 'aImp', 'sLimp', 'aComp', 'sMedia'] }] },
   ot: { n: 'One Tone Sculptured', info: '1 mano · 60 minutos · un solo tono (cobertura o natural), esculpida con molde · máx. 125 en todas las divisiones',
     pts: { otBrillo: 2, otAbajo: 2, otApex: 2, otForma: 2, otMolde: 2, otCut: 2, otConvexo: 2, otConcavo: 2, otParedes: 2, otExt: 2, otGrosor: 2, otCurva: 2, otLargo: 1 }, hands: [
     { n: 'Mano', rows: ['otBrillo', 'otAbajo', 'otApex', 'otForma', 'otMolde', 'otCut', 'otConvexo', 'otConcavo', 'otParedes', 'otExt', 'otGrosor', 'otCurva', 'otLargo'] }
@@ -1166,9 +1449,13 @@ const FICHAS = {
   bb: { n: 'Baby Boomer', whole: true, info: '1 mano · 90 minutos · 15 criterios de 5 puntos · cada uña 0 o 1 · máx. 75', hands: [
     { n: 'Mano', rows: ['convexo', 'concavo', 'apex', 'tip', 'grosorBB', 'paredes1', 'extension1', 'curvaBB', 'formaBB', 'largoBB', 'suavidad', 'brillo', 'controlBB', 'cuticula', 'abajo'] }
   ] },
-  fsa: { n: 'French Sculptured Acrylic', info: '2 manos · 2 h 30 min · acrílico esculpido con molde', hands: [
+  fsa: { n: 'French Sculptured Acrylic (2 manos)', info: '2 manos · 2 h 30 min · acrílico esculpido con molde', hands: [
     { n: 'Mano francesa', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor1', 'paredes', 'extension', 'curvaA', 'forma', 'suavidad', 'cuticula', 'abajo', 'brillo', 'control', 'largoA', 'sonrisa'] },
     { n: 'Mano roja', rows: ['convexo', 'concavo', 'apex', 'molde', 'grosor1', 'paredes', 'extension', 'curvaA', 'forma', 'suavidad', 'cuticula', 'abajo', 'esmalteA', 'largoR'] }
+  ] },
+  fsa1: { n: 'French Sculptured Acrylic (1 mano)', info: '1 mano · 90 minutos · acrílico (líquido y polvo) esculpido con molde, sin tips ni gel sellador · máx. 150 / 155 / 160',
+    pts: { a1Brillo: 2, a1Control: 2, a1Suav: 2, g1Abajo: 2, g1Apex: 2, g1Forma: 2, a1Molde: 2, g1Cut: 2, g1Convexo: 2, g1Concavo: 2, g1Paredes: 2, g1Ext: 2, a1Grosor: 2, g1Curva: 2, g1Largo: 1 }, hands: [
+    { n: 'Mano', rows: ['a1Brillo', 'a1Control', 'a1Suav', 'g1Abajo', 'g1Apex', 'g1Forma', 'a1Molde', 'g1Cut', 'a1Sonrisa', 'g1Convexo', 'g1Concavo', 'g1Paredes', 'g1Ext', 'a1Grosor', 'g1Curva', 'g1Largo'] }
   ] }
 };
 const CRIT_EN = {   // criterios en inglés (el tercer dato, la herramienta para medir, se mantiene)
@@ -1240,6 +1527,28 @@ const CRIT_EN = {   // criterios en inglés (el tercer dato, la herramienta para
   otExt: ['Lateral extension', 'In profile: the free edge comes straight out of the natural lateral fold, without dropping or tilting upward, symmetrical and without the lateral fold exposed.\n1 point for each side. Maximum 2 per nail.'],
   otGrosor: ['Free edge thickness', 'Thin and even along the whole free edge, the same at the sidewalls as in the center (1).\nNo more than 1.5 mm where zones 2 and 3 meet (1).\nMaximum 2 per nail.'],
   otCurva: ['C-curve', 'Between 40 % and 50 % of a circle (1).\nConcentric, like a semicircle (1).\nMaximum 2 per nail. You can measure it with the Arc tool.'],
+  g1Brillo: ['High shine', 'High-shine finish over the whole nail surface (1).\nSealer gel or top coat fully cured before time is up: not sticky or dull, and no inhibition layer left (1).\nMaximum 2 per nail.'],
+  g1Control: ['Product control', 'Even application with a crisp color division at the smile line. Solid white gel, with no pink tone or shadows. If cover pink is used to extend the nail, it does not overlap the white or show from above, and the natural nail does not show through. No shadows, see-through areas, bubbles or pitting.\n1 for the white and 1 for the pink.'],
+  g1Suav: ['Surface smoothness', 'No part of the surface left exposed and unsealed (1).\nSmooth over the whole surface, with no air bubbles or waves (1).\nMaximum 2 per nail.'],
+  g1Abajo: ['Underside', 'Clean: no dust, product debris, water, glue or excess oil (1).\nSmooth product under the nail, without excess (1).\nMaximum 2 per nail.'],
+  g1Apex: ['Arch and apex', 'Apex not too obvious, with a subtle, gradual slope in zone 2; the arch neither too pronounced nor flat (1).\nThe arch is set neither too far forward nor too far back when seen in profile (1).\nMaximum 2 per nail.'],
+  g1Forma: ['Nail shape', 'Extreme square, consistent and uniform. Free edge filed straight, not uneven (1).\nExtension applied straight to the natural nail (not to the finger), not looking crooked or tilted, seen from the front (1).\nMaximum 2 per nail.'],
+  g1Molde: ['Form fit', 'No notches or gaps at the lateral folds where the free edge extension starts (notches come from applying the form, they cannot be made with a file).\n1 for each side without a notch.'],
+  g1Cut: ['Cuticle area', 'No new cuts or irritation around the whole nail (1).\nNo excess product seen or felt near the proximal folds (½).\nThe product covers the whole cuticle area without leaving a margin and is not over-filed (½).\nMaximum 2 per nail.'],
+  g1Sonrisa: ['Smile line', 'Division 1 (max. 1 per nail): symmetrical with a crisp division (½); shape uniform with the other nails (½).\nDivision 2 (max. 2): 1 if symmetrical, crisp and uniform with the others; 1 if aligned and centered.\nDivision 3 (max. 3): as Division 2, plus 1 if the points are parallel and match perfectly.\nDone the traditional way or by reverse application; painting with white gel is not allowed.'],
+  g1Convexo: ['Convex', 'Outer contour completely symmetrical and surface free of irregularities, symmetrical along the whole nail up to zone 1. Viewed from the front for zone 3 and from behind for zone 2.\n1 for each correct zone.'],
+  g1Concavo: ['Concave', 'Inner tunnel symmetrical and concentric from the start of the C-curve to the fingertip.\nConcentric where the free edge starts, with the form following the distal edge and no excess product (1).\nSymmetrical along the whole free edge, with no irregularities in the tunnel (1).'],
+  g1Paredes: ['Sidewalls', 'The free edge comes straight out of the lateral folds, without widening or narrowing seen from the front, the same on each side, with no ridges and with smooth, clean sides.\n1 for each side.'],
+  g1Ext: ['Lateral side extension', 'In profile: the free edge comes straight out of the natural fold, without dropping or tilting up, with symmetrical lateral extensions and without the natural fold exposed.\n1 for each side.'],
+  g1Grosor: ['Free edge thickness', 'Thin and even along the whole free edge, with the same thickness at the sidewalls and in the center (1).\nNo more than 1.5 mm where zones 2 and 3 meet (1).'],
+  g1Curva: ['C-curve', 'Between 40 % and 50 % of a circle (1).\nConcentric, like a semicircle (1).\nYou can measure it with the Arc tool.'],
+  g1Largo: ['Length (white = pink)', 'From the cuticle to the center of the smile line must measure the same as from the free edge to the smile line points. If the points do not match, measure from the highest one.\n1 point per nail.\nYou can measure it with Pink/White: the target is "Pink 50 % · Free edge 50 %".'],
+  a1Brillo: ['High shine', 'Intense, reflective, glass-like shine over the whole nail surface (1).\nSides, edges and cuticle area also shiny (1).\nDemarcation lines do not count here as long as the shine is apparent. Gel sealer is not allowed.\nMaximum 2 per nail.'],
+  a1Control: ['Product control', 'Even application with a crisp color division at the smile line. Solid white acrylic over the whole nail, with no pink shadows, shadows or see-through areas. No air bubbles or pitting.\n1 for the white and 1 for the pink.'],
+  a1Suav: ['Surface smoothness', 'No file lines or demarcations; the finished product looks and feels smooth, everything filed and buffed until completely smooth (2).\nIf only one small demarcation line remains, extremely hard to see and impossible to feel: ½ or 1.'],
+  a1Molde: ['Form fit', 'No notches or gaps at the lateral folds where the free edge extension starts (notches come from sculpting, they cannot be made with a file).\n1 for each side without a notch.'],
+  a1Grosor: ['Free edge thickness', 'Thin and even along the whole free edge, with the same thickness at the sidewalls and in the center (1).\nNo more than 1 mm where zones 2 and 3 meet (1).'],
+  a1Sonrisa: ['Smile line', 'Division 1 (max. 1 per nail): symmetrical with a crisp division (½); shape uniform with the other nails (½).\nDivision 2 (max. 2): 1 if symmetrical, crisp and uniform with the others; 1 if aligned and centered.\nDivision 3 (max. 3): as Division 2, plus 1 if the points are parallel and match perfectly.\nDone with a brush; reverse application is allowed.'],
   otLargo: ['Length', 'Extension of at least 1 cm and no more than 1.5 cm from the top of the distal edge of the natural nail.\n1 point per nail.'],
   aDif: ['Level of difficulty', 'The complexity of the design is assessed according to the level of experience (the division).\nIs the design simple, without elaboration, or does it show more difficulty and experience in its creation?'],
   aBal: ['Balance', 'The design must be neither too full nor too empty, and must look balanced on each nail and as a whole.\nThere must be no large areas of the nail without design.\nThe combination of artistic elements gives a sense of balance or stability (symmetry or asymmetry).'],
@@ -1255,24 +1564,29 @@ const CRIT_EN = {   // criterios en inglés (el tercer dato, la herramienta para
   a3d: ['3D presentation', 'Artistic presence on each nail.\nClean 3D shapes, with a unique style and texture.'],
   aImp: ['Overall impression', 'The first impression of the complete work.\nThe work must catch the eye and invite you to look at the details.'],
   aRitmo: ['Rhythm', 'Artistic principle that indicates movement: elements carefully repeated to create a visual rhythm or tempo.'],
+  sTema: ['Theme', 'The work must represent the theme published on the website of each competition.'],
+  sLimp: ['Cleanliness of work', 'Work with a clean appearance, with no visible imperfections: fingerprints in the product, glue residue, excess gel or dust not removed.'],
+  sMedia: ['Media', 'Use of the permitted stamping techniques and products (stamping gradients, reverse stamping, layering; color gel or gel polish, stamping polish, chrome or aurora pigments; max. 3 rhinestones per nail), incorporated into the design in a coherent, creative way.'],
   aVar: ['Variety', 'Artistic principle of diversity or contrast: achieved with different shapes, sizes and colors in the work.'],
   largoR: ['Length (same as the other hand)', 'The nails of both hands must match in length, from the cuticle to the free edge.\n1 point per nail.']
 };
 const FICHAS_EN = {   // categorías: descripción y penalizaciones en inglés
   ssf: { info: '2 hands · 2 hours · gel or acrylic, tips or forms' },
-  fsg: { info: '2 hands · 3 hours · hard gel with forms, no tips' },
-  tgm: { info: '2 hands · 1 hour · natural nails, gel products only · max. 70 / 75 / 80' },
+  fsg: { n: 'French Sculptured Gel (2 hands)', info: '2 hands · 3 hours · hard gel with forms, no tips' },
+  fsg1: { n: 'French Sculptured Gel (1 hand)', info: '1 hand · 90 minutes · traditional gel or acrygel with forms, no tips · max. 150 / 155 / 160' },
+  tgm: { info: '2 hands · 1 hour · natural nails, gel products only · max. 70 / 75 / 80', pens: ["Model's nails treated before the competition"] },
   ftb: { info: 'Made before the competition · everything on 1 tip, in a box of max. 25 cm and 20 cm high · three-dimensional · mandatory theme · max. 120', pens: ['Presentation larger than allowed'] },
   la: { info: 'On objects (pins, brooches, key rings, plates…) · max. 10 cm high · base of max. 20 × 14 cm, black, white or clear background · at least 3 media · mandatory theme · max. 110', pens: ['Fewer than 3 media and techniques', 'Presentation larger than allowed'] },
   mmb: { info: '10 tips of different sizes · 3 media: painting, 3D and embellishment · art max. 1 cm · no decals, stamping or 3D molds · mandatory theme · max. 110', pens: ['Tips all the same size', 'One of the 3 media missing', 'Art more than 1 cm from the nail', 'Presentation over 254 mm'] },
-  fa: { info: 'Tips joined like a picture · completely flat paint only (airbrush, acrylic, gel, polish) · no rhinestones, pearls, foils, decals or stamping · mandatory theme · max. 100', pens: ['Presentation over 254 mm'] },
-  stm: { info: '10 separate tips of max. 2 cm and different sizes · salon style with current trends · stamping yes, decals no · no theme · max. 100', pens: ['Tips of only one size', 'Presentation over 254 mm'] },
+  fa: { info: '10 joined tips of different sizes · completely flat paint only (airbrush, acrylic, gel, hand painting, gel painting) · no rhinestones, pearls, bullion, foils, decals or ready-made designs · box of max. 25.4 cm · free theme · max. 110', pens: ['Presentation over 254 mm', 'Tips of only one size'] },
+  stm: { info: 'Made before the competition · 10 separate tips of different sizes · current trends · airbrush, acrylic, gel, hand painting and soak-off gel · rhinestones, pearls, bullion, foils and crushed shells allowed · no decals or ready-made designs · design max. 1 cm from the nail · max. 100', pens: ['Tips of only one size', 'Design more than 1 cm from the nail'] },
   rac: { info: 'Separate square or oval tips of max. 3.04 cm · rhinestones only, in different colors, shapes and sizes · max. 5 mm high · single-color base · no theme · max. 90', pens: ['Presentation over 254 mm'] },
-  sst: { info: '10 separate tips of max. 2 cm and different sizes · at least 50 % of the art in stamping · extra design max. 1 cm · no decals · no theme · max. 100', pens: ['Tips of only one size', 'Presentation over 254 mm'] },
+  sst: { info: '5 separate tips of 2.5 to 3 cm and different sizes · stamping techniques only · max. 3 rhinestones per nail · no spider gel, decals, foils, freehand or airbrush · box with black background of max. 10–15 cm · text with techniques and products · mandatory theme · max. 90', pens: ['Tips of only one size'] },
   ot: { info: '1 hand · 60 minutes · a single tone (cover or natural), sculpted with forms · max. 125 in all divisions' },
   sna: { info: '1 hand · 2 hours · stiletto sculpted with forms, gel or acrylic · encapsulated or on-top art (max. 5 mm)' },
   bb: { info: '1 hand · 90 minutes · 15 criteria of 5 points · each nail 0 or 1 · max. 75' },
-  fsa: { info: '2 hands · 2 h 30 min · acrylic sculpted with forms' }
+  fsa: { n: 'French Sculptured Acrylic (2 hands)', info: '2 hands · 2 h 30 min · acrylic sculpted with forms' },
+  fsa1: { n: 'French Sculptured Acrylic (1 hand)', info: '1 hand · 90 minutes · acrylic (liquid and powder) sculpted with forms, no tips or gel sealer · max. 150 / 155 / 160' }
 };
 const HANDS_EN = { 'Mano francesa': 'French hand', 'Mano roja': 'Red hand', 'Mano': 'Hand', 'Obra': 'Piece' };
 if (EN) {
@@ -1280,6 +1594,7 @@ if (EN) {
   for (const k in FICHAS) {
     const F = FICHAS[k], X = FICHAS_EN[k] || {};
     if (X.info) F.info = X.info;
+    if (X.n) F.n = X.n;
     if (X.pens && F.pens) F.pens = F.pens.map((p, i) => [X.pens[i] || p[0], p[1]]);
     F.hands.forEach(h => { if (HANDS_EN[h.n]) h.n = HANDS_EN[h.n]; });
   }
@@ -1294,7 +1609,7 @@ function evalFix(E) {   // hojas de la versión anterior: el 0 era casilla vací
 }
 function evalCur() { if (!S.eval) S.eval = evalNew(); return evalFix(S.eval); }
 const ART = new Set(['creatividad', 'impresion', 'dificultad']);   // nota del 1 al 10 para toda la mano
-function rowMax(k, E) { const F = FICHAS[E.f]; if (F && F.pts && F.pts[k]) return F.pts[k]; return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' ? E.div : 1; }
+function rowMax(k, E) { const F = FICHAS[E.f]; if (F && F.pts && F.pts[k]) return F.pts[k]; return ART.has(k) ? 10 : k === 'sonrisa' || k === 'sonrisaM' || k === 'g1Sonrisa' || k === 'a1Sonrisa' ? E.div : 1; }
 function cellsOf(E, h, k) { const key = h + ':' + k; return E.s[key] || (E.s[key] = [null, null, null, null, null]); }
 function evalHasScores() { const E = S.eval; return !!E && (Object.values(E.s).some(r => r.some(v => v !== null)) || E.pa > 0 || E.pn > 0 || Object.values(E.pk || {}).some(Boolean) || !!(E.note && E.note.trim()) || Object.keys(E.cm || {}).length > 0); }
 function evalSums(E) {
@@ -1321,8 +1636,8 @@ function evalMeasure(kind) {   // medidas que ya hay en la foto
     return v.length ? 'medido: ' + v.join(', ') : '';
   }
   if (kind === 'ratio') {
-    const v = S.objects.filter(o => o.t === 'ratio').map(o => { const L1 = dist(o.a[0], o.a[1], o.m[0], o.m[1]), L2 = dist(o.m[0], o.m[1], o.b[0], o.b[1]); return L1 > 0 ? Math.round(L2 / L1 * 100) + ' %' : null; }).filter(Boolean);
-    return v.length ? 'medido: blanco ' + v.join(', ') : '';
+    const v = S.objects.filter(o => o.t === 'ratio').map(o => { const L1 = dist(o.a[0], o.a[1], o.m[0], o.m[1]), L2 = dist(o.m[0], o.m[1], o.b[0], o.b[1]); return L1 > 0 ? ratioParts(L2 / L1).join('/') : null; }).filter(Boolean);
+    return v.length ? 'medido: ' + v.join(', ') : '';
   }
   return '';
 }
@@ -1578,7 +1893,8 @@ function renderEvalStrip(W) {   // hoja de puntos que va debajo de la foto
 /* ---------- ayuda: mantener pulsado un botón + guía ---------- */
 const MOVE_TIP = TT('Para mover una forma, tócala y arrástrala sobre la línea de color, no sobre los puntos: los puntos sirven para cambiar la forma.', 'To move a shape, touch it and drag it along the colored line, not the points: the points change the shape.');
 const HELP = {
-  bOpen: ['Abrir foto', 'Abre una foto de la galería o haz una con la cámara para dibujar y corregir encima.'],
+  bOpen: ['Abrir foto', 'Abre una foto de la galería para dibujar y corregir encima.'],
+  bCam: ['Hacer foto', 'Abre la cámara dentro de la app: pulsa el botón dorado para hacer la foto de la uña y se abre directamente para dibujar y corregir encima. Cancelar vuelve a la app sin foto y Cambiar cámara pasa a la delantera o la trasera. La primera vez pide permiso para usar la cámara: dale a Permitir. Si no se abre la cámara, revisa los permisos de cámara del navegador.'],
   bTpl: ['Plantillas', 'Abre el panel con las ilustraciones de uñas (formas, perfiles, curva C, smile line, mano…) para trabajar sobre ellas sin necesidad de foto.'],
   bLbl: ['Etiquetas', 'Abre el panel con los nombres de anatomía y estructura. Al tocar uno aparece una caja con flecha: arrastra la caja para colocarla y el punto de la flecha para señalar la zona exacta.'],
   bCalco: ['Calco', 'Pone una plantilla semitransparente encima de tu foto para comparar la forma. Muévela, gírala y ajusta su tamaño con los puntos; con "Más suave" y "Más visible" cambias la transparencia.'],
@@ -1594,7 +1910,8 @@ const HELP = {
   bPresent: ['Presentar', 'Muestra solo la imagen a pantalla completa, sin menús, para enseñarla en clase o en el proyector. Con los dedos puedes ampliar, mover y girar. Para dibujar, sal de la presentación.'],
   bGuide: ['Guía', 'Abre esta guía con todos los botones y lo que hace cada uno. Consejo: mantén pulsado cualquier botón para ver su explicación.'],
   bExit: ['Salir', 'Guarda el trabajo y vuelve a la pantalla de inicio.'],
-  hand: ['Mover', 'Con un dedo desplazas la imagen sin dibujar. Con dos dedos siempre puedes ampliar, mover y girar, con cualquier herramienta.'],
+  bAcc: ['Cuenta', 'Tu cuenta: días de prueba o fecha de caducidad del acceso, comprar o renovar, guardar y restaurar copias de seguridad de tus trabajos, textos legales y cerrar sesión.'],
+  hand: ['Mover', 'Con un dedo desplazas la imagen sin dibujar. Con dos dedos siempre puedes ampliar, mover y girar, con cualquier herramienta.\nEn el ordenador: rueda del ratón para ampliar o reducir, Mayús + rueda para girar, y arrastrar con el botón derecho (o con Mover) para desplazar. Ajustar la vuelve a poner derecha.'],
   select: ['Seleccionar', 'Toca un elemento para seleccionarlo y moverlo, girarlo con el tirador dorado, cambiar su color o tamaño, duplicarlo o eliminarlo. Arrastra sobre una zona vacía para seleccionar varios a la vez.'],
   pen: ['Bolígrafo', 'Trazo fino y nítido para escribir o marcar. El grosor se elige con los botones de abajo.'],
   marker: ['Rotulador', 'Trazo más grueso para marcar zonas.'],
@@ -1610,10 +1927,19 @@ const HELP = {
   ok: ['Bien', 'Cada toque pone un sello verde ✓ para marcar lo que está bien hecho.'],
   ko: ['Corregir', 'Cada toque pone un sello rojo ✗ para marcar lo que hay que corregir.'],
   angle: ['Ángulo', 'Dibuja una línea sobre un lateral: aparece otra para colocar en el otro lateral. Indica los grados entre las dos (0° = paralelas). Sirve para laterales, coffin, inclinación de la smile line o comprobar si una stiletto está recta. ' + MOVE_TIP],
-  ratio: ['Proporción', 'Dibuja desde la cutícula hasta la punta y coloca el punto dorado en la smile line. Indica el borde libre en % del lecho. ' + MOVE_TIP],
+  ratio: ['Proporción', 'Dibuja desde la cutícula hasta la punta y coloca el punto dorado en la smile line. Indica cuánto ocupa cada parte de la uña completa, por ejemplo "Lecho 64 % · Borde libre 36 %" (las dos suman 100 %). ' + MOVE_TIP],
   mm: ['Milímetros', 'Mide en milímetros sobre la foto (medida aproximada). 1) Haz la foto con una regla pegada a la uña: transparente, metálica o cinta métrica, con las rayas bien visibles y a la misma distancia del móvil que la uña. 2) Calibra: traza una línea entre dos rayas de la regla y di cuánto mide (por ejemplo 1 cm). 3) Mide: traza la línea sobre el grosor del borde libre o sobre el largo y verás "≈ 1,4 mm". Cada foto se calibra aparte. Para volver a calibrar, toca la regla amarilla y pulsa "Medida regla" o elimínala. Ampliar o reducir la imagen no cambia la medida.'],
   sCal: ['Medida regla', 'Cambia cuánto mide el tramo que marcaste en la regla. Todas las medidas en milímetros de la foto se recalculan.'],
   ratio2: ['Almendra', 'Primera medida: de la cutícula a la sonrisa (centro). Segunda: del punto más alto de la sonrisa al borde libre. Indica el reparto, por ejemplo "Almendra 50 % · Borde libre 50 %". ' + MOVE_TIP],
+  bRuler: ['Regla', 'Pone una regla encima de la imagen. Va pegada a la foto: si amplías, mueves o giras la foto, la regla va con ella. Para moverla a ella sola, tócala con el dedo o con el lápiz y arrástrala. Con dos dedos la giras y la amplías o reduces (basta con que uno de los dos dedos toque la regla). Con los botones de arriba la giras 1° o 90° y la amplías o reduces. Mientras está puesta sigues dibujando y usando las demás herramientas igual, empezando el trazo fuera de la regla. No sale al guardar, compartir ni en el PDF. Pulsa otra vez para quitarla.'],
+  rRotL: ['Girar la regla 1° a la izquierda', 'Gira la regla 1 grado en sentido contrario a las agujas del reloj.'],
+  rRotR: ['Girar la regla 1° a la derecha', 'Gira la regla 1 grado en el sentido de las agujas del reloj.'],
+  r90: ['Girar la regla 90°', 'Gira la regla un cuarto de vuelta, para ponerla en vertical u horizontal.'],
+  rBig: ['Ampliar la regla', 'Hace la regla más grande (las marcas se separan).'],
+  rSmall: ['Reducir la regla', 'Hace la regla más pequeña (las marcas se juntan).'],
+  rHide: ['Ocultar la barra', 'Pliega la barra de la regla en un botón pequeño en la esquina de arriba a la derecha, para que no estorbe al ampliar la foto. La regla sigue puesta.'],
+  rShow: ['Mostrar la barra', 'Vuelve a abrir la barra de botones de la regla.'],
+  rClose: ['Quitar la regla', 'Quita la regla de la pantalla. Puedes volver a ponerla con el botón Regla.'],
   bSym: ['Simetría', 'Pone un eje azul: colócalo en el centro de la uña. Lo que dibujes en un lado se refleja en el otro. Si después ajustas una línea o las dos a los laterales reales, indica la desviación en grados y la diferencia de distancia al eje en %. Pulsa otra vez para quitarlo.'],
   bPressure: ['Presión', 'Solo con lápiz activo: el trazo se afina o engorda según aprietes.'],
   sFlip: ['Invertir', 'Da la vuelta al arco hacia el otro lado (cóncavo / convexo).'],
@@ -1630,7 +1956,8 @@ const HELP = {
   sOk: ['Listo', 'Termina la edición y quita la selección.']
 };
 if (EN) Object.assign(HELP, {   // ayuda en inglés
-  bOpen: ['Open photo', 'Open a photo from your gallery or take one with the camera to draw and correct on top of it.'],
+  bOpen: ['Open photo', 'Open a photo from your gallery to draw and correct on top of it.'],
+  bCam: ['Take photo', 'Opens the camera inside the app: tap the gold button to take the photo of the nail and it opens straight away to draw and correct on top of it. Cancel goes back to the app without a photo, and Switch camera changes between front and back. The first time it asks for permission to use the camera: tap Allow. If the camera does not open, check the browser\'s camera permissions.'],
   bTpl: ['Templates', 'Opens the panel with nail illustrations (shapes, profiles, C-curve, smile line, hand…) so you can work on them without a photo.'],
   bLbl: ['Labels', 'Opens the panel with anatomy and structure names. Tap one and a box with an arrow appears: drag the box to place it and the arrow point to mark the exact area.'],
   bCalco: ['Overlay', 'Places a semi-transparent template on top of your photo to compare the shape. Move it, rotate it and resize it with the points; use "Lighter" and "Darker" to change the transparency.'],
@@ -1646,7 +1973,8 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   bPresent: ['Present', 'Shows only the image full screen, without menus, to show it in class or on a projector. You can zoom, move and rotate with your fingers. To draw, exit the presentation.'],
   bGuide: ['Guide', 'Opens this guide with all the buttons and what each one does. Tip: press and hold any button to see its explanation.'],
   bExit: ['Exit', 'Saves your work and goes back to the start screen.'],
-  hand: ['Move', 'With one finger you move the image without drawing. With two fingers you can always zoom, move and rotate, with any tool.'],
+  bAcc: ['Account', 'Your account: trial days or access expiry date, buy or renew, save and restore backups of your projects, legal texts and log out.'],
+  hand: ['Move', 'With one finger you move the image without drawing. With two fingers you can always zoom, move and rotate, with any tool.\nOn a computer: mouse wheel to zoom in or out, Shift + wheel to rotate, and drag with the right button (or with Move) to pan. Fit puts it straight again.'],
   select: ['Select', 'Tap an element to select it and move it, rotate it with the gold handle, change its color or size, duplicate it or delete it. Drag over an empty area to select several at once.'],
   pen: ['Pen', 'Fine, sharp stroke for writing or marking. Choose the thickness with the buttons below.'],
   marker: ['Marker', 'Thicker stroke for marking areas.'],
@@ -1662,10 +1990,19 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   ok: ['Good', 'Each tap places a green ✓ stamp to mark what is done well.'],
   ko: ['Fix', 'Each tap places a red ✗ stamp to mark what needs correcting.'],
   angle: ['Angle', 'Draw a line along one sidewall: another appears for you to place on the other sidewall. It shows the degrees between them (0° = parallel). Useful for sidewalls, coffin, smile line tilt or checking whether a stiletto is straight. ' + MOVE_TIP],
-  ratio: ['Proportion', 'Draw from the cuticle to the tip and place the gold point on the smile line. It shows the free edge as a % of the nail bed. ' + MOVE_TIP],
+  ratio: ['Proportion', 'Draw from the cuticle to the tip and place the gold point on the smile line. It shows how much of the whole nail each part takes up, for example "Nail bed 64 % · Free edge 36 %" (both add up to 100 %). ' + MOVE_TIP],
   mm: ['Millimeters', 'Measures in millimeters on the photo (approximate measurement), using a ruler photographed next to the nail.'],
   sCal: ['Ruler size', 'Changes how long the section you marked on the ruler is. All millimeter measurements on the photo are recalculated.'],
   ratio2: ['Pink/White', 'First measurement: from the cuticle to the smile line (center). Second: from the highest point of the smile line to the free edge. It shows the split, for example "Pink 50 % · Free edge 50 %". ' + MOVE_TIP],
+  bRuler: ['Ruler', 'Places a ruler on top of the image. It sticks to the photo: if you zoom, move or rotate the photo, the ruler goes with it. To move the ruler on its own, touch it with your finger or the stylus and drag it. With two fingers you rotate it and make it larger or smaller (it is enough for one of the two fingers to touch the ruler). With the buttons at the top you rotate it 1° or 90° and make it larger or smaller. While it is on, you keep drawing and using the other tools as usual, starting the stroke outside the ruler. It is not included when you save, share or make the PDF. Tap again to remove it.'],
+  rRotL: ['Rotate the ruler 1° left', 'Rotates the ruler 1 degree counterclockwise.'],
+  rRotR: ['Rotate the ruler 1° right', 'Rotates the ruler 1 degree clockwise.'],
+  r90: ['Rotate the ruler 90°', 'Rotates the ruler a quarter turn, to make it vertical or horizontal.'],
+  rBig: ['Enlarge the ruler', 'Makes the ruler bigger (the marks spread out).'],
+  rSmall: ['Shrink the ruler', 'Makes the ruler smaller (the marks get closer).'],
+  rHide: ['Hide the bar', 'Folds the ruler bar into a small button in the top right corner, so it does not get in the way when you zoom the photo. The ruler stays on.'],
+  rShow: ['Show the bar', 'Opens the ruler button bar again.'],
+  rClose: ['Remove the ruler', 'Removes the ruler from the screen. You can put it back with the Ruler button.'],
   bSym: ['Symmetry', 'Places a blue axis: put it in the center of the nail. Whatever you draw on one side is mirrored on the other. If you then adjust one or both lines to the real sidewalls, it shows the deviation in degrees and the difference in distance to the axis in %. Tap again to remove it.'],
   bPressure: ['Pressure', 'Active stylus only: the stroke gets thinner or thicker depending on how hard you press.'],
   sFlip: ['Flip', 'Turns the arc to the other side (concave / convex).'],
@@ -1682,10 +2019,10 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   sOk: ['Done', 'Finishes editing and clears the selection.']
 });
 const GUIDE = [
-  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bExit']],
+  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bCam', 'bTpl', 'bLbl', 'bCalco', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bAcc', 'bExit']],
   [TT('Dibujar', 'Drawing'), ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
   [TT('Formas y texto', 'Shapes and text'), ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
-  [TT('Corregir y medir', 'Correct and measure'), ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym']],
+  [TT('Corregir y medir', 'Correct and measure'), ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym', 'bRuler']],
   [TT('Al seleccionar un elemento', 'When an element is selected'), ['arcp', 'sFlip', 'sFade', 'sSolid', 'sRotL', 'sRotR', 'sSmaller', 'sBigger', 'sEdit', 'sDup', 'sDel', 'sOk']]
 ];
 function helpKey(el) { return el.dataset.tool || (el.classList.contains('arcp') ? 'arcp' : el.id); }
@@ -1716,6 +2053,7 @@ function showGuide() {
   const tips = document.createElement('div');
   tips.innerHTML = '<div class="tipbox">💡 ' + TT('Mantén pulsado cualquier botón para ver qué hace.', 'Press and hold any button to see what it does.') + '</div><div class="tipbox">💡 ' + MOVE_TIP + '</div>' +
     '<div class="tipbox">💡 ' + TT('Con dos dedos amplías, mueves y giras la imagen con cualquier herramienta.', 'With two fingers you zoom, move and rotate the image with any tool.') + '</div>' +
+    '<div class="tipbox">🖱️ ' + TT('En el ordenador: rueda para ampliar, Mayús + rueda para girar y botón derecho para mover. Ajustar la pone derecha.', 'On a computer: wheel to zoom, Shift + wheel to rotate and right button to pan. Fit puts it straight.') + '</div>' +
     '<div class="tipbox">🌐 ' + TT('Para cambiar el idioma, toca ES / EN debajo de ZALESTUDIO, arriba a la izquierda. Tu trabajo se guarda antes de cambiar.', 'To change the language, tap ES / EN below ZALESTUDIO, top left. Your work is saved before switching.') + '</div>';
   g.appendChild(tips);
   for (const [title, keys] of GUIDE) {
@@ -1732,7 +2070,7 @@ function showGuide() {
 }
 $('#gClose').onclick = () => $('#mGuide').classList.remove('show');
 (function bindLongPress() {   // mantener pulsado = explicación (no se ejecuta el botón)
-  document.querySelectorAll('header .btn, footer .btn, #selbar .btn').forEach(el => {
+  document.querySelectorAll('header .btn, footer .btn, #selbar .btn, #rulerbar .btn').forEach(el => {
     const k = helpKey(el); if (!HELP[k]) return;
     let t = 0, fired = false, sx = 0, sy = 0;
     el.addEventListener('pointerdown', e => { fired = false; sx = e.clientX; sy = e.clientY; clearTimeout(t); t = setTimeout(() => { fired = true; showHelp(k); }, 550); });
@@ -1742,6 +2080,74 @@ $('#gClose').onclick = () => $('#mGuide').classList.remove('show');
     el.addEventListener('contextmenu', e => e.preventDefault());
   });
 })();
+
+/* ---------- regla (solo en pantalla: va pegada a la foto y no sale al guardar) ---------- */
+const RULER_LEN = 15;   // marcas de 0 a 15
+function rulerDims(r) { return { w: (RULER_LEN + 1) * r.u, h: 1.8 * r.u }; }
+function rulerHit(x, y) {
+  const r = S.ruler; if (!r) return false;
+  const { w, h } = rulerDims(r), c = Math.cos(-r.rot), n = Math.sin(-r.rot), dx = x - r.x, dy = y - r.y;
+  const lx = dx * c - dy * n, ly = dx * n + dy * c;
+  const pad = 16 / S.view.s;   // margen de 16 px alrededor para que sea fácil cogerla
+  return Math.abs(lx) <= w / 2 + pad && Math.abs(ly) <= h / 2 + pad;
+}
+function rulerSnap(rot) {   // se engancha en 0°, 45°, 90°… (en pantalla) si está muy cerca
+  const scr = rot + S.view.r, q = Math.PI / 4, near = Math.round(scr / q) * q;
+  return Math.abs(scr - near) < 0.035 ? near - S.view.r : rot;
+}
+function rulerScreenDeg() {
+  let d = ((S.ruler.rot + S.view.r) * 180 / Math.PI) % 360; if (d < 0) d += 360;
+  d = Math.round(d * 10) / 10; if (d > 180) d -= 360;
+  return d;
+}
+function rulerDeg() { if (S.ruler) $('#rDeg').textContent = String(rulerScreenDeg()).replace('.', DEC) + '°'; }
+function drawRuler() {
+  const r = S.ruler; if (!r || document.body.classList.contains('present')) return;
+  const { w, h } = rulerDims(r), u = r.u, px = 1 / S.view.s, scrU = u * S.view.s;
+  ctx.save(); setT(ctx); ctx.translate(r.x, r.y); ctx.rotate(r.rot);
+  ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 8 * px; ctx.shadowOffsetY = 2 * px;
+  ctx.fillStyle = 'rgba(205,205,210,.86)'; ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, 0.12 * u); ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.lineWidth = 1.2 * px; ctx.strokeStyle = 'rgba(60,60,66,.8)'; ctx.stroke();
+  const x0 = -w / 2 + 0.5 * u, top = -h / 2, bot = h / 2;
+  ctx.strokeStyle = '#2b2b30'; ctx.fillStyle = '#2b2b30';
+  const mm = scrU >= 28, half = scrU >= 12;
+  ctx.beginPath();
+  for (let i = 0; i <= RULER_LEN * 10; i++) {
+    const isCm = i % 10 === 0, isHalf = i % 5 === 0;
+    if (!isCm && !(isHalf && half) && !mm) continue;
+    const x = x0 + i / 10 * u, L = isCm ? 0.42 * u : isHalf ? 0.28 * u : 0.17 * u;
+    ctx.moveTo(x, top); ctx.lineTo(x, top + L);       // marcas arriba
+    ctx.moveTo(x, bot); ctx.lineTo(x, bot - L * 0.7); // y más cortas abajo
+  }
+  ctx.lineWidth = Math.max(0.8 * px, 0.015 * u); ctx.stroke();
+  if (scrU >= 9) {
+    ctx.font = `600 ${0.36 * u}px Montserrat, system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (let i = 0; i <= RULER_LEN; i++) ctx.fillText(String(i), x0 + i * u, top + 0.75 * u);
+    ctx.font = `600 ${0.22 * u}px Montserrat, system-ui, sans-serif`; ctx.textAlign = 'right';
+    ctx.fillText('cm', w / 2 - 0.12 * u, bot - 0.3 * u);
+  }
+  ctx.restore();
+}
+function rulerToggle() {
+  if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
+  if (S.ruler) { S.ruler = null; scheduleSave(); req(); return; }
+  const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.92, 760) / (RULER_LEN + 1) / S.view.s;
+  S.ruler = { x: c.x, y: c.y, rot: -S.view.r, u };
+  rulerDeg(); scheduleSave(); req();
+  toast(TT('Regla: arrástrala con el dedo o el lápiz; con dos dedos la giras y la amplías', 'Ruler: drag it with your finger or the stylus; with two fingers you rotate and resize it'), 3500);
+}
+function rulerTurn(deg) { if (!S.ruler) return; S.ruler.rot += deg * Math.PI / 180; rulerDeg(); scheduleSave(); req(); toast(`${TT('Regla', 'Ruler')} ${String(rulerScreenDeg()).replace('.', DEC)}°`, 900); }
+function rulerZoom(f) { if (!S.ruler) return; S.ruler.u = clamp(S.ruler.u * f, 2, 1e5); scheduleSave(); req(); }
+$('#bRuler').onclick = rulerToggle;
+$('#rRotL').onclick = () => rulerTurn(-1);
+$('#rRotR').onclick = () => rulerTurn(1);
+$('#r90').onclick = () => rulerTurn(90);
+$('#rBig').onclick = () => rulerZoom(1.1);
+$('#rSmall').onclick = () => rulerZoom(1 / 1.1);
+$('#rClose').onclick = () => { if (S.ruler) rulerToggle(); };
+$('#rHide').onclick = () => $('#rulerbar').classList.add('mini');   // la barra se pliega para que no estorbe
+$('#rShow').onclick = () => $('#rulerbar').classList.remove('mini');
 
 /* ---------- simetría ---------- */
 function axisObj() { return S.objects.find(o => o.t === 'axis') || null; }
@@ -2010,11 +2416,12 @@ function drawSelection() {
       ctx.fillStyle = '#e6b95f'; ctx.textBaseline = 'middle'; ctx.fillText(txt, bx + 7, by + 11);
     }
   }
-  for (const [k, pt] of handlesOf(single())) {
+  const sa = single();
+  if (sa && sa.t === 'arc') for (const [k, pt] of handlesOf(sa)) {   // en el arco, punto mínimo en el centro y en el punto turquesa para saber dónde están
+    if (k !== 'm' && k !== 'q') continue;
     const s = toScreen(pt[0], pt[1]);
-    ctx.beginPath(); ctx.arc(s.x, s.y, k === 'm' ? 11 : 9, 0, Math.PI * 2);
-    ctx.fillStyle = k === 'm' ? '#c9a84c' : (k === 'q' ? '#7fd1c7' : '#ffffff'); ctx.fill();
-    ctx.lineWidth = 2.5; ctx.strokeStyle = '#141318'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(s.x, s.y, 3.5, 0, Math.PI * 2); ctx.fillStyle = k === 'm' ? '#e6b95f' : '#7fd1c7'; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(20,19,24,.8)'; ctx.stroke();
   }
   ctx.restore();
 }
@@ -2203,7 +2610,7 @@ function setColor(c, live) {
 
 /* ---------- gestos ---------- */
 const ptrs = new Map();
-let act = null, pinch = null, blockTouch = false, gestureSel = null;
+let act = null, pinch = null, blockTouch = false, gestureSel = null, rulerGesture = false;
 
 function touchPts() { return [...ptrs.values()].filter(p => p.t === 'touch'); }
 function startPinch() {
@@ -2211,6 +2618,7 @@ function startPinch() {
   const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
   pinch = { d: Math.max(1, dist(a.x, a.y, b.x, b.y)), ang: Math.atan2(b.y - a.y, b.x - a.x),
             s: S.view.s, r: S.view.r, anchor: toDocS(cx, cy) };
+  if (rulerGesture && S.ruler) { rulerGesture = false; pinch.ruler = { ...S.ruler }; return; }
   const before = gestureSel || S.sel, o = before.length === 1 ? before[0] : null;   // lo que había seleccionado antes de poner los dedos
   if (o && o.t === 'overlay' && S.objects.includes(o) && !document.body.classList.contains('present')) {   // con el calco seleccionado, los dedos mueven el calco y no la foto
     if (single() !== o) select(o);
@@ -2224,6 +2632,13 @@ function movePinch() {
   let da = Math.atan2(b.y - a.y, b.x - a.x) - pinch.ang;
   while (da > Math.PI) da -= 2 * Math.PI;
   while (da < -Math.PI) da += 2 * Math.PI;
+  if (pinch.ruler) {   // dos dedos sobre la regla: se gira, se amplía y se mueve la regla (no la foto)
+    const P = pinch.ruler, f = clamp(d / pinch.d, 0.1, 10), m = toDocS(cx, cy);
+    const vx = (P.x - pinch.anchor.x) * f, vy = (P.y - pinch.anchor.y) * f, co = Math.cos(da), si = Math.sin(da);
+    S.ruler.x = m.x + vx * co - vy * si; S.ruler.y = m.y + vx * si + vy * co;
+    S.ruler.u = clamp(P.u * f, 2, 1e5); S.ruler.rot = rulerSnap(P.rot + da);
+    rulerDeg(); req(); return;
+  }
   if (pinch.obj) {
     const P = pinch.obj, o = P.o, f = clamp(d / pinch.d, 0.05, 20), m = toDocS(cx, cy);
     const vx = (P.x - pinch.anchor.x) * f, vy = (P.y - pinch.anchor.y) * f, co = Math.cos(da), si = Math.sin(da);
@@ -2250,6 +2665,7 @@ stage.addEventListener('pointerdown', e => {
 
   if (e.pointerType === 'touch' && touchPts().length >= 2) {
     if (act && act.ptype === 'pen') return;              // mano apoyada mientras se usa lápiz activo
+    rulerGesture = !!(act && act.kind === 'ruler') || (!!S.ruler && !document.body.classList.contains('present') && touchPts().some(p => { const q = stageXY(p.x, p.y), d = toDocS(q.x, q.y); return rulerHit(d.x, d.y); }));   // si uno de los dos dedos toca la regla, los dedos mueven la regla
     if (act && act.kind !== 'pan') {
       const young = performance.now() - act.t0 < 250;
       if (!young && (act.kind === 'draw' || act.kind === 'shape')) return; // ya llevaba rato dibujando: es la mano
@@ -2260,6 +2676,10 @@ stage.addEventListener('pointerdown', e => {
   if (act || pinch || blockTouch) return;
 
   const sp = stageXY(e.clientX, e.clientY);
+  if (S.ruler && !document.body.classList.contains('present')) {   // con el dedo, el lápiz o el ratón sobre la regla, se mueve la regla
+    const d = toDocS(sp.x, sp.y);
+    if (rulerHit(d.x, d.y)) { act = { id: e.pointerId, kind: 'ruler', lx: d.x, ly: d.y, ptype: e.pointerType, t0: performance.now() }; return; }
+  }
   const pan = document.body.classList.contains('present') || S.tool === 'hand' || (e.pointerType === 'touch' && penSeen) || e.button === 1 || e.button === 2;
   if (pan) { act = { id: e.pointerId, kind: 'pan', lx: e.clientX, ly: e.clientY, ptype: e.pointerType, t0: performance.now() }; return; }
   startTool(e, sp.x, sp.y);
@@ -2290,7 +2710,7 @@ stage.addEventListener('wheel', e => {   // ordenador: rueda = zoom, Mayús + ru
   if (e.target !== cv || S.empty) return;
   e.preventDefault();
   const p = stageXY(e.clientX, e.clientY);
-  if (e.shiftKey) rotateAt(p.x, p.y, e.deltaY * 0.002);
+  if (e.shiftKey) wheelRotate(p.x, p.y, e.deltaY || e.deltaX);   // algunos navegadores convierten Mayús + rueda en desplazamiento lateral
   else zoomAt(p.x, p.y, Math.exp(-e.deltaY * 0.0015));
 }, { passive: false });
 
@@ -2352,6 +2772,10 @@ function moveAct(e) {
   if (act.kind === 'pan') {
     S.view.x += e.clientX - act.lx; S.view.y += e.clientY - act.ly;
     act.lx = e.clientX; act.ly = e.clientY; req(); return;
+  }
+  if (act.kind === 'ruler') {
+    const d = toDocS(sp.x, sp.y);
+    S.ruler.x += d.x - act.lx; S.ruler.y += d.y - act.ly; act.lx = d.x; act.ly = d.y; req(); return;
   }
   const evs = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
   if (act.kind === 'erase') {
@@ -2444,6 +2868,7 @@ function moveAct(e) {
 
 function finishAct(e) {
   const a = act; act = null;
+  if (a.kind === 'ruler') { scheduleSave(); req(); return; }
   if (a.kind === 'draw') {
     if (a.raw) { const p = draft.p, n = p.length; if (dist(a.raw.x, a.raw.y, p[n-3], p[n-2]) > 0.3 / S.view.s) p.push(a.raw.x, a.raw.y, a.raw.pr); }
     cursor = null; S.objects.push(draft);
@@ -2605,9 +3030,11 @@ async function askNew(what) {
   return confirmBox(what, TT('Se abrirá un trabajo nuevo. El que tienes ahora queda guardado en "Trabajos" y puedes volver a él cuando quieras.', 'A new project will open. Your current one stays saved in "Projects" and you can go back to it whenever you like.'), TT('Continuar', 'Continue'), false);
 }
 $('#bOpen').onclick = async () => { if (await askNew(TT('Abrir otra foto', 'Open another photo'))) $('#file').click(); };
-$('#file').addEventListener('change', async e => {
+async function onPhotoPicked(e) {
   const f = e.target.files[0]; e.target.value = '';
-  if (!f) return;
+  if (f) await openPhotoFile(f);
+}
+async function openPhotoFile(f) {
   try {
     toast(TT('Cargando imagen…', 'Loading image…'));
     await saveNow();
@@ -2623,7 +3050,61 @@ $('#file').addEventListener('change', async e => {
     newDoc(w, h, bg, blob);
     toast(TT('Foto abierta. Dos dedos: ampliar, mover y girar', 'Photo open. Two fingers: zoom, move and rotate'));
   } catch (err) { console.error(err); toast(TT('No se pudo abrir la imagen', 'Could not open the image')); }
-});
+}
+$('#file').addEventListener('change', onPhotoPicked);
+$('#fileCam').addEventListener('change', onPhotoPicked);
+/* cámara dentro de la app: vídeo en directo con botón de disparo y Cancelar */
+let camStream = null, camFacing = 'environment';
+const camVideo = $('#camVideo');
+function camStop() { if (camStream) camStream.getTracks().forEach(t => t.stop()); camStream = null; camVideo.srcObject = null; }
+function camClose() { camStop(); $('#camBox').hidden = true; }
+async function camStart() {
+  camStop();
+  camStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: camFacing }, width: { ideal: 4096 }, height: { ideal: 3072 } } });
+  camVideo.srcObject = camStream; await camVideo.play().catch(() => {});
+}
+async function openCamera() {
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) { $('#fileCam').click(); return; }
+  $('#camCancel').textContent = TT('Cancelar', 'Cancel'); $('#camFlip').textContent = TT('Cambiar cámara', 'Switch camera'); $('#camShot').setAttribute('aria-label', TT('Hacer foto', 'Take photo'));
+  $('#camBox').hidden = false;
+  try { await camStart(); }
+  catch (err) {
+    camClose();
+    if (err && (err.name === 'NotAllowedError' || err.name === 'SecurityError')) camPermHelp();
+    else $('#fileCam').click();   // si no hay cámara accesible, se usa la del sistema
+  }
+}
+function camPermHelp() {   // la cámara está bloqueada: se explica cómo activarla y se ofrece la galería
+  $('#cpTitle').textContent = TT('La cámara está bloqueada en este dispositivo', 'The camera is blocked on this device');
+  $('#cpIntro').textContent = TT('ZaleStudio funciona dentro del navegador (Chrome, Samsung Internet…), así que el permiso de la cámara se da al navegador. Revisa estos 3 puntos:', 'ZaleStudio runs inside the browser (Chrome, Samsung Internet…), so camera permission is given to the browser. Check these 3 things:');
+  $('#cpS1').textContent = TT('Acceso a la cámara de Android: baja el panel de ajustes rápidos y comprueba que "Acceso a la cámara" está encendido.', 'Android camera access: pull down the quick settings panel and check that "Camera access" is on.');
+  $('#cpS2').textContent = TT('Permiso del navegador: Ajustes → Aplicaciones → Chrome (o el navegador que uses) → Permisos → Cámara → Permitir.', 'Browser permission: Settings → Apps → Chrome (or the browser you use) → Permissions → Camera → Allow.');
+  $('#cpS3').textContent = TT('Permiso de la web: abre zalestudio.zalesya.com en el navegador, toca el icono a la izquierda de la dirección → Permisos → Cámara → Permitir.', 'Website permission: open zalestudio.zalesya.com in the browser, tap the icon to the left of the address → Permissions → Camera → Allow.');
+  $('#cpEnd').textContent = TT('Después cierra la app del todo, ábrela otra vez y pulsa Hacer foto. Mientras tanto, puedes abrir una foto de la galería.', 'Then close the app completely, open it again and tap Take photo. Meanwhile, you can open a photo from your gallery.');
+  $('#cpClose').textContent = TT('Cerrar', 'Close'); $('#cpGallery').textContent = TT('Abrir foto de la galería', 'Open photo from gallery');
+  $('#mCamPerm').classList.add('show');
+}
+$('#cpClose').onclick = () => $('#mCamPerm').classList.remove('show');
+$('#cpGallery').onclick = () => { $('#mCamPerm').classList.remove('show'); $('#file').click(); };
+$('#camCancel').onclick = camClose;
+$('#camFlip').onclick = async () => { camFacing = camFacing === 'environment' ? 'user' : 'environment'; try { await camStart(); } catch (_) { camFacing = camFacing === 'environment' ? 'user' : 'environment'; try { await camStart(); } catch (__) { camClose(); } } };
+$('#camShot').onclick = async () => {
+  if (!camStream || !camVideo.videoWidth) return;
+  let blob = null;
+  try {   // foto a la máxima resolución de la cámara, si el navegador lo permite
+    const tr = camStream.getVideoTracks()[0];
+    if (window.ImageCapture && tr) blob = await Promise.race([new ImageCapture(tr).takePhoto(), new Promise(r => setTimeout(() => r(null), 4000))]);
+  } catch (_) { blob = null; }
+  if (!blob) {
+    const c = document.createElement('canvas'); c.width = camVideo.videoWidth; c.height = camVideo.videoHeight;
+    c.getContext('2d').drawImage(camVideo, 0, 0);
+    blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
+  }
+  camClose();
+  if (blob) await openPhotoFile(blob);
+};
+document.addEventListener('visibilitychange', () => { if (document.hidden && camStream) camClose(); });
+$('#bCam').onclick = async () => { if (await askNew(TT('Hacer otra foto', 'Take another photo'))) openCamera(); };
 $('#bBlank').onclick = async () => {
   if (!(await askNew(TT('Lienzo en blanco', 'Blank canvas')))) return;
   await saveNow();
@@ -2642,14 +3123,15 @@ function setEmpty(v) {
 function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en Trabajos)
   clearTimeout(saveT); dirty = false;
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
-  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null;
+  S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null; S.ruler = null;
   select(null); resetHist(); setEmpty(true); render();
+  accHomeInfo();
 }
 function newDoc(w, h, bg, blob) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   setEmpty(false);
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
-  S.objects = []; S.projectId = null; S.projectName = nowName(); S.eval = null; evalRefresh();
+  S.objects = []; S.projectId = null; S.projectName = nowName(); S.eval = null; S.ruler = null; evalRefresh();
   select(null); resetHist(); fit(); scheduleSave();
 }
 $('#bFit').onclick = fit;
@@ -2749,7 +3231,7 @@ async function saveNow(force) {
     const sc = Math.min(1, 360 / Math.max(S.docW, S.docH));
     const thumb = renderDoc(sc).toDataURL('image/jpeg', 0.75);
     await DB.put({ id: S.projectId, name: S.projectName || nowName(), updated: Date.now(),
-                   docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view }, eval: S.eval || null });
+                   docW: S.docW, docH: S.docH, bg: S.bgBlob, objects: S.objects, thumb, view: { ...S.view }, eval: S.eval || null, ruler: S.ruler || null });
     localStorage.setItem('zalestudio-last', S.projectId);
   } catch (err) { console.error(err); toast(TT('No se pudo guardar el trabajo', 'Could not save the project')); }
 }
@@ -2758,7 +3240,7 @@ async function openProject(id, keepView) {
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   S.docW = p.docW; S.docH = p.docH; S.bgBlob = p.bg || null;
   S.bg = p.bg ? await loadImg(URL.createObjectURL(p.bg)) : null;
-  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = evalFix(p.eval || null); evalRefresh();
+  S.objects = p.objects || []; S.projectId = p.id; S.projectName = p.name; S.eval = evalFix(p.eval || null); S.ruler = p.ruler || null; evalRefresh();
   setEmpty(false); select(null); resetHist();
   if (keepView && p.view) { S.view = { r: 0, ...p.view }; render(); } else fit();
   localStorage.setItem('zalestudio-last', p.id);
@@ -2792,6 +3274,7 @@ $('#bProjects').onclick = showProjects;
 $('#pClose').onclick = () => $('#mProjects').classList.remove('show');
 
 $('#hOpen').onclick = () => $('#file').click();
+$('#hCam').onclick = () => openCamera();
 $('#hBlank').onclick = () => { newDoc(2000, Math.round(2000 * (H / W || 0.625)), null, null); toast(TT('Lienzo en blanco', 'Blank canvas')); };
 $('#hProjects').onclick = showProjects;
 $('#bGuide').onclick = showGuide;
@@ -2906,6 +3389,515 @@ $('#bLang').onclick = async () => {   // guarda el trabajo, cambia el idioma y r
   location.reload();
 };
 
+/* ---------- textos legales (ES / EN) · {precio} y {trial} se rellenan solos ---------- */
+const LEGAL = {
+  es: {
+    priv: `<h3>Política de privacidad</h3><p class="upd">ZaleStudio by ZALESYA® · Octubre 2026</p>
+<h3>1. Responsable</h3><p>ZALESYA®, marca registrada (OEPM, clases 9, 41 y 42). Contacto: <b>infozalesya@gmail.com</b></p>
+<h3>2. Qué datos tratamos</h3><ul>
+<li><b>Tu cuenta:</b> email y contraseña. La contraseña se guarda cifrada; nadie, ni ZALESYA®, puede verla.</li>
+<li><b>Tu acceso:</b> fecha de alta, periodo de prueba, fecha de pago y fecha de caducidad.</li>
+<li><b>El pago:</b> lo procesa Stripe. ZALESYA® no ve ni guarda los datos de tu tarjeta o Bizum.</li></ul>
+<h3>3. Tus fotos y trabajos</h3><p>Las fotos, dibujos, medidas y hojas de evaluación se guardan <b>solo en tu dispositivo</b> (almacenamiento del navegador). No se suben a ningún servidor y ZALESYA® no tiene acceso a ellos.</p><p>Si borras los datos del navegador, desinstalas la app o cambias de dispositivo, se pierden, salvo que tengas una copia de seguridad. Las copias son archivos que guardas tú donde quieras.</p>
+<h3>4. Para qué los usamos</h3><p>Para crear y gestionar tu cuenta, tu prueba gratis y tu acceso de pago, y para enviarte los emails de confirmación de cuenta y de recuperación de contraseña. Base legal: ejecución del contrato (art. 6.1.b RGPD).</p>
+<h3>5. Proveedores</h3><p>Supabase (cuentas y acceso), Resend (envío de emails), Stripe Payments Europe (pagos, certificado PCI-DSS) y Vercel (alojamiento de la app). Tratan los datos por cuenta de ZALESYA® y, cuando hay transferencias fuera del Espacio Económico Europeo, lo hacen con las garantías del RGPD (cláusulas contractuales tipo).</p>
+<h3>6. Cuánto tiempo</h3><p>Mientras tengas cuenta. Los datos de pago, el tiempo que exijan las obligaciones fiscales y contables.</p>
+<h3>7. Cookies y almacenamiento local</h3><p>No usamos cookies de publicidad, de seguimiento ni de analítica. La app guarda en tu dispositivo solo lo necesario para funcionar: tu sesión, el idioma, los ajustes y tus trabajos.</p>
+<h3>8. Menores</h3><p>La app no está dirigida a menores de edad.</p>
+<h3>9. Tus derechos</h3><p>Puedes pedir acceso, rectificación, supresión (también borrar tu cuenta), oposición, limitación y portabilidad escribiendo a <b>infozalesya@gmail.com</b>. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+<h3>10. Cambios</h3><p>Cualquier cambio se publicará aquí, con la fecha actualizada.</p>`,
+    aviso: `<h3>Aviso legal</h3><p class="upd">ZaleStudio by ZALESYA® · Octubre 2026</p>
+<h3>Titular</h3><p>ZALESYA®, marca registrada (OEPM, clases 9, 41 y 42). Contacto: <b>infozalesya@gmail.com</b></p>
+<h3>Objeto</h3><p>ZaleStudio es una aplicación web (PWA) para dibujar, anotar, medir y evaluar sobre fotos de uñas, pensada para la formación y la preparación de competiciones.</p>
+<h3>Propiedad intelectual</h3><p>El diseño, el código, las plantillas e ilustraciones, los textos y la marca ZALESYA® son propiedad exclusiva de ZALESYA® y están protegidos por la ley. Queda prohibida su reproducción, distribución o transformación sin autorización expresa.</p><p>Las fotos que abras en la app son tuyas. Eres responsable de tener permiso de las personas que aparecen en ellas.</p>
+<h3>Uso de la cuenta</h3><p>La licencia es personal e intransferible: no compartas tu cuenta con otras personas. Cada cuenta solo se puede usar en un dispositivo a la vez: si entras en otro, la sesión del anterior se cierra.</p>
+<h3>Criterios de evaluación y medidas</h3><p>Las hojas de puntos se basan en manuales y hojas de puntuación de competición públicas. Son una ayuda para la formación: no sustituyen la valoración oficial de los jueces y ZaleStudio no está afiliada a ninguna organización de competiciones. Las medidas sobre fotos son aproximadas y dependen de la perspectiva de la foto.</p>
+<h3>Responsabilidad</h3><p>ZALESYA® no se hace responsable de la pérdida de trabajos por borrar los datos del navegador, cambiar de dispositivo o averías del dispositivo. Por eso la app permite guardar y restaurar copias de seguridad.</p>
+<h3>Legislación aplicable</h3><p>Este aviso se rige por la legislación española y europea.</p>`,
+    compra: `<h3>Condiciones de compra</h3><p class="upd">ZaleStudio by ZALESYA® · Octubre 2026</p>
+<h3>Qué compras</h3><p>Una licencia de acceso a ZaleStudio durante <b>1 año (365 días)</b> desde la fecha de pago.</p>
+<h3>Prueba gratis</h3><p>Al crear tu cuenta tienes <b>{trial} días</b> de prueba gratis, sin pagar nada ni dar datos de pago.</p>
+<h3>Precio y pago</h3><ul><li><b>Precio:</b> {precio} (IVA incluido), pago único.</li><li><b>Métodos de pago:</b> tarjeta o Bizum, a través de Stripe.</li><li>Stripe te envía el recibo por email. Si necesitas factura, pídela en infozalesya@gmail.com.</li></ul>
+<h3>Un dispositivo a la vez</h3><p>La licencia es para una persona: la cuenta solo puede estar abierta en un dispositivo a la vez. Si entras en otro, la sesión del anterior se cierra.</p>
+<h3>Solo ZaleStudio</h3><p>El pago da acceso <b>únicamente a ZaleStudio</b>. No incluye ni da acceso a otras aplicaciones de ZALESYA®, que se compran por separado.</p>
+<h3>Caducidad y renovación</h3><ul><li>No hay renovación ni cobros automáticos.</li><li>Pasado el año, el acceso caduca y no podrás entrar en la app hasta que renueves.</li><li>Si renuevas antes de que caduque, se suma un año a tu fecha de caducidad.</li><li>Tus trabajos siguen en tu dispositivo aunque el acceso caduque; para volver a abrirlos tienes que renovar. Te recomendamos guardar copias de seguridad.</li></ul>
+<h3>Derecho de desistimiento</h3><p>ZaleStudio es un contenido digital de acceso inmediato. Al comprar, marcas una casilla con la que das tu consentimiento expreso para empezar a usarlo en ese momento y aceptas que, una vez activado el acceso, pierdes el derecho de desistimiento (art. 103 m del Real Decreto Legislativo 1/2007). Por eso no se hacen reembolsos una vez activado el acceso. Si hay un problema técnico que te impida usar la app, escríbenos y lo resolveremos.</p>
+<h3>Requisitos</h3><p>Un navegador actualizado (Chrome, Edge, Safari o Firefox) en tablet, móvil u ordenador. La app necesita conexión a internet para funcionar.</p>
+<h3>Contacto</h3><p>Dudas o reclamaciones: <b>infozalesya@gmail.com</b></p>`
+  },
+  en: {
+    priv: `<h3>Privacy policy</h3><p class="upd">ZaleStudio by ZALESYA® · October 2026</p>
+<h3>1. Controller</h3><p>ZALESYA®, registered trademark (Spanish Patent and Trademark Office, classes 9, 41 and 42). Contact: <b>infozalesya@gmail.com</b></p>
+<h3>2. What data we process</h3><ul>
+<li><b>Your account:</b> email and password. The password is stored encrypted; nobody, including ZALESYA®, can see it.</li>
+<li><b>Your access:</b> sign-up date, trial period, payment date and expiry date.</li>
+<li><b>Payment:</b> processed by Stripe. ZALESYA® never sees or stores your card or Bizum details.</li></ul>
+<h3>3. Your photos and projects</h3><p>Photos, drawings, measurements and score sheets are stored <b>only on your device</b> (browser storage). They are not uploaded to any server and ZALESYA® has no access to them.</p><p>If you clear your browser data, uninstall the app or change device, they are lost unless you have a backup. Backups are files you keep wherever you like.</p>
+<h3>4. What we use it for</h3><p>To create and manage your account, your free trial and your paid access, and to send you account confirmation and password reset emails. Legal basis: performance of the contract (Art. 6.1.b GDPR).</p>
+<h3>5. Providers</h3><p>Supabase (accounts and access), Resend (email delivery), Stripe Payments Europe (payments, PCI-DSS certified) and Vercel (app hosting). They process data on behalf of ZALESYA® and, where data is transferred outside the European Economic Area, they do so with GDPR safeguards (standard contractual clauses).</p>
+<h3>6. How long</h3><p>For as long as you have an account. Payment data, for as long as tax and accounting obligations require.</p>
+<h3>7. Cookies and local storage</h3><p>We do not use advertising, tracking or analytics cookies. The app only stores on your device what it needs to work: your session, language, settings and projects.</p>
+<h3>8. Minors</h3><p>The app is not intended for minors.</p>
+<h3>9. Your rights</h3><p>You can request access, rectification, erasure (including deleting your account), objection, restriction and portability by writing to <b>infozalesya@gmail.com</b>. You can also lodge a complaint with the Spanish Data Protection Agency (aepd.es).</p>
+<h3>10. Changes</h3><p>Any changes will be published here with the updated date.</p>`,
+    aviso: `<h3>Legal notice</h3><p class="upd">ZaleStudio by ZALESYA® · October 2026</p>
+<h3>Owner</h3><p>ZALESYA®, registered trademark (Spanish Patent and Trademark Office, classes 9, 41 and 42). Contact: <b>infozalesya@gmail.com</b></p>
+<h3>Purpose</h3><p>ZaleStudio is a web app (PWA) for drawing, annotating, measuring and evaluating on nail photos, designed for training and competition preparation.</p>
+<h3>Intellectual property</h3><p>The design, code, templates and illustrations, texts and the ZALESYA® trademark are the exclusive property of ZALESYA® and are protected by law. Reproduction, distribution or transformation without express permission is prohibited.</p><p>The photos you open in the app are yours. You are responsible for having permission from the people who appear in them.</p>
+<h3>Account use</h3><p>The licence is personal and non-transferable: do not share your account with other people. Each account can only be used on one device at a time: if you log in on another one, the session on the previous device is closed.</p>
+<h3>Evaluation criteria and measurements</h3><p>The score sheets are based on publicly available competition manuals and score sheets. They are a training aid: they do not replace the official assessment of the judges, and ZaleStudio is not affiliated with any competition organization. Measurements on photos are approximate and depend on the photo’s perspective.</p>
+<h3>Liability</h3><p>ZALESYA® is not liable for loss of projects caused by clearing browser data, changing device or device failure. That is why the app lets you save and restore backups.</p>
+<h3>Applicable law</h3><p>This notice is governed by Spanish and European law.</p>`,
+    compra: `<h3>Purchase terms</h3><p class="upd">ZaleStudio by ZALESYA® · October 2026</p>
+<h3>What you buy</h3><p>A licence to access ZaleStudio for <b>1 year (365 days)</b> from the payment date.</p>
+<h3>Free trial</h3><p>When you create your account you get <b>{trial} days</b> of free trial, without paying or giving any payment details.</p>
+<h3>Price and payment</h3><ul><li><b>Price:</b> {precio} (VAT included), one-off payment.</li><li><b>Payment methods:</b> card or Bizum, via Stripe.</li><li>Stripe emails you the receipt. If you need an invoice, ask at infozalesya@gmail.com.</li></ul>
+<h3>One device at a time</h3><p>The licence is for one person: the account can only be open on one device at a time. If you log in on another device, the session on the previous one is closed.</p>
+<h3>ZaleStudio only</h3><p>The payment gives access <b>to ZaleStudio only</b>. It does not include or give access to other ZALESYA® apps, which are sold separately.</p>
+<h3>Expiry and renewal</h3><ul><li>There is no automatic renewal and no automatic charge.</li><li>After one year, access expires and you will not be able to enter the app until you renew.</li><li>If you renew before it expires, one year is added to your expiry date.</li><li>Your projects stay on your device even if access expires; to open them again you need to renew. We recommend saving backups.</li></ul>
+<h3>Right of withdrawal</h3><p>ZaleStudio is digital content with immediate access. When you buy, you tick a box giving your express consent to start using it straight away and accepting that, once access is activated, you lose the right of withdrawal (Art. 103 m of Spanish Royal Legislative Decree 1/2007). For this reason there are no refunds once access has been activated. If a technical problem prevents you from using the app, write to us and we will fix it.</p>
+<h3>Requirements</h3><p>An up-to-date browser (Chrome, Edge, Safari or Firefox) on a tablet, phone or computer. The app needs an internet connection to work.</p>
+<h3>Contact</h3><p>Questions or complaints: <b>infozalesya@gmail.com</b></p>`
+  }
+};
+/* =========================================================
+   ACCESO: cuenta (Supabase + emails con Resend), prueba gratis y pago (Stripe)
+   Calcado de Masco / Horaris: el servidor (api/stripe-verify) decide el acceso
+   ========================================================= */
+const ZS_SUPABASE_URL = 'https://wfuiiqktnthuksawhdfu.supabase.co';
+const ZS_SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmdWlpcWt0bnRodWtzYXdoZGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5OTQ1MTIsImV4cCI6MjEwNzU3MDUxMn0.xhbjdeOR7sYR7MmiBGWZbqPGaaxYLO2LhMkCDwsCpPc';   // clave pública (anon), se puede ver
+const ZS_PRECIO = 9.99;       // precio que se muestra (el que se cobra está en api/_ajustes.js)
+const ZS_TRIAL_DIAS = 2;      // días de prueba que se muestran (los que cuentan están en api/_ajustes.js)
+const SB_SRC = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js';
+const ACC_KEY = 'zalestudio-acc';           // último acceso comprobado (para usar la app sin conexión)
+const DEVICE_ID = (() => {   // identificador de este dispositivo (una cuenta = un dispositivo a la vez)
+  let id = null; try { id = localStorage.getItem('zalestudio-device'); } catch (_) {}
+  if (!id) { id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)); try { localStorage.setItem('zalestudio-device', id); } catch (_) {} }
+  return id;
+})();
+const ACC = { cfg: { precio: ZS_PRECIO, trialDias: ZS_TRIAL_DIAS }, sb: null, user: null, info: null, recovering: false, unlocked: false, lastCheck: 0, renew: false, pendingEmail: '' };
+const DAY = 86400000;
+
+function gI18n(root) {   // textos de la pantalla de acceso, la cuenta y los textos legales (data-i="español|english")
+  (root || document).querySelectorAll('[data-i]').forEach(el => { const p = el.dataset.i.split('|'); el.textContent = EN ? (p[1] || p[0]) : p[0]; });
+  document.querySelectorAll('#gLang b').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
+}
+function gView(v) {
+  document.querySelectorAll('#gate .gv').forEach(e => e.hidden = e.dataset.v !== v);
+  gMsg('');
+  $('#gFeat').hidden = !(v === 'login' || v === 'signup');
+  $('#gTrialT').hidden = !(v === 'login' || v === 'signup');
+  $('#gResend').hidden = true;
+  $('#gate').scrollTop = 0;
+}
+function gMsg(t, kind) { const m = $('#gMsg'); m.textContent = t || ''; m.className = 'gmsg' + (kind ? ' ' + kind : ''); }
+function gShow() { $('#gate').classList.remove('hide'); }
+function gHide() { $('#gate').classList.add('hide'); }
+function gBusy(btn, on) { if (btn) btn.disabled = !!on; }
+function accSave(info) { try { localStorage.setItem(ACC_KEY, JSON.stringify(info)); } catch (_) {} }
+function accLoad() { try { return JSON.parse(localStorage.getItem(ACC_KEY) || 'null'); } catch (_) { return null; } }
+function accClear() { try { localStorage.removeItem(ACC_KEY); } catch (_) {} }
+function fmtDay(t) { return new Date(t).toLocaleDateString(LOC); }
+function fmtPrice(p) { return (Math.round(p * 100) / 100).toFixed(2).replace('.', DEC) + ' €'; }
+function accPrice() { return fmtPrice(ACC.cfg.precio); }
+function accTrialDays() { return ACC.cfg.trialDias; }
+function fetchT(url, ms, opt) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  return fetch(url, { ...(opt || {}), signal: ctl.signal }).finally(() => clearTimeout(t));
+}
+function loadScript(src, ms) {
+  return new Promise((res, rej) => {
+    if (window.supabase && window.supabase.createClient) return res();
+    const s = document.createElement('script'); s.src = src; s.async = true;
+    const t = setTimeout(() => rej(new Error('timeout')), ms);
+    s.onload = () => { clearTimeout(t); res(); }; s.onerror = () => { clearTimeout(t); rej(new Error('load')); };
+    document.head.appendChild(s);
+  });
+}
+function legalFill(html) { return html.replace(/\{precio\}/g, accPrice() || TT('el indicado en la pantalla de compra', 'the one shown on the purchase screen')).replace(/\{trial\}/g, accTrialDays()); }
+function showLegal(tab) {
+  const L = LEGAL[EN ? 'en' : 'es'];
+  $('#lBody').innerHTML = legalFill(L[tab] || L.priv); $('#lBody').scrollTop = 0;
+  document.querySelectorAll('#mLegal [data-lt]').forEach(b => b.classList.toggle('on', b.dataset.lt === tab));
+  $('#mLegal').classList.add('show');
+}
+document.querySelectorAll('[data-legal]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); showLegal(b.dataset.legal); }));
+document.querySelectorAll('#mLegal [data-lt]').forEach(b => b.onclick = () => showLegal(b.dataset.lt));
+$('#lClose').onclick = () => $('#mLegal').classList.remove('show');
+document.querySelectorAll('#gate .geye').forEach(b => b.onclick = () => { const i = b.parentNode.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; });
+document.querySelectorAll('#gate [data-go]').forEach(b => b.onclick = () => gView(b.dataset.go));
+
+/* ---------- arranque ---------- */
+async function accSetup() {
+  try {
+    await loadScript(SB_SRC, 12000);
+    ACC.sb = window.supabase.createClient(ZS_SUPABASE_URL, ZS_SUPABASE_ANON, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: 'zalestudio-auth' } });
+    ACC.sb.auth.onAuthStateChange(ev => { if (ev === 'PASSWORD_RECOVERY') { ACC.recovering = true; gView('newpass'); gShow(); } });
+    return true;
+  } catch (err) { console.warn('acceso:', err); return false; }
+}
+async function accInit() {
+  gI18n();
+  $('#gTrialT').textContent = EN ? `🎁 ${accTrialDays()} days free, no card needed` : `🎁 ${accTrialDays()} días gratis, sin tarjeta`;
+  gView('wait'); gShow();
+  const hash = location.hash || '', params = new URLSearchParams(location.search);
+  if (/type=recovery/.test(hash)) ACC.recovering = true;
+  const hashErr = /error_code=|error=/.test(hash) ? decodeURIComponent((hash.match(/error_description=([^&]+)/) || [])[1] || '').replace(/\+/g, ' ') : '';
+  const fromConfirm = /type=signup|type=email/.test(hash);
+  const pago = params.get('pago'), sid = params.get('session_id');
+  if (sid) try { sessionStorage.setItem('zalestudio-sid', sid); } catch (_) {}
+  if (pago) history.replaceState(null, '', location.pathname + location.hash);
+  if (!(await accSetup())) return accOffline();
+  const { data } = await ACC.sb.auth.getSession();
+  const session = data && data.session;
+  if (hashErr) history.replaceState(null, '', location.pathname);
+  if (ACC.recovering && session) { gView('newpass'); return; }
+  if (!session) {
+    gView('login');
+    if (hashErr) gMsg(TT('El enlace no es válido o ha caducado. Entra con tu email y contraseña o pide un enlace nuevo.', 'The link is not valid or has expired. Log in with your email and password or request a new link.'), 'err');
+    else if (pago === 'ok') gMsg(TT('Pago recibido. Entra con tu email y contraseña para activarlo.', 'Payment received. Log in with your email and password to activate it.'), 'ok');
+    return;
+  }
+  if (/access_token=/.test(location.hash)) history.replaceState(null, '', location.pathname);
+  await accAfterLogin(session.user, { confirmed: fromConfirm, pago });
+}
+async function accToken() {
+  try { const { data } = await ACC.sb.auth.getSession(); return data && data.session ? data.session.access_token : null; } catch (_) { return null; }
+}
+async function accVerify(sessionId, claim) {   // claim = acaba de entrar aquí: este pasa a ser su dispositivo
+  const tok = await accToken(); if (!tok) return { access: false, reason: 'no_auth' };
+  ACC.lastCheck = Date.now();
+  try {
+    const body = { device: DEVICE_ID }; if (sessionId) body.session_id = sessionId; if (claim) body.claim = true;
+    const r = await fetchT('/api/stripe-verify', 15000, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok }, body: JSON.stringify(body) });
+    try { return await r.json(); } catch (_) { return { access: false, reason: 'error' }; }
+  } catch (_) { return { access: false, reason: 'network' }; }
+}
+async function accAfterLogin(user, opt) {
+  opt = opt || {};
+  const claim = !!(opt.claim || opt.confirmed);
+  ACC.user = user; gView('wait');
+  let sid = null; try { sid = sessionStorage.getItem('zalestudio-sid'); } catch (_) {}
+  let v;
+  if (sid) {
+    $('#gWaitT').textContent = TT('Confirmando tu pago…', 'Confirming your payment…');
+    v = await accVerify(sid);
+    if (v && v.access) { try { sessionStorage.removeItem('zalestudio-sid'); } catch (_) {} v = await accVerify(null, claim); v.justPaid = true; }
+  } else v = await accVerify(null, claim);
+  $('#gWaitT').textContent = TT('Comprobando tu acceso…', 'Checking your access…');
+  if (!v || v.reason === 'network') return accOffline();
+  if (v.reason === 'error' || v.reason === 'db_error' || v.reason === 'stripe_not_configured') return accOffline('server');
+  if (v.reason === 'no_auth') { gView('login'); return; }
+  if (v.reason === 'otro_dispositivo') return accKicked();
+  if (v.access) { accGrant(v, user); accUnlock(v, opt); return; }
+  gBuy(v.reason, v.expira);
+  if (opt.pago === 'cancel') gMsg(TT('Pago cancelado. No se ha cobrado nada.', 'Payment cancelled. Nothing has been charged.'));
+}
+function accGrant(v, user) {
+  const now = Date.now();
+  const hasta = v.libre ? now + 3650 * DAY : new Date(v.expira || v.hasta).getTime();
+  ACC.info = { email: user.email, libre: !!v.libre, estado: v.libre ? v.estado : (v.trial ? 'trial' : 'pagado'), dias: v.dias_restantes || null, hasta, check: now };
+  accSave(ACC.info);
+}
+function accUnlock(v, opt) {
+  const first = !ACC.unlocked; ACC.unlocked = true; ACC.offline = !v; gHide();
+  accHomeInfo();
+  if (first) reopenAfterLang();
+  const I = ACC.info; if (!I) return;
+  const left = Math.ceil((I.hasta - Date.now()) / DAY);
+  setTimeout(() => {
+    if (v && v.justPaid) toast(TT(`¡Pago confirmado! Tienes acceso hasta el ${fmtDay(I.hasta)}`, `Payment confirmed! You have access until ${fmtDay(I.hasta)}`), 4500);
+    else if (!v) toast(TT('Sin conexión: entras con tu último acceso comprobado', 'Offline: using your last verified access'), 3500);
+    else if (opt && opt.confirmed) toast(TT(`Email confirmado. ¡Bienvenida! Tienes ${I.dias || accTrialDays()} días de prueba gratis`, `Email confirmed. Welcome! You have ${I.dias || accTrialDays()} free trial days`), 4500);
+    else if (I.estado === 'trial') toast(TT(`Prueba gratis: te quedan ${left} día${left === 1 ? '' : 's'}`, `Free trial: ${left} day${left === 1 ? '' : 's'} left`), 3500);
+    else if (!I.libre && left <= 30) toast(TT(`Tu acceso caduca el ${fmtDay(I.hasta)}. Renueva desde Cuenta.`, `Your access expires on ${fmtDay(I.hasta)}. Renew from Account.`), 4500);
+  }, 400);
+  if (first) setTimeout(localNotice, 1200);
+}
+function accOffline(kind) {   // sin conexión no se puede usar la app (ni al abrirla ni a mitad de un trabajo)
+  if (hasWork()) { saveNow(true); try { if (S.projectId) sessionStorage.setItem('zalestudio-reopen', S.projectId); } catch (_) {} }   // al volver la conexión se reabre
+  ACC.unlocked = false; ACC.offlineLock = kind !== 'server';
+  gView('offline'); gShow();
+  if (kind === 'server') {
+    $('#gOffH').textContent = TT('No se ha podido comprobar tu acceso', 'Your access could not be checked');
+    $('#gOffT').textContent = TT('El servicio no responde ahora mismo. Inténtalo dentro de unos minutos; si sigue pasando, escribe a infozalesya@gmail.com.', 'The service is not responding right now. Try again in a few minutes; if it keeps happening, write to infozalesya@gmail.com.');
+  } else {
+    $('#gOffH').textContent = TT('Sin conexión', 'No connection');
+    $('#gOffT').textContent = TT('ZaleStudio necesita conexión a internet para funcionar. Tu trabajo está guardado. Cuando vuelva la conexión, la app se abrirá sola (o pulsa Reintentar).', 'ZaleStudio needs an internet connection to work. Your work is saved. When the connection is back, the app will open again by itself (or tap Try again).');
+  }
+}
+$('#gRetry').onclick = () => location.reload();
+window.addEventListener('offline', () => { if (ACC.unlocked) accOffline(); });   // se va internet: se bloquea
+window.addEventListener('online', () => { if (ACC.offlineLock) location.reload(); });   // vuelve internet: se comprueba y se abre
+$('#gLang').onclick = () => { try { localStorage.setItem('zalestudio-lang', EN ? 'es' : 'en'); } catch (_) {} location.reload(); };
+
+/* ---------- entrar / crear cuenta / recuperar ---------- */
+const MAIL_OK = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+function authErr(error) {
+  const m = String((error && error.message) || '').toLowerCase();
+  if (m.includes('not confirmed')) return 'confirm';
+  if (m.includes('invalid login') || m.includes('invalid credentials')) return 'invalid';
+  if (m.includes('already registered') || m.includes('already been registered')) return 'exists';
+  if (m.includes('at least') || m.includes('password should')) return 'short';
+  if (m.includes('security purposes') || m.includes('rate limit') || m.includes('too many')) return 'rate';
+  if (m.includes('fetch') || m.includes('network')) return 'net';
+  return 'other';
+}
+const AUTH_MSG = {
+  confirm: () => TT('Confirma tu email primero: abre el enlace que te enviamos al crear la cuenta. Si no lo encuentras, mira en spam o pide otro.', 'Confirm your email first: open the link we sent you when you created the account. If you can’t find it, check spam or request a new one.'),
+  invalid: () => TT('Email o contraseña incorrectos.', 'Wrong email or password.'),
+  exists: () => TT('Ya hay una cuenta con este email. Entra o recupera tu contraseña.', 'There is already an account with this email. Log in or reset your password.'),
+  short: () => TT('La contraseña debe tener al menos 6 caracteres.', 'The password must be at least 6 characters long.'),
+  rate: () => TT('Demasiados intentos seguidos. Espera un minuto y vuelve a probar.', 'Too many attempts in a row. Wait a minute and try again.'),
+  net: () => TT('No hay conexión. Revísala e inténtalo otra vez.', 'No connection. Check it and try again.'),
+  other: () => TT('No se ha podido completar. Inténtalo otra vez.', 'It could not be completed. Please try again.')
+};
+const REDIRECT = () => location.origin + '/';
+$('#gToSignup').onclick = () => { gView('signup'); const e = $('#gEmail').value.trim(); if (e) $('#gSEmail').value = e; };
+$('#gToForgot').onclick = () => { gView('forgot'); const e = $('#gEmail').value.trim(); if (e) $('#gFEmail').value = e; };
+$('#gPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gLoginB').click(); });
+$('#gLoginB').onclick = async () => {
+  const email = $('#gEmail').value.trim().toLowerCase(), pass = $('#gPass').value, btn = $('#gLoginB');
+  if (!MAIL_OK(email) || !pass) return gMsg(TT('Escribe tu email y tu contraseña.', 'Enter your email and password.'), 'err');
+  if (!ACC.sb) return accOffline();
+  gBusy(btn, true); gMsg(TT('Entrando…', 'Logging in…'));
+  const { data, error } = await ACC.sb.auth.signInWithPassword({ email, password: pass });
+  gBusy(btn, false);
+  if (error) {
+    const k = authErr(error); gMsg(AUTH_MSG[k](), 'err');
+    if (k === 'confirm') { ACC.pendingEmail = email; $('#gResend').hidden = false; }
+    return;
+  }
+  await accAfterLogin(data.user, { claim: true });
+};
+async function resend(email, btn) {
+  if (!MAIL_OK(email)) return gMsg(TT('Escribe tu email.', 'Enter your email.'), 'err');
+  gBusy(btn, true);
+  const { error } = await ACC.sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: REDIRECT() } });
+  gBusy(btn, false);
+  if (error) return gMsg(AUTH_MSG[authErr(error)](), 'err');
+  gMsg(TT('Te hemos enviado otro email de confirmación.', 'We have sent you another confirmation email.'), 'ok');
+}
+$('#gResend').onclick = () => resend(ACC.pendingEmail || $('#gEmail').value.trim().toLowerCase(), $('#gResend'));
+$('#gResend2').onclick = () => resend(ACC.pendingEmail, $('#gResend2'));
+$('#gSignupB').onclick = async () => {
+  const email = $('#gSEmail').value.trim().toLowerCase(), p1 = $('#gSPass').value, p2 = $('#gSPass2').value, btn = $('#gSignupB');
+  if (!MAIL_OK(email)) return gMsg(TT('Escribe un email válido.', 'Enter a valid email.'), 'err');
+  if (p1.length < 6) return gMsg(AUTH_MSG.short(), 'err');
+  if (p1 !== p2) return gMsg(TT('Las dos contraseñas no coinciden.', 'The two passwords do not match.'), 'err');
+  if (!$('#gSAcc').checked) return gMsg(TT('Para crear la cuenta tienes que aceptar la política de privacidad, el aviso legal y las condiciones de compra.', 'To create the account you need to accept the privacy policy, the legal notice and the purchase terms.'), 'err');
+  if (!ACC.sb) return accOffline();
+  gBusy(btn, true); gMsg(TT('Creando tu cuenta…', 'Creating your account…'));
+  const { data, error } = await ACC.sb.auth.signUp({ email, password: p1, options: { emailRedirectTo: REDIRECT(), data: { lang: LANG } } });
+  gBusy(btn, false);
+  if (error) return gMsg(AUTH_MSG[authErr(error)](), 'err');
+  if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) return gMsg(AUTH_MSG.exists(), 'err');
+  if (data && data.session) return accAfterLogin(data.user, { confirmed: true });   // si en Supabase no se pide confirmar el email
+  ACC.pendingEmail = email;
+  gView('sent');
+  $('#gSentT').textContent = EN ? `We have sent an email to ${email}. Open the link in it to activate your account and start your free trial.` : `Te hemos enviado un email a ${email}. Abre el enlace que contiene para activar tu cuenta y empezar tu prueba gratis.`;
+};
+$('#gForgotB').onclick = async () => {
+  const email = $('#gFEmail').value.trim().toLowerCase(), btn = $('#gForgotB');
+  if (!MAIL_OK(email)) return gMsg(TT('Escribe el email de tu cuenta.', 'Enter your account email.'), 'err');
+  if (!ACC.sb) return accOffline();
+  gBusy(btn, true);
+  const { error } = await ACC.sb.auth.resetPasswordForEmail(email, { redirectTo: REDIRECT() });
+  gBusy(btn, false);
+  if (error) return gMsg(AUTH_MSG[authErr(error)](), 'err');
+  gMsg(TT('Si hay una cuenta con ese email, te hemos enviado un enlace para crear una contraseña nueva. Mira también en spam.', 'If there is an account with that email, we have sent you a link to create a new password. Check spam too.'), 'ok');
+};
+$('#gNewPassB').onclick = async () => {
+  const p1 = $('#gNPass').value, p2 = $('#gNPass2').value, btn = $('#gNewPassB');
+  if (p1.length < 6) return gMsg(AUTH_MSG.short(), 'err');
+  if (p1 !== p2) return gMsg(TT('Las dos contraseñas no coinciden.', 'The two passwords do not match.'), 'err');
+  gBusy(btn, true);
+  const { data, error } = await ACC.sb.auth.updateUser({ password: p1 });
+  gBusy(btn, false);
+  if (error) {
+    const m = String(error.message || '').toLowerCase();
+    return gMsg(m.includes('different') || m.includes('same') ? TT('La contraseña nueva tiene que ser distinta de la anterior.', 'The new password must be different from the old one.') : AUTH_MSG[authErr(error)](), 'err');
+  }
+  ACC.recovering = false; history.replaceState(null, '', location.pathname);
+  gMsg(TT('Contraseña cambiada.', 'Password changed.'), 'ok');
+  await accAfterLogin(data.user, { claim: true });
+};
+
+/* ---------- comprar / renovar ---------- */
+function gBuy(reason, expira) {
+  const H = $('#gBuyH'), T = $('#gBuyT');
+  if (reason === 'trial_caducado') { H.textContent = TT('Tu prueba gratis ha terminado', 'Your free trial has ended'); T.textContent = TT('Para seguir usando ZaleStudio, compra un año de acceso. Tus trabajos siguen guardados en este dispositivo.', 'To keep using ZaleStudio, buy one year of access. Your projects are still saved on this device.'); }
+  else if (reason === 'caducado') { H.textContent = TT('Tu acceso ha caducado', 'Your access has expired'); T.textContent = TT(`Tu año de acceso terminó el ${fmtDay(expira)}. Renueva para volver a entrar; tus trabajos siguen guardados en este dispositivo.`, `Your year of access ended on ${fmtDay(expira)}. Renew to get back in; your projects are still saved on this device.`); }
+  else if (reason === 'renew') { const I = ACC.info; H.textContent = TT('Renovar acceso', 'Renew access'); T.textContent = I && I.estado === 'pagado' ? TT(`Tienes acceso hasta el ${fmtDay(I.hasta)}. Si renuevas ahora, se suma un año a esa fecha.`, `You have access until ${fmtDay(I.hasta)}. If you renew now, one year is added to that date.`) : TT('Compra un año de acceso. Empieza a contar desde el pago.', 'Buy one year of access. It starts counting from the payment.'); }
+  else { H.textContent = TT('Compra tu acceso', 'Buy your access'); T.textContent = TT('Compra un año de acceso a ZaleStudio.', 'Buy one year of access to ZaleStudio.'); }
+  $('#gBuyP').textContent = accPrice() || '—';
+  $('#gBAcc').checked = false;
+  $('#gBack').hidden = !(ACC.unlocked && ACC.info && ACC.info.hasta > Date.now());
+  gView('buy'); gShow();
+}
+$('#gBuyB').onclick = async () => {
+  if (!$('#gBAcc').checked) return gMsg(TT('Marca la casilla para aceptar las condiciones de compra.', 'Tick the box to accept the purchase terms.'), 'err');
+  const btn = $('#gBuyB'), tok = await accToken();
+  if (!tok) { gView('login'); return gMsg(TT('Entra con tu cuenta antes de comprar.', 'Log in to your account before buying.'), 'err'); }
+  gBusy(btn, true); gMsg(TT('Abriendo el pago seguro…', 'Opening secure payment…'));
+  if (hasWork()) await saveNow(true);
+  try {
+    const r = await fetchT('/api/stripe-checkout', 15000, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok }, body: JSON.stringify({ lang: LANG }) });
+    const d = await r.json();
+    if (d && d.url) { location.replace(d.url); return; }
+    gMsg(TT('No se pudo abrir el pago. Inténtalo otra vez.', 'The payment could not be opened. Please try again.'), 'err');
+  } catch (_) { gMsg(AUTH_MSG.net(), 'err'); }
+  gBusy(btn, false);
+};
+$('#gBack').onclick = () => { gHide(); };
+async function accLogout() {
+  if (hasWork()) await saveNow(true);
+  try { if (ACC.sb) await ACC.sb.auth.signOut(); } catch (_) {}
+  accClear(); try { localStorage.removeItem('zalestudio-auth'); } catch (_) {}
+  location.replace(location.pathname);   // sin añadir página al historial: así Exit puede cerrar la app
+}
+$('#gOut').onclick = accLogout;
+
+/* ---------- panel Cuenta ---------- */
+function accPanel() {
+  const I = ACC.info, box = $('#accInfo');
+  if (!I) return;
+  const left = Math.max(0, Math.ceil((I.hasta - Date.now()) / DAY));
+  let st;
+  if (I.libre) st = TT(`<b>Acceso libre</b> (${I.estado === 'familia' ? 'familia' : 'administradora'})`, `<b>Free access</b> (${I.estado === 'familia' ? 'family' : 'admin'})`);
+  else if (I.estado === 'trial') st = TT(`<b>Prueba gratis</b>: te quedan ${left} día${left === 1 ? '' : 's'}`, `<b>Free trial</b>: ${left} day${left === 1 ? '' : 's'} left`);
+  else st = TT(`<b>Acceso hasta el ${fmtDay(I.hasta)}</b> (${left} días)`, `<b>Access until ${fmtDay(I.hasta)}</b> (${left} days)`);
+  const bk = backupLast();
+  box.innerHTML = `${escapeHtml(I.email)}<br>${st}<small>${TT('Última copia de seguridad', 'Last backup')}: ${bk ? fmtDay(bk) : TT('nunca', 'never')}${ACC.offline ? ' · ' + TT('sin conexión', 'offline') : ''}</small>`;
+  const b = $('#accBuy');
+  b.hidden = !!I.libre;
+  b.textContent = I.estado === 'trial' ? TT(`Comprar 1 año · ${accPrice()}`, `Buy 1 year · ${accPrice()}`) : TT(`Renovar 1 año · ${accPrice()}`, `Renew 1 year · ${accPrice()}`);
+  $('#mAcc').classList.add('show');
+}
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+$('#bAcc').onclick = accPanel;
+$('#accClose').onclick = () => $('#mAcc').classList.remove('show');
+$('#accBuy').onclick = () => { $('#mAcc').classList.remove('show'); if (!ACC.sb) return toast(TT('Necesitas conexión para comprar', 'You need a connection to buy')); gBuy('renew'); };
+$('#accOut').onclick = async () => { if (await confirmBox(TT('Cerrar sesión', 'Log out'), TT('Tus trabajos se quedan en este dispositivo. Para volver a entrar necesitarás tu email y contraseña.', 'Your projects stay on this device. To get back in you will need your email and password.'), TT('Cerrar sesión', 'Log out'), false)) accLogout(); };
+$('#accBk').onclick = () => backupSave();
+$('#accRs').onclick = () => $('#bkFile').click();
+async function accKicked() {   // la cuenta se ha abierto en otro dispositivo: aquí se cierra la sesión
+  if (hasWork()) await saveNow(true);
+  try { if (ACC.sb) await ACC.sb.auth.signOut({ scope: 'local' }); } catch (_) {}
+  accClear(); ACC.info = null; ACC.unlocked = false;
+  gView('login'); gShow();
+  gMsg(TT('Tu cuenta se ha abierto en otro dispositivo y aquí se ha cerrado la sesión. Cada cuenta solo se puede usar en un dispositivo a la vez. Si eres tú, vuelve a entrar.', 'Your account was opened on another device, so you have been logged out here. Each account can only be used on one device at a time. If it’s you, log in again.'), 'err');
+}
+async function accRecheck() {   // comprobación en segundo plano: otro dispositivo, caducidad
+  if (!ACC.unlocked || !ACC.sb || !ACC.info || ACC.info.estado === 'admin' || document.visibilityState !== 'visible') return;
+  const v = await accVerify();
+  if (!v || v.reason === 'network') return accOffline();
+  if (v.reason === 'error' || v.reason === 'db_error') return;
+  if (v.reason === 'otro_dispositivo') return accKicked();
+  if (v.reason === 'no_auth') return accKicked();
+  if (v.access) { accGrant(v, ACC.user || { email: ACC.info.email }); accHomeInfo(); return; }
+  if (hasWork()) await saveNow(true);
+  ACC.unlocked = false; gBuy(v.reason, v.expira);
+}
+setInterval(accRecheck, 3 * 60 * 1000);
+document.addEventListener('visibilitychange', () => {   // al volver a la app: si ha caducado se bloquea; si no, se comprueba otra vez
+  if (document.visibilityState !== 'visible' || !ACC.unlocked || !ACC.info) return;
+  if (ACC.info.hasta < Date.now()) { if (hasWork()) saveNow(true); accAfterLogin(ACC.user || { email: ACC.info.email }); return; }
+  if (Date.now() - ACC.lastCheck > 30 * 1000) accRecheck();
+});
+
+/* ---------- copia de seguridad: guardar y restaurar ---------- */
+const BK_KEY = 'zalestudio-backup', BK_DIAS = 7;
+function backupLast() { try { return +localStorage.getItem(BK_KEY) || 0; } catch (_) { return 0; } }
+function blobToDataURL(b) { return new Promise((res, rej) => { const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(b); }); }
+function dataURLToBlob(u) {
+  const [head, data] = String(u).split(','), mime = (head.match(/data:([^;]+)/) || [])[1] || 'image/jpeg';
+  const bin = atob(data), arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+async function backupSave() {
+  if (hasWork()) await saveNow(true);
+  const list = await DB.all();
+  if (!list.length) { toast(TT('Aún no hay trabajos para copiar', 'There are no projects to back up yet')); return; }
+  toast(TT('Preparando la copia…', 'Preparing the backup…'), 1500);
+  const projects = [];
+  for (const p of list) projects.push({ ...p, bg: p.bg ? await blobToDataURL(p.bg) : null });
+  const blob = new Blob([JSON.stringify({ app: 'zalestudio', v: 1, fecha: new Date().toISOString(), n: projects.length, projects })], { type: 'application/json' });
+  const name = `zalestudio-${TT('copia', 'backup')}-${fileStamp()}.json`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 8000);
+  try { localStorage.setItem(BK_KEY, String(Date.now())); } catch (_) {}
+  accHomeInfo(); if ($('#mAcc').classList.contains('show')) accPanel();
+  toast(EN ? `Backup saved to Downloads (${projects.length} project${projects.length === 1 ? '' : 's'}). Also keep a copy in your cloud or email it to yourself.` : `Copia guardada en Descargas (${projects.length} trabajo${projects.length === 1 ? '' : 's'}). Guárdala también en tu nube o envíatela por correo.`, 5000);
+}
+$('#bkFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  let data = null; try { data = JSON.parse(await f.text()); } catch (_) {}
+  if (!data || data.app !== 'zalestudio' || !Array.isArray(data.projects)) { toast(TT('Este archivo no es una copia de ZaleStudio', 'This file is not a ZaleStudio backup'), 3500); return; }
+  const when = data.fecha ? fmtDay(data.fecha) : '?';
+  const ok = await confirmBox(TT('Restaurar copia', 'Restore backup'),
+    EN ? `The backup from ${when} has ${data.projects.length} project(s). They will be added to My projects; projects you already have that are newer are not replaced.` : `La copia del ${when} tiene ${data.projects.length} trabajo(s). Se añadirán a Mis trabajos; los que ya tienes y son más recientes no se sustituyen.`,
+    TT('Restaurar', 'Restore'), false);
+  if (!ok) return;
+  let add = 0, upd = 0, same = 0;
+  try {
+    for (const p of data.projects) {
+      if (!p || !p.id) continue;
+      const cur = await DB.get(p.id);
+      if (cur && (cur.updated || 0) >= (p.updated || 0)) { same++; continue; }
+      await DB.put({ ...p, bg: p.bg ? dataURLToBlob(p.bg) : null });
+      if (cur) upd++; else add++;
+    }
+  } catch (err) { console.error(err); toast(TT('No se pudo restaurar toda la copia (¿falta espacio?)', 'The backup could not be fully restored (out of space?)'), 4000); }
+  toast(EN ? `Restored: ${add} new, ${upd} updated, ${same} already up to date` : `Restaurados: ${add} nuevos, ${upd} actualizados, ${same} ya estaban al día`, 4500);
+  if ($('#mProjects').classList.contains('show')) showProjects();
+  accHomeInfo();
+});
+
+/* ---------- avisos en la pantalla de inicio ---------- */
+async function accHomeInfo() {
+  const box = $('#hInfo'); if (!box) return;
+  box.innerHTML = '';
+  const I = ACC.info;
+  if (I && !I.libre && I.estado === 'trial') {
+    const left = Math.max(0, Math.ceil((I.hasta - Date.now()) / DAY));
+    const d = document.createElement('div'); d.className = 'hnote trial';
+    d.innerHTML = TT(`🎁 Prueba gratis · te quedan ${left} día${left === 1 ? '' : 's'}`, `🎁 Free trial · ${left} day${left === 1 ? '' : 's'} left`) + ` <button class="glink">${TT('Comprar', 'Buy')}</button>`;
+    d.querySelector('button').onclick = () => accBuyFromApp(); box.appendChild(d);
+  } else if (I && !I.libre) {
+    const left = Math.max(0, Math.ceil((I.hasta - Date.now()) / DAY)), soon = left <= 30;
+    const d = document.createElement('div'); d.className = 'hnote ' + (soon ? 'warn' : 'trial');
+    d.innerHTML = (soon
+      ? TT(`⏳ Tu acceso caduca el ${fmtDay(I.hasta)} (quedan ${left} días). Renueva para no perder el acceso.`, `⏳ Your access expires on ${fmtDay(I.hasta)} (${left} days left). Renew so you don’t lose access.`)
+      : TT(`Acceso hasta el ${fmtDay(I.hasta)}`, `Access until ${fmtDay(I.hasta)}`)) + ` <button class="glink">${TT('Renovar', 'Renew')}</button>`;
+    d.querySelector('button').onclick = () => accBuyFromApp(); box.appendChild(d);
+  }
+  let n = 0; try { n = (await DB.all()).length; } catch (_) {}
+  const last = backupLast();
+  if (n && (!last || Date.now() - last > BK_DIAS * DAY)) {
+    const d = document.createElement('div'); d.className = 'hnote warn';
+    const ago = last ? Math.floor((Date.now() - last) / DAY) : -1;
+    d.innerHTML = (EN ? `⚠️ ${n === 1 ? 'Your project is' : `Your ${n} projects are`} only on this device. Last backup: ${ago < 0 ? 'never' : ago + ' days ago'}.` : `⚠️ ${n === 1 ? 'Tu trabajo solo está' : `Tus ${n} trabajos solo están`} en este dispositivo. Última copia: ${ago < 0 ? 'nunca' : 'hace ' + ago + ' días'}.`) + ` <button class="glink">${TT('Hacer copia', 'Back up now')}</button>`;
+    d.querySelector('button').onclick = () => backupSave(); box.appendChild(d);
+  }
+}
+function accBuyFromApp() { if (!ACC.sb) return toast(TT('Necesitas conexión para comprar', 'You need a connection to buy')); gBuy('renew'); }
+function localNotice() {   // aviso una sola vez: los trabajos están en el dispositivo
+  let seen = false; try { seen = localStorage.getItem('zalestudio-aviso-local') === '1'; localStorage.setItem('zalestudio-aviso-local', '1'); } catch (_) {}
+  if (seen) return;
+  $('#hTitle').textContent = TT('Tus trabajos se guardan en este dispositivo', 'Your projects are saved on this device');
+  $('#hBody').innerHTML = '';
+  for (const t of EN
+    ? ['ZaleStudio saves your photos, drawings and score sheets on this device, not on the internet. This keeps them private.', 'If you clear your browser data, uninstall the app or change tablet, they are lost.', 'Save a backup from My projects or Account now and then, and keep it in your cloud (Drive, iCloud…) or email it to yourself. You can restore it on any device.']
+    : ['ZaleStudio guarda tus fotos, dibujos y hojas de puntos en este dispositivo, no en internet. Así son privados.', 'Si borras los datos del navegador, desinstalas la app o cambias de tablet, se pierden.', 'Guarda una copia de seguridad de vez en cuando desde Mis trabajos o Cuenta y súbela a tu nube (Drive, iCloud…) o envíatela por correo. La puedes restaurar en cualquier dispositivo.']) {
+    const p = document.createElement('p'); p.style.margin = '0 0 8px'; p.textContent = t; $('#hBody').appendChild(p);
+  }
+  $('#mHelp').classList.add('show');
+}
+$('#pBk').onclick = () => backupSave();
+$('#pRs').onclick = () => $('#bkFile').click();
+
 /* guardar al salir o pasar a segundo plano */
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); });
 window.addEventListener('pagehide', () => saveNow());
@@ -2918,10 +3910,14 @@ resize();
 setTool('pen');
 $('#bPressure').classList.toggle('on', S.pressure);
 goHome();
-(async () => {   // después de cambiar de idioma se vuelve al trabajo que estaba abierto
+async function reopenAfterLang() {   // después de cambiar de idioma se vuelve al trabajo que estaba abierto
   let id = null; try { id = sessionStorage.getItem('zalestudio-reopen'); sessionStorage.removeItem('zalestudio-reopen'); } catch (_) {}
   if (id) { try { await openProject(id, true); } catch (err) { console.error(err); } }
-})();
+}
+/* VERSIÓN DE PRUEBAS: sin cuentas, sin prueba gratis y sin pagos (solo para el repo de pruebas de UONA) */
+ACC.unlocked = true; gHide(); reopenAfterLang();
+$('#bAcc').style.display = 'none';
+(() => { const t = document.createElement('div'); t.textContent = 'PRUEBAS'; t.style.cssText = 'position:fixed;left:8px;top:62px;z-index:90;background:#c62828;color:#fff;font:700 10px Montserrat,system-ui,sans-serif;padding:2px 8px;border-radius:6px;pointer-events:none;letter-spacing:.08em'; document.body.appendChild(t); })();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
