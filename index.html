@@ -241,8 +241,12 @@ body.present #moldbar{display:none}
 #mMold .mopt img{width:100%;height:90px;object-fit:contain}
 #mMold .mopt.on{border-color:var(--acc)}
 #rulerbar #rShow{display:none}
+#rulerbar .rfix{display:none}
+#rulerbar.fixed .rplace{display:none}
+#rulerbar.fixed .rfix{display:flex}
+#rulerbar #rFix{color:var(--acc2)}
 #rulerbar.mini{left:auto;right:8px;transform:none;padding:3px}
-#rulerbar.mini > *{display:none}
+#rulerbar.mini > *:not(#rShow){display:none !important}
 #rulerbar.mini #rShow{display:flex}
 #rulerbar .btn{min-width:46px;height:46px;font-size:10px;padding:0 2px}
 #rulerbar .btn svg{width:20px;height:20px}
@@ -337,11 +341,13 @@ body.present #rulerbar{display:none}
       <button class="btn" id="mClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="mlab">Quitar</span></button>
     </div>
     <div id="rulerbar">
-      <button class="btn" id="rRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
-      <button class="btn" id="rRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
-      <button class="btn" id="r90"><svg viewBox="0 0 24 24"><path d="M4 20V8M4 20h12"/><path d="M4 12a8 8 0 0 1 8 8"/></svg>90°</button>
-      <button class="btn" id="rBig"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16 16l5 5"/></svg><span class="rlab">Ampliar</span></button>
-      <button class="btn" id="rSmall"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16 16l5 5"/></svg><span class="rlab">Reducir</span></button>
+      <button class="btn rplace" id="rRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
+      <button class="btn rplace" id="rRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
+      <button class="btn rplace" id="r90"><svg viewBox="0 0 24 24"><path d="M4 20V8M4 20h12"/><path d="M4 12a8 8 0 0 1 8 8"/></svg>90°</button>
+      <button class="btn rplace" id="rBig"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16 16l5 5"/></svg><span class="rlab">Ampliar</span></button>
+      <button class="btn rplace" id="rSmall"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16 16l5 5"/></svg><span class="rlab">Reducir</span></button>
+      <button class="btn rplace" id="rFix"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg><span class="rlab">Fijar</span></button>
+      <button class="btn rfix" id="rMove"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><span class="rlab">Mover regla</span></button>
       <button class="btn" id="rClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="rlab">Quitar</span></button>
       <div class="rbl" id="rDeg">0°</div>
       <button class="btn" id="rHide"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg><span class="rlab">Ocultar</span></button>
@@ -692,7 +698,7 @@ function translateStatic() {   // pasa a inglés los textos fijos (solo en ingl�
   }
   for (const a of ['placeholder', 'aria-label', 'title']) document.querySelectorAll(`[${a}]`).forEach(el => { const v = el.getAttribute(a); if (STATIC_EN[v]) el.setAttribute(a, STATIC_EN[v]); });
   document.querySelectorAll('#eTable thead .sm').forEach((s, i) => s.textContent = 'TIMRP'[i]);
-  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler', Fijar: 'Fix', 'Mover molde': 'Move form' };
+  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler', Fijar: 'Fix', 'Mover molde': 'Move form', 'Mover regla': 'Move ruler' };
   document.querySelectorAll('#moldbar .mlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
   document.querySelectorAll('#rulerbar .rlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
 }
@@ -845,6 +851,7 @@ function render() {
   $('#bSym').classList.toggle('on', !!axisObj());
   $('#bRuler').classList.toggle('on', !!S.ruler);
   $('#rulerbar').classList.toggle('show', !!S.ruler);
+  $('#rulerbar').classList.toggle('fixed', !!(S.ruler && S.ruler.fixed));
   $('#bMold').classList.toggle('on', !!S.mold);
   $('#moldbar').classList.toggle('show', !!S.mold);
   $('#moldbar').classList.toggle('fixed', !!(S.mold && S.mold.fixed));
@@ -1971,7 +1978,7 @@ const HELP = {
   mm: ['Milímetros', 'Mide en milímetros sobre la foto (medida aproximada). 1) Haz la foto con una regla pegada a la uña: transparente, metálica o cinta métrica, con las rayas bien visibles y a la misma distancia del móvil que la uña. 2) Calibra: traza una línea entre dos rayas de la regla y di cuánto mide (por ejemplo 1 cm). 3) Mide: traza la línea sobre el grosor del borde libre o sobre el largo y verás "≈ 1,4 mm". Cada foto se calibra aparte. Para volver a calibrar, toca la regla amarilla y pulsa "Medida regla" o elimínala. Ampliar o reducir la imagen no cambia la medida.'],
   sCal: ['Medida regla', 'Cambia cuánto mide el tramo que marcaste en la regla. Todas las medidas en milímetros de la foto se recalculan.'],
   ratio2: ['Almendra', 'Primera medida: de la cutícula a la sonrisa (centro). Segunda: del punto más alto de la sonrisa al borde libre. Indica el reparto, por ejemplo "Almendra 50 % · Borde libre 50 %". ' + MOVE_TIP],
-  bRuler: ['Regla', 'Pone una regla encima de la imagen. Va pegada a la foto: si amplías, mueves o giras la foto, la regla va con ella. Para moverla a ella sola, tócala con el dedo o con el lápiz y arrástrala. Con dos dedos la giras y la amplías o reduces (basta con que uno de los dos dedos toque la regla). Con los botones de arriba la giras 1° o 90° y la amplías o reduces. Mientras está puesta sigues dibujando y usando las demás herramientas igual, empezando el trazo fuera de la regla. No sale al guardar, compartir ni en el PDF. Pulsa otra vez para quitarla.'],
+  bRuler: ['Regla', 'Pone una regla encima de la imagen. Va pegada a la foto: si amplías, mueves o giras la foto, la regla va con ella. Para moverla a ella sola, tócala con el dedo o con el lápiz y arrástrala. Con dos dedos la giras y la amplías o reduces (basta con que uno de los dos dedos toque la regla). Con los botones de arriba la giras 1° o 90° y la amplías o reduces. Cuando esté en su sitio pulsa Fijar (o elige cualquier herramienta y se fija sola): así no se mueve al dibujar encima. Con Mover regla la vuelves a soltar. Mientras está puesta sigues dibujando y usando las demás herramientas igual, empezando el trazo fuera de la regla. No sale al guardar, compartir ni en el PDF. Pulsa otra vez para quitarla.'],
   rRotL: ['Girar la regla 1° a la izquierda', 'Gira la regla 1 grado en sentido contrario a las agujas del reloj.'],
   rRotR: ['Girar la regla 1° a la derecha', 'Gira la regla 1 grado en el sentido de las agujas del reloj.'],
   r90: ['Girar la regla 90°', 'Gira la regla un cuarto de vuelta, para ponerla en vertical u horizontal.'],
@@ -1979,6 +1986,8 @@ const HELP = {
   rSmall: ['Reducir la regla', 'Hace la regla más pequeña (las marcas se juntan).'],
   rHide: ['Ocultar la barra', 'Pliega la barra de la regla en un botón pequeño en la esquina de arriba a la derecha, para que no estorbe al ampliar la foto. La regla sigue puesta.'],
   rShow: ['Mostrar la barra', 'Vuelve a abrir la barra de botones de la regla.'],
+  rFix: ['Fijar la regla', 'Deja la regla fija en su sitio: ya no se mueve al dibujar encima ni al tocarla. También se fija sola al elegir cualquier herramienta.'],
+  rMove: ['Mover la regla', 'Vuelve a soltar la regla para moverla, girarla o cambiar su tamaño. Después pulsa Fijar otra vez.'],
   rClose: ['Quitar la regla', 'Quita la regla de la pantalla. Puedes volver a ponerla con el botón Regla.'],
   bMold: ['Moldes', 'Pone un molde de estructura o de stiletto encima de la foto o de la plantilla. Primero se coloca: arrástralo, y con dos dedos sobre él lo giras y lo amplías (o usa los botones de abajo). Cuando esté en su sitio pulsa Fijar: el molde queda pegado a la imagen y ya no se mueve al usar cualquier herramienta, la regla incluida, así que puedes marcar líneas encima. Más suave y Más visible cambian su transparencia. Sale al guardar, compartir y en el PDF junto con lo que dibujes. Solo se puede poner un molde a la vez.'],
   mRotL: ['Girar el molde 1° a la izquierda', 'Gira el molde 1 grado en sentido contrario a las agujas del reloj.'],
@@ -2044,7 +2053,7 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   mm: ['Millimeters', 'Measures in millimeters on the photo (approximate measurement), using a ruler photographed next to the nail.'],
   sCal: ['Ruler size', 'Changes how long the section you marked on the ruler is. All millimeter measurements on the photo are recalculated.'],
   ratio2: ['Pink/White', 'First measurement: from the cuticle to the smile line (center). Second: from the highest point of the smile line to the free edge. It shows the split, for example "Pink 50 % · Free edge 50 %". ' + MOVE_TIP],
-  bRuler: ['Ruler', 'Places a ruler on top of the image. It sticks to the photo: if you zoom, move or rotate the photo, the ruler goes with it. To move the ruler on its own, touch it with your finger or the stylus and drag it. With two fingers you rotate it and make it larger or smaller (it is enough for one of the two fingers to touch the ruler). With the buttons at the top you rotate it 1° or 90° and make it larger or smaller. While it is on, you keep drawing and using the other tools as usual, starting the stroke outside the ruler. It is not included when you save, share or make the PDF. Tap again to remove it.'],
+  bRuler: ['Ruler', 'Places a ruler on top of the image. It sticks to the photo: if you zoom, move or rotate the photo, the ruler goes with it. To move the ruler on its own, touch it with your finger or the stylus and drag it. With two fingers you rotate it and make it larger or smaller (it is enough for one of the two fingers to touch the ruler). With the buttons at the top you rotate it 1° or 90° and make it larger or smaller. When it is in place, tap Fix (or choose any tool and it fixes itself): then it does not move when you draw on top. Move ruler releases it again. While it is on, you keep drawing and using the other tools as usual, starting the stroke outside the ruler. It is not included when you save, share or make the PDF. Tap again to remove it.'],
   rRotL: ['Rotate the ruler 1° left', 'Rotates the ruler 1 degree counterclockwise.'],
   rRotR: ['Rotate the ruler 1° right', 'Rotates the ruler 1 degree clockwise.'],
   r90: ['Rotate the ruler 90°', 'Rotates the ruler a quarter turn, to make it vertical or horizontal.'],
@@ -2052,6 +2061,8 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   rSmall: ['Shrink the ruler', 'Makes the ruler smaller (the marks get closer).'],
   rHide: ['Hide the bar', 'Folds the ruler bar into a small button in the top right corner, so it does not get in the way when you zoom the photo. The ruler stays on.'],
   rShow: ['Show the bar', 'Opens the ruler button bar again.'],
+  rFix: ['Fix the ruler', 'Fixes the ruler in place: it no longer moves when you draw on top or touch it. It also fixes itself when you choose any tool.'],
+  rMove: ['Move the ruler', 'Releases the ruler again so you can move, rotate or resize it. Then tap Fix again.'],
   rClose: ['Remove the ruler', 'Removes the ruler from the screen. You can put it back with the Ruler button.'],
   bMold: ['Forms', 'Places a structure or stiletto nail form over the photo or template. First you place it: drag it, and with two fingers on it you rotate and resize it (or use the buttons below). When it is in place, tap Fix: the form sticks to the image and no longer moves when you use any tool, including the ruler, so you can draw lines on top. Lighter and Darker change its transparency. It is included when you save, share and in the PDF, together with what you draw. Only one form can be placed at a time.'],
   mRotL: ['Rotate the form 1° left', 'Rotates the form 1 degree counterclockwise.'],
@@ -2255,7 +2266,7 @@ function rulerToggle() {
   if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
   if (S.ruler) { S.ruler = null; scheduleSave(); req(); return; }
   const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.92, 760) / (RULER_LEN + 1) / S.view.s;
-  S.ruler = { x: c.x, y: c.y, rot: -S.view.r, u };
+  S.ruler = { x: c.x, y: c.y, rot: -S.view.r, u, fixed: false };
   rulerDeg(); scheduleSave(); req();
   toast(TT('Regla: arrástrala con el dedo o el lápiz; con dos dedos la giras y la amplías', 'Ruler: drag it with your finger or the stylus; with two fingers you rotate and resize it'), 3500);
 }
@@ -2268,6 +2279,13 @@ $('#r90').onclick = () => rulerTurn(90);
 $('#rBig').onclick = () => rulerZoom(1.1);
 $('#rSmall').onclick = () => rulerZoom(1 / 1.1);
 $('#rClose').onclick = () => { if (S.ruler) rulerToggle(); };
+function rulerFix(v) {
+  if (!S.ruler) return;
+  S.ruler.fixed = v; scheduleSave(); req();
+  toast(v ? TT('Regla fija: ya no se mueve al dibujar', 'Ruler fixed: it no longer moves when you draw') : TT('Mueve la regla y pulsa Fijar cuando esté en su sitio', 'Move the ruler and tap Fix when it is in place'), 2200);
+}
+$('#rFix').onclick = () => rulerFix(true);
+$('#rMove').onclick = () => rulerFix(false);
 $('#rHide').onclick = () => $('#rulerbar').classList.add('mini');   // la barra se pliega para que no estorbe
 $('#rShow').onclick = () => $('#rulerbar').classList.remove('mini');
 
@@ -2667,6 +2685,7 @@ function updUndo() { $('#bUndo').disabled = hIdx <= 0; $('#bRedo').disabled = hI
 function setTool(t) {
   S.tool = t;
   if (S.mold && !S.mold.fixed) moldFix(true);
+  if (S.ruler && !S.ruler.fixed) rulerFix(true);
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
   if (t !== 'select') select(null);   // al cambiar de herramienta se suelta la selección
   syncSize();
@@ -2797,7 +2816,7 @@ stage.addEventListener('pointerdown', e => {
   if (e.pointerType === 'touch' && touchPts().length >= 2) {
     if (act && act.ptype === 'pen') return;              // mano apoyada mientras se usa lápiz activo
     moldGesture = !!(act && act.kind === 'mold') || (!!S.mold && !S.mold.fixed && !document.body.classList.contains('present') && touchPts().some(p => { const q = stageXY(p.x, p.y), d = toDocS(q.x, q.y); return moldHit(d.x, d.y); }));
-    rulerGesture = !!(act && act.kind === 'ruler') || (!!S.ruler && !document.body.classList.contains('present') && touchPts().some(p => { const q = stageXY(p.x, p.y), d = toDocS(q.x, q.y); return rulerHit(d.x, d.y); }));   // si uno de los dos dedos toca la regla, los dedos mueven la regla
+    rulerGesture = !!(act && act.kind === 'ruler') || (!!S.ruler && !S.ruler.fixed && !document.body.classList.contains('present') && touchPts().some(p => { const q = stageXY(p.x, p.y), d = toDocS(q.x, q.y); return rulerHit(d.x, d.y); }));   // si uno de los dos dedos toca la regla, los dedos mueven la regla
     if (act && act.kind !== 'pan') {
       const young = performance.now() - act.t0 < 250;
       if (!young && (act.kind === 'draw' || act.kind === 'shape')) return; // ya llevaba rato dibujando: es la mano
@@ -2808,7 +2827,7 @@ stage.addEventListener('pointerdown', e => {
   if (act || pinch || blockTouch) return;
 
   const sp = stageXY(e.clientX, e.clientY);
-  if (S.ruler && !document.body.classList.contains('present')) {   // con el dedo, el lápiz o el ratón sobre la regla, se mueve la regla
+  if (S.ruler && !S.ruler.fixed && !document.body.classList.contains('present')) {   // regla sin fijar: con el dedo, el lápiz o el ratón sobre ella, se mueve
     const d = toDocS(sp.x, sp.y);
     if (rulerHit(d.x, d.y)) { act = { id: e.pointerId, kind: 'ruler', lx: d.x, ly: d.y, ptype: e.pointerType, t0: performance.now() }; return; }
   }
@@ -3273,6 +3292,7 @@ function newDoc(w, h, bg, blob) {
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
   S.objects = []; S.projectId = null; S.projectName = nowName(); S.eval = null; S.ruler = null; S.mold = null; evalRefresh();
   select(null); resetHist(); fit(); scheduleSave();
+  if (bg) setTool('hand');   // con foto o plantilla se empieza en Mover: así se mueve la imagen sin dibujar sin querer
 }
 $('#bFit').onclick = fit;
 $('#bUndo').onclick = undo;
