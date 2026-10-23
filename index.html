@@ -332,6 +332,7 @@ body.present #rulerbar{display:none}
     <div id="moldbar">
       <button class="btn mplace" id="mRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
       <button class="btn mplace" id="mRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
+      <button class="btn mplace" id="mFlip"><svg viewBox="0 0 24 24"><path d="M12 3v18" stroke-dasharray="2 2"/><path d="M9 7L4 12l5 5z"/><path d="M15 7l5 5-5 5z"/></svg><span class="mlab">Voltear</span></button>
       <button class="btn mplace" id="mBig"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16 16l5 5"/></svg><span class="mlab">Ampliar</span></button>
       <button class="btn mplace" id="mSmall"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16 16l5 5"/></svg><span class="mlab">Reducir</span></button>
       <button class="btn" id="mFade"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/></svg><span class="mlab">Más suave</span></button>
@@ -698,7 +699,7 @@ function translateStatic() {   // pasa a inglés los textos fijos (solo en ingl�
   }
   for (const a of ['placeholder', 'aria-label', 'title']) document.querySelectorAll(`[${a}]`).forEach(el => { const v = el.getAttribute(a); if (STATIC_EN[v]) el.setAttribute(a, STATIC_EN[v]); });
   document.querySelectorAll('#eTable thead .sm').forEach((s, i) => s.textContent = 'TIMRP'[i]);
-  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler', Fijar: 'Fix', 'Mover molde': 'Move form', 'Mover regla': 'Move ruler' };
+  const RB = { Ampliar: 'Larger', Reducir: 'Smaller', Quitar: 'Remove', Ocultar: 'Hide', Regla: 'Ruler', Fijar: 'Fix', Voltear: 'Flip', 'Mover molde': 'Move form', 'Mover regla': 'Move ruler' };
   document.querySelectorAll('#moldbar .mlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
   document.querySelectorAll('#rulerbar .rlab').forEach(el => { if (RB[el.textContent]) el.textContent = RB[el.textContent]; });
 }
@@ -1989,9 +1990,10 @@ const HELP = {
   rFix: ['Fijar la regla', 'Deja la regla fija en su sitio: ya no se mueve al dibujar encima ni al tocarla. También se fija sola al elegir cualquier herramienta.'],
   rMove: ['Mover la regla', 'Vuelve a soltar la regla para moverla, girarla o cambiar su tamaño. Después pulsa Fijar otra vez.'],
   rClose: ['Quitar la regla', 'Quita la regla de la pantalla. Puedes volver a ponerla con el botón Regla.'],
-  bMold: ['Moldes', 'Pone un molde de estructura o de stiletto encima de la foto o de la plantilla. Primero se coloca: arrástralo, y con dos dedos sobre él lo giras y lo amplías (o usa los botones de abajo). Cuando esté en su sitio pulsa Fijar: el molde queda pegado a la imagen y ya no se mueve al usar cualquier herramienta, la regla incluida, así que puedes marcar líneas encima. Más suave y Más visible cambian su transparencia. Sale al guardar, compartir y en el PDF junto con lo que dibujes. Solo se puede poner un molde a la vez.'],
+  bMold: ['Moldes', 'Pone un molde de estructura o de stiletto encima de la foto o de la plantilla. Primero se coloca: arrástralo, y con dos dedos sobre él lo giras y lo amplías (o usa los botones de abajo); con Voltear mira hacia el otro lado. Cuando esté en su sitio pulsa Fijar: el molde queda pegado a la imagen y ya no se mueve al usar cualquier herramienta, la regla incluida, así que puedes marcar líneas encima. Más suave y Más visible cambian su transparencia. Sale al guardar, compartir y en el PDF junto con lo que dibujes. Solo se puede poner un molde a la vez.'],
   mRotL: ['Girar el molde 1° a la izquierda', 'Gira el molde 1 grado en sentido contrario a las agujas del reloj.'],
   mRotR: ['Girar el molde 1° a la derecha', 'Gira el molde 1 grado en el sentido de las agujas del reloj.'],
+  mFlip: ['Voltear el molde', 'Da la vuelta al molde en espejo, para que mire hacia el otro lado (por ejemplo, para la otra mano o si la mano está al revés). Pulsa otra vez para dejarlo como estaba.'],
   mBig: ['Ampliar el molde', 'Hace el molde un poco más grande.'],
   mSmall: ['Reducir el molde', 'Hace el molde un poco más pequeño.'],
   mFade: ['Molde más suave', 'Hace el molde más transparente. Cada toque baja un 10 %.'],
@@ -2064,9 +2066,10 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   rFix: ['Fix the ruler', 'Fixes the ruler in place: it no longer moves when you draw on top or touch it. It also fixes itself when you choose any tool.'],
   rMove: ['Move the ruler', 'Releases the ruler again so you can move, rotate or resize it. Then tap Fix again.'],
   rClose: ['Remove the ruler', 'Removes the ruler from the screen. You can put it back with the Ruler button.'],
-  bMold: ['Forms', 'Places a structure or stiletto nail form over the photo or template. First you place it: drag it, and with two fingers on it you rotate and resize it (or use the buttons below). When it is in place, tap Fix: the form sticks to the image and no longer moves when you use any tool, including the ruler, so you can draw lines on top. Lighter and Darker change its transparency. It is included when you save, share and in the PDF, together with what you draw. Only one form can be placed at a time.'],
+  bMold: ['Forms', 'Places a structure or stiletto nail form over the photo or template. First you place it: drag it, and with two fingers on it you rotate and resize it (or use the buttons below); Flip makes it face the other way. When it is in place, tap Fix: the form sticks to the image and no longer moves when you use any tool, including the ruler, so you can draw lines on top. Lighter and Darker change its transparency. It is included when you save, share and in the PDF, together with what you draw. Only one form can be placed at a time.'],
   mRotL: ['Rotate the form 1° left', 'Rotates the form 1 degree counterclockwise.'],
   mRotR: ['Rotate the form 1° right', 'Rotates the form 1 degree clockwise.'],
+  mFlip: ['Flip the form', 'Mirrors the form so it faces the other way (for example, for the other hand or if the hand is upside down). Tap again to put it back.'],
   mBig: ['Enlarge the form', 'Makes the form a little bigger.'],
   mSmall: ['Shrink the form', 'Makes the form a little smaller.'],
   mFade: ['Lighter form', 'Makes the form more transparent. Each tap lowers it by 10 %.'],
@@ -2169,7 +2172,7 @@ function drawMold(c, screen) {
   const m = S.mold; if (!m) return;
   const im = moldImg(m.k); if (!im.complete || !im.naturalWidth) return;
   const { w, h } = moldSize(m);
-  c.save(); c.translate(m.x, m.y); c.rotate(m.rot);
+  c.save(); c.translate(m.x, m.y); c.rotate(m.rot); if (m.flip) c.scale(-1, 1);   // volteado en espejo
   c.globalAlpha = clamp(m.op, 0.1, 1); c.imageSmoothingQuality = 'high';
   c.drawImage(im, -w / 2, -h / 2, w, h);
   c.globalAlpha = 1;
@@ -2205,6 +2208,7 @@ document.querySelectorAll('#mMold .mopt').forEach(b => b.onclick = () => { $('#m
 $('#moCancel').onclick = () => $('#mMold').classList.remove('show');
 $('#mRotL').onclick = () => { if (S.mold) { S.mold.rot -= Math.PI / 180; commit(); } };
 $('#mRotR').onclick = () => { if (S.mold) { S.mold.rot += Math.PI / 180; commit(); } };
+$('#mFlip').onclick = () => { if (S.mold) { S.mold.flip = !S.mold.flip; commit(); } };
 $('#mBig').onclick = () => { if (S.mold) { S.mold.u *= 1.05; commit(); } };
 $('#mSmall').onclick = () => { if (S.mold) { S.mold.u /= 1.05; commit(); } };
 $('#mFade').onclick = () => moldOpacity(-0.1);
