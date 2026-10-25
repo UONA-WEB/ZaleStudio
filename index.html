@@ -240,6 +240,9 @@ body.present #moldbar{display:none}
 #mMold .mopt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--txt);font:600 13px Montserrat,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
 #mMold .mopt img{width:100%;height:90px;object-fit:contain}
 #mMold .mopt.on{border-color:var(--acc)}
+#mRuler .mopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#mRuler .mopt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font:600 13px Montserrat,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+#mRuler .mopt svg{width:100%;height:80px}
 #rulerbar #rShow{display:none}
 #rulerbar .rfix{display:none}
 #rulerbar.fixed .rplace{display:none}
@@ -495,6 +498,16 @@ body.present #rulerbar{display:none}
     <div class="chips" id="cChips"></div>
     <label style="display:flex;gap:8px;align-items:center;font-size:14px">Otra medida <input id="cMm" type="number" step="0.5" min="0.5" inputmode="decimal"> mm</label>
     <div class="actions"><button class="pill" id="cCancel">Cancelar</button><button class="pill pri" id="cOk">Aceptar</button></div>
+  </div>
+</div>
+<div class="modal" id="mRuler">
+  <div class="card">
+    <h2 id="ruTitle">Regla</h2>
+    <div class="mopts">
+      <button class="mopt" data-kind="line"><svg viewBox="0 0 160 80" aria-hidden="true"><rect x="8" y="26" width="144" height="28" rx="4" fill="#cdcdd2" stroke="#3c3c42"/><path d="M18 26v10M30 26v6M42 26v10M54 26v6M66 26v10M78 26v6M90 26v10M102 26v6M114 26v10M126 26v6M138 26v10" stroke="#2b2b30" stroke-width="1.5"/></svg><span id="ruLine">Regla</span></button>
+      <button class="mopt" data-kind="arc"><svg viewBox="0 0 160 80" aria-hidden="true"><path d="M10 70A70 70 0 0 1 150 70v6H10zM44 58A36 36 0 0 1 116 58z" fill="#cdcdd2" fill-rule="evenodd" stroke="#3c3c42"/><path d="M80 76V58M14 70h132" stroke="#2b2b30" stroke-width="1.5"/></svg><span id="ruArc">Transportador</span></button>
+    </div>
+    <div class="actions"><button class="pill" id="ruCancel">Cancelar</button></div>
   </div>
 </div>
 <div class="modal" id="mMold">
@@ -1979,7 +1992,7 @@ const HELP = {
   mm: ['Milímetros', 'Mide en milímetros sobre la foto (medida aproximada). 1) Haz la foto con una regla pegada a la uña: transparente, metálica o cinta métrica, con las rayas bien visibles y a la misma distancia del móvil que la uña. 2) Calibra: traza una línea entre dos rayas de la regla y di cuánto mide (por ejemplo 1 cm). 3) Mide: traza la línea sobre el grosor del borde libre o sobre el largo y verás "≈ 1,4 mm". Cada foto se calibra aparte. Para volver a calibrar, toca la regla amarilla y pulsa "Medida regla" o elimínala. Ampliar o reducir la imagen no cambia la medida.'],
   sCal: ['Medida regla', 'Cambia cuánto mide el tramo que marcaste en la regla. Todas las medidas en milímetros de la foto se recalculan.'],
   ratio2: ['Almendra', 'Primera medida: de la cutícula a la sonrisa (centro). Segunda: del punto más alto de la sonrisa al borde libre. Indica el reparto, por ejemplo "Almendra 50 % · Borde libre 50 %". ' + MOVE_TIP],
-  bRuler: ['Regla', 'Pone una regla encima de la imagen. Va pegada a la foto: si amplías, mueves o giras la foto, la regla va con ella. Para moverla a ella sola, tócala con el dedo o con el lápiz y arrástrala. Con dos dedos la giras y la amplías o reduces (basta con que uno de los dos dedos toque la regla). Con los botones de arriba la giras 1° o 90° y la amplías o reduces. Cuando esté en su sitio pulsa Fijar (o elige cualquier herramienta y se fija sola): así no se mueve al dibujar encima. Con Mover regla la vuelves a soltar. Mientras está puesta sigues dibujando y usando las demás herramientas igual, empezando el trazo fuera de la regla. No sale al guardar, compartir ni en el PDF. Pulsa otra vez para quitarla.'],
+  bRuler: ['Regla', 'Al pulsarlo eliges Regla (recta, en cm) o Transportador (arco de 0 a 180°), y se pone encima de la imagen; los dos funcionan igual y con los mismos botones. Va pegada a la foto: si amplías, mueves o giras la foto, la regla va con ella. Para moverla a ella sola, tócala con el dedo o con el lápiz y arrástrala. Con dos dedos la giras y la amplías o reduces (basta con que uno de los dos dedos toque la regla). Con los botones de arriba la giras 1° o 90° y la amplías o reduces. Cuando esté en su sitio pulsa Fijar (o elige cualquier herramienta y se fija sola): así no se mueve al dibujar encima. Con Mover regla la vuelves a soltar. Mientras está puesta sigues dibujando y usando las demás herramientas igual, empezando el trazo fuera de la regla. No sale al guardar, compartir ni en el PDF. Pulsa otra vez para quitarla.'],
   rRotL: ['Girar la regla 1° a la izquierda', 'Gira la regla 1 grado en sentido contrario a las agujas del reloj.'],
   rRotR: ['Girar la regla 1° a la derecha', 'Gira la regla 1 grado en el sentido de las agujas del reloj.'],
   r90: ['Girar la regla 90°', 'Gira la regla un cuarto de vuelta, para ponerla en vertical u horizontal.'],
@@ -2055,7 +2068,7 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   mm: ['Millimeters', 'Measures in millimeters on the photo (approximate measurement), using a ruler photographed next to the nail.'],
   sCal: ['Ruler size', 'Changes how long the section you marked on the ruler is. All millimeter measurements on the photo are recalculated.'],
   ratio2: ['Pink/White', 'First measurement: from the cuticle to the smile line (center). Second: from the highest point of the smile line to the free edge. It shows the split, for example "Pink 50 % · Free edge 50 %". ' + MOVE_TIP],
-  bRuler: ['Ruler', 'Places a ruler on top of the image. It sticks to the photo: if you zoom, move or rotate the photo, the ruler goes with it. To move the ruler on its own, touch it with your finger or the stylus and drag it. With two fingers you rotate it and make it larger or smaller (it is enough for one of the two fingers to touch the ruler). With the buttons at the top you rotate it 1° or 90° and make it larger or smaller. When it is in place, tap Fix (or choose any tool and it fixes itself): then it does not move when you draw on top. Move ruler releases it again. While it is on, you keep drawing and using the other tools as usual, starting the stroke outside the ruler. It is not included when you save, share or make the PDF. Tap again to remove it.'],
+  bRuler: ['Ruler', 'When you tap it you choose Ruler (straight, in cm) or Protractor (arc from 0 to 180°), and it is placed on top of the image; both work the same way and with the same buttons. It sticks to the photo: if you zoom, move or rotate the photo, the ruler goes with it. To move the ruler on its own, touch it with your finger or the stylus and drag it. With two fingers you rotate it and make it larger or smaller (it is enough for one of the two fingers to touch the ruler). With the buttons at the top you rotate it 1° or 90° and make it larger or smaller. When it is in place, tap Fix (or choose any tool and it fixes itself): then it does not move when you draw on top. Move ruler releases it again. While it is on, you keep drawing and using the other tools as usual, starting the stroke outside the ruler. It is not included when you save, share or make the PDF. Tap again to remove it.'],
   rRotL: ['Rotate the ruler 1° left', 'Rotates the ruler 1 degree counterclockwise.'],
   rRotR: ['Rotate the ruler 1° right', 'Rotates the ruler 1 degree clockwise.'],
   r90: ['Rotate the ruler 90°', 'Rotates the ruler a quarter turn, to make it vertical or horizontal.'],
@@ -2225,6 +2238,7 @@ function rulerHit(x, y) {
   const { w, h } = rulerDims(r), c = Math.cos(-r.rot), n = Math.sin(-r.rot), dx = x - r.x, dy = y - r.y;
   const lx = dx * c - dy * n, ly = dx * n + dy * c;
   const pad = 16 / S.view.s;   // margen de 16 px alrededor para que sea fácil cogerla
+  if (r.kind === 'arc') { const Rr = 7.5 * r.u; return ly <= 0.14 * Rr + pad && Math.hypot(lx, Math.min(ly, 0)) <= Rr + pad && Math.abs(lx) <= Rr + pad; }   // transportador
   return Math.abs(lx) <= w / 2 + pad && Math.abs(ly) <= h / 2 + pad;
 }
 function rulerSnap(rot) {   // se engancha en 0°, 45°, 90°… (en pantalla) si está muy cerca
@@ -2237,8 +2251,45 @@ function rulerScreenDeg() {
   return d;
 }
 function rulerDeg() { if (S.ruler) $('#rDeg').textContent = String(rulerScreenDeg()).replace('.', DEC) + '°'; }
+function drawProtractor(r) {   // transportador: semicírculo de 0 a 180°, centro en la línea de base
+  const Rr = 7.5 * r.u, px = 1 / S.view.s, scrR = Rr * S.view.s, PI = Math.PI;
+  ctx.save(); setT(ctx); ctx.translate(r.x, r.y); ctx.rotate(r.rot);
+  const Ri = 0.56 * Rr, hb = 0.2 * Rr, t = Math.asin(hb / Ri), xh = Math.cos(t) * Ri;
+  ctx.beginPath();
+  ctx.moveTo(-Rr, 0.14 * Rr); ctx.lineTo(-Rr, 0); ctx.arc(0, 0, Rr, PI, 2 * PI); ctx.lineTo(Rr, 0.14 * Rr); ctx.closePath();
+  ctx.moveTo(-xh, -hb); ctx.arc(0, 0, Ri, PI + t, 2 * PI - t); ctx.closePath();
+  ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 8 * px; ctx.shadowOffsetY = 2 * px;
+  ctx.fillStyle = 'rgba(205,205,210,.86)'; ctx.fill('evenodd');
+  ctx.shadowColor = 'transparent'; ctx.lineWidth = 1.2 * px; ctx.strokeStyle = 'rgba(60,60,66,.8)'; ctx.stroke();
+  ctx.strokeStyle = '#2b2b30'; ctx.fillStyle = '#2b2b30';
+  const one = scrR >= 160, five = scrR >= 70;
+  ctx.beginPath();
+  for (let d = 0; d <= 180; d++) {
+    const ten = d % 10 === 0, f5 = d % 5 === 0;
+    if (!ten && !(f5 && five) && !one) continue;
+    const a = PI + d * PI / 180, L = ten ? 0.1 * Rr : f5 ? 0.07 * Rr : 0.04 * Rr, co = Math.cos(a), si = Math.sin(a);
+    ctx.moveTo(co * Rr, si * Rr); ctx.lineTo(co * (Rr - L), si * (Rr - L));
+  }
+  ctx.moveTo(-0.95 * Rr, 0); ctx.lineTo(0.95 * Rr, 0);   // línea de base
+  ctx.moveTo(0, 0.12 * Rr); ctx.lineTo(0, -hb);          // marca del centro
+  ctx.lineWidth = Math.max(0.8 * px, 0.004 * Rr); ctx.stroke();
+  if (scrR >= 60) {
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (let d = 0; d <= 180; d += 10) {
+      const a = PI + d * PI / 180;
+      for (const [rad, val, fs] of [[0.835, d, 0.058], [0.715, 180 - d, 0.047]]) {
+        ctx.save(); ctx.translate(Math.cos(a) * rad * Rr, Math.sin(a) * rad * Rr); ctx.rotate(a + PI / 2);
+        ctx.font = `${d === 90 && rad > 0.8 ? 700 : 600} ${(d === 90 && rad > 0.8 ? 0.075 : fs) * Rr}px Montserrat, system-ui, sans-serif`;
+        if (!(d === 90 && rad < 0.8)) ctx.fillText(String(val), 0, 0);
+        ctx.restore();
+      }
+    }
+  }
+  ctx.restore();
+}
 function drawRuler() {
   const r = S.ruler; if (!r || document.body.classList.contains('present')) return;
+  if (r.kind === 'arc') return drawProtractor(r);
   const { w, h } = rulerDims(r), u = r.u, px = 1 / S.view.s, scrU = u * S.view.s;
   ctx.save(); setT(ctx); ctx.translate(r.x, r.y); ctx.rotate(r.rot);
   ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 8 * px; ctx.shadowOffsetY = 2 * px;
@@ -2269,12 +2320,23 @@ function rulerToggle() {
   if (S.mold && !S.mold.fixed) moldFix(true);
   if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; }
   if (S.ruler) { S.ruler = null; scheduleSave(); req(); return; }
-  const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.92, 760) / (RULER_LEN + 1) / S.view.s;
-  S.ruler = { x: c.x, y: c.y, rot: -S.view.r, u, fixed: false };
-  rulerDeg(); scheduleSave(); req();
-  toast(TT('Regla: arrástrala con el dedo o el lápiz; con dos dedos la giras y la amplías', 'Ruler: drag it with your finger or the stylus; with two fingers you rotate and resize it'), 3500);
+  $('#ruTitle').textContent = TT('Regla', 'Ruler'); $('#ruLine').textContent = TT('Regla', 'Ruler'); $('#ruArc').textContent = TT('Transportador', 'Protractor'); $('#ruCancel').textContent = TT('Cancelar', 'Cancel');
+  $('#mRuler').classList.add('show');   // se elige regla recta o transportador
 }
-function rulerTurn(deg) { if (!S.ruler) return; S.ruler.rot += deg * Math.PI / 180; rulerDeg(); scheduleSave(); req(); toast(`${TT('Regla', 'Ruler')} ${String(rulerScreenDeg()).replace('.', DEC)}°`, 900); }
+function rulerPlace(kind) {
+  if (kind === 'arc') {
+    const Rs = Math.min(W * 0.45, H * 0.55, 420), c = toDocS(W / 2, H / 2 + Rs * 0.45);
+    S.ruler = { kind: 'arc', x: c.x, y: c.y, rot: -S.view.r, u: Rs / 7.5 / S.view.s, fixed: false };
+  } else {
+    const c = toDocS(W / 2, H / 2), u = Math.min(W * 0.92, 760) / (RULER_LEN + 1) / S.view.s;
+    S.ruler = { kind: 'line', x: c.x, y: c.y, rot: -S.view.r, u, fixed: false };
+  }
+  rulerDeg(); scheduleSave(); req();
+  toast(kind === 'arc' ? TT('Transportador: arrástralo con el dedo o el lápiz; con dos dedos lo giras y lo amplías', 'Protractor: drag it with your finger or the stylus; with two fingers you rotate and resize it') : TT('Regla: arrástrala con el dedo o el lápiz; con dos dedos la giras y la amplías', 'Ruler: drag it with your finger or the stylus; with two fingers you rotate and resize it'), 3500);
+}
+document.querySelectorAll('#mRuler .mopt').forEach(b => b.onclick = () => { $('#mRuler').classList.remove('show'); rulerPlace(b.dataset.kind); });
+$('#ruCancel').onclick = () => $('#mRuler').classList.remove('show');
+function rulerTurn(deg) { if (!S.ruler) return; S.ruler.rot += deg * Math.PI / 180; rulerDeg(); scheduleSave(); req(); toast(`${S.ruler.kind === 'arc' ? TT('Transportador', 'Protractor') : TT('Regla', 'Ruler')} ${String(rulerScreenDeg()).replace('.', DEC)}°`, 900); }
 function rulerZoom(f) { if (!S.ruler) return; S.ruler.u = clamp(S.ruler.u * f, 2, 1e5); scheduleSave(); req(); }
 $('#bRuler').onclick = rulerToggle;
 $('#rRotL').onclick = () => rulerTurn(-1);
