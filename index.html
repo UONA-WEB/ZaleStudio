@@ -240,6 +240,16 @@ body.present #moldbar{display:none}
 #mMold .mopt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--txt);font:600 13px Montserrat,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
 #mMold .mopt img{width:100%;height:90px;object-fit:contain}
 #mMold .mopt.on{border-color:var(--acc)}
+#pLupa .lrow{display:flex;align-items:center;gap:10px}
+#pLupa input[type=range]{flex:1;accent-color:var(--acc)}
+#pLupa .lval{min-width:58px;text-align:right;font-size:13px;color:var(--txt);font-variant-numeric:tabular-nums}
+#pLupa .lsws{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#pLupa .lsw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+#pLupa .lsw.on{outline:3px solid var(--acc);outline-offset:2px}
+#pLupa select{width:100%;padding:9px;border-radius:10px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);font:inherit}
+#pLupa .lbtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+#pLupa .lbtns .pill{width:100%;justify-content:center}
+#luRec.rec{background:#c62828;color:#fff;border-color:#c62828}
 #mRuler .mopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #mRuler .mopt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font:600 13px Montserrat,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
 #mRuler .mopt svg{width:100%;height:80px}
@@ -292,6 +302,7 @@ body.present #rulerbar{display:none}
     <button class="btn" id="bLbl"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="13" height="8" rx="2"/><path d="M11 11l7 8M18 19l-4-.5M18 19l-.6-4"/></svg>Etiquetas</button>
     <button class="btn" id="bCalco"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2" stroke-dasharray="3 2"/></svg>Calco</button>
     <button class="btn" id="bMold"><svg viewBox="0 0 24 24"><path d="M3 7h3a4 4 0 0 0 8 0h7v7h-3a4 4 0 0 0-8 0v3H3z"/><path d="M14 9h6M14 11.5h6M16.5 7v7" stroke-width="1.2"/></svg>Moldes</button>
+    <button class="btn" id="bLupa"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/><path d="M10 7.5v5M7.5 10h5" stroke-width="1.4"/></svg>Lupa</button>
     <button class="btn" id="bEval"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 11l1.5 1.5 3-3M8.5 16.5h7"/></svg>Evaluar</button>
     <button class="btn" id="bBlank"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="M13 11v6M10 14h6"/></svg>Lienzo</button>
     <button class="btn" id="bProjects"><svg viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></svg>Trabajos</button>
@@ -386,6 +397,24 @@ body.present #rulerbar{display:none}
       <p class="hint">Toca un nombre para ponerlo sobre la imagen. Arrastra la caja para moverla y el punto de la flecha para señalar la zona.</p>
       <h3>Anatomía</h3><div class="chips" id="lblA"></div>
       <h3>Estructura</h3><div class="chips" id="lblE"></div>
+    </aside>
+    <aside class="side right" id="pLupa">
+      <div class="sidehd"><b id="luT">Lupa</b><button class="x" data-close="pLupa" aria-label="Cerrar">✕</button></div>
+      <p class="hint" id="luHint">Arrastra desde cualquier punto de la foto para mover la lupa: así el dedo no la tapa. Solo es una vista, no cambia la foto.</p>
+      <h3 id="luTS">Tamaño</h3>
+      <div class="lrow"><input type="range" id="luSize" min="80" max="500" step="10" value="200"><span class="lval" id="luSizeV">200 px</span></div>
+      <h3 id="luTZ">Aumento</h3>
+      <div class="lrow"><input type="range" id="luZoom" min="1.5" max="6" step="0.5" value="2.5"><span class="lval" id="luZoomV">2,5×</span></div>
+      <h3 id="luTC">Color del borde</h3>
+      <div class="lsws" id="luCols"><button class="lsw" data-c="#ffffff" style="background:#ffffff" aria-label="Blanco"></button><button class="lsw" data-c="#c9a84c" style="background:#c9a84c" aria-label="Dorado"></button><button class="lsw" data-c="#141318" style="background:#141318" aria-label="Negro"></button><button class="lsw" data-c="#e53935" style="background:#e53935" aria-label="Rojo"></button><button class="lsw" data-c="#1e88e5" style="background:#1e88e5" aria-label="Azul"></button><button class="lsw" data-c="#e91e8c" style="background:#e91e8c" aria-label="Rosa"></button></div>
+      <h3 id="luTV">Vídeo para redes</h3>
+      <select id="luFmt"><option value="post">Post 1:1 · 1080×1080</option><option value="vert">Vertical 4:5 · 1080×1350</option><option value="story">Historia 9:16 · 1080×1920</option></select>
+      <div class="lbtns">
+        <button class="pill" id="luRec">● Grabar vídeo</button>
+        <p class="hint" id="luRecHint">Graba en tiempo real lo que haces con la lupa, hasta que pulsas Parar (máximo 60 s). La foto entera va encajada y el hueco se rellena con la misma foto desenfocada.</p>
+        <button class="pill pri" id="luShot">Guardar foto</button>
+        <button class="pill" id="luClose">Cerrar lupa</button>
+      </div>
     </aside>
     <aside class="side right" id="pEval">
       <div class="sidehd"><b>Evaluar</b><button class="x" data-close="pEval" aria-label="Cerrar">✕</button></div>
@@ -658,7 +687,7 @@ body.present #rulerbar{display:none}
 <script>
 'use strict';
 /* =========================================================
-   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.3 · ES/EN · regla · moldes · VERSIÓN DE PRUEBAS sin cuentas ni pagos)
+   ZaleStudio by ZALESYA — anotación sobre imágenes de uñas (v4.4 · ES/EN · cuentas y pago · regla · moldes · lupa)
    ========================================================= */
 const $ = s => document.querySelector(s);
 /* ---------- idioma ES / EN ---------- */
@@ -668,7 +697,7 @@ const TT = (es, en) => EN ? en : es;          // texto en español o en inglés
 const DEC = EN ? '.' : ',';                     // separador decimal
 const LOC = EN ? 'en-GB' : 'es-ES';             // formato de fecha (día/mes/año)
 const STATIC_EN = {   // textos fijos de la página
-  'Abrir foto': 'Open photo', 'Hacer foto': 'Take photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Moldes': 'Forms', 'Evaluar': 'Evaluate',
+  'Abrir foto': 'Open photo', 'Hacer foto': 'Take photo', 'Plantillas': 'Templates', 'Etiquetas': 'Labels', 'Calco': 'Overlay', 'Moldes': 'Forms', 'Lupa': 'Magnifier', 'Evaluar': 'Evaluate',
   'Lienzo': 'Canvas', 'Trabajos': 'Projects', 'Deshacer': 'Undo', 'Rehacer': 'Redo', 'Ajustar': 'Fit', 'Borrar todo': 'Clear all',
   'Guardar imagen': 'Save image', 'Compartir': 'Share', 'Presentar': 'Present', 'Guía': 'Guide', 'Salir': 'Exit',
   'Curva C': 'C-curve', 'Invertir': 'Flip', 'Más suave': 'Lighter', 'Más visible': 'Darker', 'Girar 1°': 'Rotate 1°',
@@ -878,6 +907,7 @@ function render() {
   drawSelection();
   drawMarquee();
   placeSelbar();
+  drawLupa();
   if (cursor) {
     ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.beginPath(); ctx.arc(cursor.x, cursor.y, Math.max(cursor.r, 4), 0, Math.PI * 2);
@@ -1970,7 +2000,7 @@ const HELP = {
   bShare: ['Compartir', 'Envía la imagen con tus correcciones por WhatsApp, correo, etc.'],
   bPresent: ['Presentar', 'Muestra solo la imagen a pantalla completa, sin menús, para enseñarla en clase o en el proyector. Con los dedos puedes ampliar, mover y girar. Para dibujar, sal de la presentación.'],
   bGuide: ['Guía', 'Abre esta guía con todos los botones y lo que hace cada uno. Consejo: mantén pulsado cualquier botón para ver su explicación.'],
-  bExit: ['Salir', 'Guarda el trabajo y vuelve a la pantalla de inicio.'],
+  bExit: ['Salir', 'Pregunta antes de salir. El trabajo queda guardado en Trabajos, se borra la caché de la app y vuelve a la pantalla de inicio. Tus ajustes y tus trabajos se conservan.'],
   bAcc: ['Cuenta', 'Tu cuenta: días de prueba o fecha de caducidad del acceso, comprar o renovar, guardar y restaurar copias de seguridad de tus trabajos, textos legales y cerrar sesión.'],
   hand: ['Mover', 'Con un dedo desplazas la imagen sin dibujar. Con dos dedos siempre puedes ampliar, mover y girar, con cualquier herramienta.\nEn el ordenador: rueda del ratón para ampliar o reducir, Mayús + rueda para girar, y arrastrar con el botón derecho (o con Mover) para desplazar. Ajustar la vuelve a poner derecha.'],
   select: ['Seleccionar', 'Toca un elemento para seleccionarlo y moverlo, girarlo con el tirador dorado, cambiar su color o tamaño, duplicarlo o eliminarlo. Arrastra sobre una zona vacía para seleccionar varios a la vez.'],
@@ -2003,6 +2033,7 @@ const HELP = {
   rFix: ['Fijar la regla', 'Deja la regla fija en su sitio: ya no se mueve al dibujar encima ni al tocarla. También se fija sola al elegir cualquier herramienta.'],
   rMove: ['Mover la regla', 'Vuelve a soltar la regla para moverla, girarla o cambiar su tamaño. Después pulsa Fijar otra vez.'],
   rClose: ['Quitar la regla', 'Quita la regla de la pantalla. Puedes volver a ponerla con el botón Regla.'],
+  bLupa: ['Lupa', 'Abre una lupa redonda, como la del iPhone, que amplía la zona que tiene debajo. Empieza en el centro de la foto; para moverla arrastra desde cualquier punto de la foto, así el dedo no la tapa. En el panel eliges el tamaño (80–500 px), el aumento (1,5× a 6×) y el color del borde. Grabar vídeo graba en MP4 lo que haces con la lupa para redes (Post 1:1, Vertical 4:5 o Historia 9:16, máximo 60 s). Guardar foto guarda la imagen en JPG con la lupa fija donde está. Solo es una vista: no cambia la foto.'],
   bMold: ['Moldes', 'Pone un molde de estructura o de stiletto encima de la foto o de la plantilla. Primero se coloca: arrástralo, y con dos dedos sobre él lo giras y lo amplías (o usa los botones de abajo); con Voltear mira hacia el otro lado. Cuando esté en su sitio pulsa Fijar: el molde queda pegado a la imagen y ya no se mueve al usar cualquier herramienta, la regla incluida, así que puedes marcar líneas encima. Más suave y Más visible cambian su transparencia. Sale al guardar, compartir y en el PDF junto con lo que dibujes. Solo se puede poner un molde a la vez.'],
   mRotL: ['Girar el molde 1° a la izquierda', 'Gira el molde 1 grado en sentido contrario a las agujas del reloj.'],
   mRotR: ['Girar el molde 1° a la derecha', 'Gira el molde 1 grado en el sentido de las agujas del reloj.'],
@@ -2046,7 +2077,7 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   bShare: ['Share', 'Sends the image with your corrections via WhatsApp, email, etc.'],
   bPresent: ['Present', 'Shows only the image full screen, without menus, to show it in class or on a projector. You can zoom, move and rotate with your fingers. To draw, exit the presentation.'],
   bGuide: ['Guide', 'Opens this guide with all the buttons and what each one does. Tip: press and hold any button to see its explanation.'],
-  bExit: ['Exit', 'Saves your work and goes back to the start screen.'],
+  bExit: ['Exit', 'Asks before exiting. Your work stays saved in Projects, the app cache is cleared and you go back to the start screen. Your settings and projects are kept.'],
   bAcc: ['Account', 'Your account: trial days or access expiry date, buy or renew, save and restore backups of your projects, legal texts and log out.'],
   hand: ['Move', 'With one finger you move the image without drawing. With two fingers you can always zoom, move and rotate, with any tool.\nOn a computer: mouse wheel to zoom in or out, Shift + wheel to rotate, and drag with the right button (or with Move) to pan. Fit puts it straight again.'],
   select: ['Select', 'Tap an element to select it and move it, rotate it with the gold handle, change its color or size, duplicate it or delete it. Drag over an empty area to select several at once.'],
@@ -2079,6 +2110,7 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   rFix: ['Fix the ruler', 'Fixes the ruler in place: it no longer moves when you draw on top or touch it. It also fixes itself when you choose any tool.'],
   rMove: ['Move the ruler', 'Releases the ruler again so you can move, rotate or resize it. Then tap Fix again.'],
   rClose: ['Remove the ruler', 'Removes the ruler from the screen. You can put it back with the Ruler button.'],
+  bLupa: ['Magnifier', 'Opens a round magnifier, like the iPhone one, that enlarges the area under it. It starts in the center of the photo; to move it, drag from anywhere on the photo so your finger does not cover it. In the panel you choose the size (80–500 px), the magnification (1.5× to 6×) and the border color. Record video records what you do with the magnifier as MP4 for social media (Post 1:1, Portrait 4:5 or Story 9:16, 60 s max). Save photo saves the image as JPG with the magnifier fixed where it is. It is only a view: it does not change the photo.'],
   bMold: ['Forms', 'Places a structure or stiletto nail form over the photo or template. First you place it: drag it, and with two fingers on it you rotate and resize it (or use the buttons below); Flip makes it face the other way. When it is in place, tap Fix: the form sticks to the image and no longer moves when you use any tool, including the ruler, so you can draw lines on top. Lighter and Darker change its transparency. It is included when you save, share and in the PDF, together with what you draw. Only one form can be placed at a time.'],
   mRotL: ['Rotate the form 1° left', 'Rotates the form 1 degree counterclockwise.'],
   mRotR: ['Rotate the form 1° right', 'Rotates the form 1 degree clockwise.'],
@@ -2106,7 +2138,7 @@ if (EN) Object.assign(HELP, {   // ayuda en inglés
   sOk: ['Done', 'Finishes editing and clears the selection.']
 });
 const GUIDE = [
-  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bCam', 'bTpl', 'bLbl', 'bCalco', 'bMold', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bAcc', 'bExit']],
+  [TT('Trabajo e imagen', 'Project and image'), ['bOpen', 'bCam', 'bTpl', 'bLbl', 'bCalco', 'bMold', 'bLupa', 'bEval', 'bBlank', 'bProjects', 'bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bAcc', 'bExit']],
   [TT('Dibujar', 'Drawing'), ['hand', 'select', 'pen', 'marker', 'hl', 'erase', 'eraser']],
   [TT('Formas y texto', 'Shapes and text'), ['line', 'arrow', 'arc', 'ellipse', 'rect', 'text']],
   [TT('Corregir y medir', 'Correct and measure'), ['ok', 'ko', 'angle', 'ratio', 'ratio2', 'bSym', 'bRuler']],
@@ -2229,6 +2261,121 @@ $('#mSolid').onclick = () => moldOpacity(0.1);
 $('#mFix').onclick = () => moldFix(true);
 $('#mMove').onclick = () => moldFix(false);
 $('#mClose').onclick = () => { if (!S.mold) return; S.mold = null; commit(); toast(TT('Molde quitado. Si ha sido sin querer, pulsa Deshacer', 'Form removed. If it was a mistake, tap Undo'), 2500); };
+
+/* ---------- lupa de aumento: solo una vista, no cambia la foto ---------- */
+const LUPA = { on: false, x: 0, y: 0, size: 200, zoom: 2.5, color: '#ffffff', fmt: 'post', src: null, key: '', rec: null };
+try { const o = JSON.parse(localStorage.getItem('zalestudio-lupa') || '{}'); ['size', 'zoom', 'color', 'fmt'].forEach(k => { if (o[k] != null) LUPA[k] = o[k]; }); } catch (_) {}
+function lupaSaveCfg() { try { localStorage.setItem('zalestudio-lupa', JSON.stringify({ size: LUPA.size, zoom: LUPA.zoom, color: LUPA.color, fmt: LUPA.fmt })); } catch (_) {} }
+function lupaSrc() {   // la imagen tal como se guarda (foto, calco, molde y dibujos), sin la interfaz
+  const key = [hIdx, S.objects.length, JSON.stringify(S.mold || 0), S.docW, S.docH, S.bg ? S.bg.src : ''].join('|');
+  if (!LUPA.src || LUPA.key !== key) { LUPA.src = renderDoc(1); LUPA.key = key; LUPA.bg = null; }
+  return LUPA.src;
+}
+function lupaLens(c, cx, cy, r, zoom, drawSrc, ring) {   // círculo que amplía lo que tiene debajo
+  c.save();
+  c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.closePath();
+  c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = ring * 4; c.fillStyle = '#141318'; c.fill(); c.shadowColor = 'transparent';
+  c.save(); c.clip(); c.translate(cx, cy); c.scale(zoom, zoom); c.translate(-cx, -cy); drawSrc(c); c.restore();
+  c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2);
+  c.lineWidth = ring + 2; c.strokeStyle = 'rgba(0,0,0,.35)'; c.stroke();
+  c.lineWidth = ring; c.strokeStyle = LUPA.color; c.stroke();
+  c.restore();
+}
+function drawLupa() {
+  if (!LUPA.on || S.empty) return;
+  const src = lupaSrc(), sc = toScreen(LUPA.x, LUPA.y), { a, b } = vt(), v = S.view;
+  ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  lupaLens(ctx, sc.x, sc.y, LUPA.size / 2, LUPA.zoom, c => { c.transform(a, b, -b, a, v.x, v.y); c.imageSmoothingQuality = 'high'; c.drawImage(src, 0, 0, S.docW, S.docH); }, 4);
+  ctx.restore();
+}
+function lupaTexts() {
+  const T = (id, es, en) => { const el = $('#' + id); if (el) el.textContent = TT(es, en); };
+  T('luT', 'Lupa', 'Magnifier'); T('luHint', 'Arrastra desde cualquier punto de la foto para mover la lupa: así el dedo no la tapa. Solo es una vista, no cambia la foto.', 'Drag from anywhere on the photo to move the magnifier, so your finger does not cover it. It is only a view: it does not change the photo.');
+  T('luTS', 'Tamaño', 'Size'); T('luTZ', 'Aumento', 'Magnification'); T('luTC', 'Color del borde', 'Border color'); T('luTV', 'Vídeo para redes', 'Video for social media');
+  T('luRecHint', 'Graba en tiempo real lo que haces con la lupa, hasta que pulsas Parar (máximo 60 s). La foto entera va encajada y el hueco se rellena con la misma foto desenfocada.', 'Records in real time what you do with the magnifier until you tap Stop (60 s max). The whole photo is fitted in and the gap is filled with the same photo, blurred.');
+  T('luShot', 'Guardar foto', 'Save photo'); T('luClose', 'Cerrar lupa', 'Close magnifier');
+  const o = $('#luFmt').options; o[0].text = TT('Post 1:1 · 1080×1080', 'Post 1:1 · 1080×1080'); o[1].text = TT('Vertical 4:5 · 1080×1350', 'Portrait 4:5 · 1080×1350'); o[2].text = TT('Historia 9:16 · 1080×1920', 'Story 9:16 · 1080×1920');
+  if (!LUPA.rec) $('#luRec').textContent = TT('● Grabar vídeo', '● Record video');
+}
+function lupaSyncUI() {
+  $('#luSize').value = LUPA.size; $('#luSizeV').textContent = LUPA.size + ' px';
+  $('#luZoom').value = LUPA.zoom; $('#luZoomV').textContent = String(LUPA.zoom).replace('.', DEC) + '×';
+  $('#luFmt').value = LUPA.fmt;
+  document.querySelectorAll('#luCols .lsw').forEach(b => b.classList.toggle('on', b.dataset.c === LUPA.color));
+}
+function lupaOpen() {
+  if (S.empty) return;
+  LUPA.on = true; LUPA.x = S.docW / 2; LUPA.y = S.docH / 2;   // empieza en el centro de la foto
+  lupaTexts(); lupaSyncUI(); req();
+}
+function lupaClose() {
+  if (LUPA.rec) lupaRecStop();
+  LUPA.on = false; LUPA.src = null; LUPA.bg = null; req();
+}
+$('#bLupa').onclick = () => { if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; } togglePanel('pLupa'); };
+$('#luSize').oninput = e => { LUPA.size = +e.target.value; lupaSyncUI(); lupaSaveCfg(); req(); };
+$('#luZoom').oninput = e => { LUPA.zoom = +e.target.value; lupaSyncUI(); lupaSaveCfg(); req(); };
+document.querySelectorAll('#luCols .lsw').forEach(b => b.onclick = () => { LUPA.color = b.dataset.c; lupaSyncUI(); lupaSaveCfg(); req(); });
+$('#luFmt').onchange = e => { LUPA.fmt = e.target.value; lupaSaveCfg(); };
+$('#luClose').onclick = () => setPanel('pLupa', false);
+function lupaDownload(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 8000);
+}
+$('#luShot').onclick = () => {   // la imagen a tamaño real, con la lupa fija donde está
+  if (!LUPA.on) return;
+  const src = lupaSrc(), c = document.createElement('canvas'); c.width = src.width; c.height = src.height;
+  const x = c.getContext('2d'), k = src.width / S.docW; x.drawImage(src, 0, 0);
+  const r = LUPA.size / 2 / S.view.s * k;
+  lupaLens(x, LUPA.x * k, LUPA.y * k, r, LUPA.zoom, cc => cc.drawImage(src, 0, 0), Math.max(3, r * 0.03));
+  c.toBlob(b => { if (b) { lupaDownload(b, `zalestudio-lupa-${fileStamp()}.jpg`); toast(TT('Foto con la lupa guardada', 'Photo with the magnifier saved')); } }, 'image/jpeg', 0.92);
+};
+const LUPA_FMT = { post: [1080, 1080], vert: [1080, 1350], story: [1080, 1920] };
+function lupaFrame(c, W2, H2) {   // un fotograma: foto encajada sin recortar, hueco con la misma foto desenfocada y la lupa encima
+  const src = lupaSrc();
+  if (!LUPA.bg || LUPA.bg.width !== W2 || LUPA.bg.height !== H2) {
+    const g = document.createElement('canvas'); g.width = W2; g.height = H2; const gx = g.getContext('2d');
+    const cs = Math.max(W2 / src.width, H2 / src.height), cw = src.width * cs, ch = src.height * cs;
+    gx.filter = 'blur(40px)'; gx.drawImage(src, (W2 - cw) / 2 - 40, (H2 - ch) / 2 - 40, cw + 80, ch + 80); gx.filter = 'none';
+    gx.fillStyle = 'rgba(0,0,0,.18)'; gx.fillRect(0, 0, W2, H2); LUPA.bg = g;
+  }
+  c.drawImage(LUPA.bg, 0, 0);
+  const fs = Math.min(W2 / S.docW, H2 / S.docH), w = S.docW * fs, h = S.docH * fs, dx = (W2 - w) / 2, dy = (H2 - h) / 2;
+  c.imageSmoothingQuality = 'high'; c.drawImage(src, dx, dy, w, h);
+  const r = LUPA.size / 2 / S.view.s * fs;
+  lupaLens(c, dx + LUPA.x * fs, dy + LUPA.y * fs, r, LUPA.zoom, cc => cc.drawImage(src, dx, dy, w, h), Math.max(3, r * 0.03));
+}
+function lupaRecStop() { const R2 = LUPA.rec; if (R2 && R2.mr.state !== 'inactive') R2.mr.stop(); }
+$('#luRec').onclick = () => {
+  if (LUPA.rec) { lupaRecStop(); return; }
+  if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) { toast(TT('Este navegador no permite grabar vídeo', 'This browser cannot record video'), 3500); return; }
+  const [W2, H2] = LUPA_FMT[LUPA.fmt] || LUPA_FMT.post;
+  const c = document.createElement('canvas'); c.width = W2; c.height = H2; const cx = c.getContext('2d');
+  lupaFrame(cx, W2, H2);
+  const types = ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1.4D401F', 'video/mp4;codecs=avc1.640028', 'video/mp4;codecs=avc3.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  const mime = types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+  const isMp4 = mime.startsWith('video/mp4');
+  if (!isMp4) toast(TT('Este navegador solo graba en WEBM: Instagram puede no aceptarlo', 'This browser only records WEBM: Instagram may not accept it'), 4500);
+  let mr; try { mr = new MediaRecorder(c.captureStream(30), mime ? { mimeType: mime, videoBitsPerSecond: 8000000 } : undefined); } catch (err) { console.error(err); toast(TT('No se pudo empezar a grabar', 'Could not start recording')); return; }
+  const chunks = [], t0 = performance.now(), btn = $('#luRec');
+  LUPA.rec = { mr, c };
+  mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  mr.onstop = () => {
+    LUPA.rec = null; btn.classList.remove('rec'); btn.textContent = TT('● Grabar vídeo', '● Record video'); $('#luFmt').disabled = false;
+    const blob = new Blob(chunks, { type: mime || 'video/webm' });
+    if (blob.size) { lupaDownload(blob, `zalestudio-lupa-${LUPA.fmt}-${fileStamp()}.${isMp4 ? 'mp4' : 'webm'}`); toast(TT('Vídeo guardado', 'Video saved')); }
+  };
+  mr.start(500); btn.classList.add('rec'); $('#luFmt').disabled = true;
+  const tick = () => {
+    if (!LUPA.rec || LUPA.rec.mr !== mr) return;
+    const secs = (performance.now() - t0) / 1000;
+    if (secs >= 60) { lupaRecStop(); toast(TT('Grabación parada: máximo 60 segundos', 'Recording stopped: 60 seconds max')); return; }
+    lupaFrame(cx, W2, H2);
+    btn.textContent = `■ ${TT('Parar', 'Stop')} · ${Math.floor(secs)} s`;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+};
 
 /* ---------- regla (solo en pantalla: va pegada a la foto y no sale al guardar) ---------- */
 const RULER_LEN = 15;   // marcas de 0 a 15
@@ -2894,6 +3041,7 @@ stage.addEventListener('pointerdown', e => {
   if (act || pinch || blockTouch) return;
 
   const sp = stageXY(e.clientX, e.clientY);
+  if (LUPA.on) { act = { id: e.pointerId, kind: 'lupa', lx: sp.x, ly: sp.y, ptype: e.pointerType, t0: performance.now() }; return; }   // con la lupa abierta, arrastrar mueve la lupa
   if (S.ruler && !S.ruler.fixed && !document.body.classList.contains('present')) {   // regla sin fijar: con el dedo, el lápiz o el ratón sobre ella, se mueve
     const d = toDocS(sp.x, sp.y);
     if (rulerHit(d.x, d.y)) { act = { id: e.pointerId, kind: 'ruler', lx: d.x, ly: d.y, ptype: e.pointerType, t0: performance.now() }; return; }
@@ -2995,6 +3143,11 @@ function moveAct(e) {
     S.view.x += e.clientX - act.lx; S.view.y += e.clientY - act.ly;
     act.lx = e.clientX; act.ly = e.clientY; req(); return;
   }
+  if (act.kind === 'lupa') {
+    const d0 = toDocS(act.lx, act.ly), d1 = toDocS(sp.x, sp.y);
+    LUPA.x = clamp(LUPA.x + d1.x - d0.x, 0, S.docW); LUPA.y = clamp(LUPA.y + d1.y - d0.y, 0, S.docH);
+    act.lx = sp.x; act.ly = sp.y; req(); return;
+  }
   if (act.kind === 'mold') {
     const d = toDocS(sp.x, sp.y);
     S.mold.x += d.x - act.lx; S.mold.y += d.y - act.ly; act.lx = d.x; act.ly = d.y; req(); return;
@@ -3094,6 +3247,7 @@ function moveAct(e) {
 
 function finishAct(e) {
   const a = act; act = null;
+  if (a.kind === 'lupa') { req(); return; }
   if (a.kind === 'mold') { commit(); return; }
   if (a.kind === 'ruler') { scheduleSave(); req(); return; }
   if (a.kind === 'draw') {
@@ -3342,12 +3496,13 @@ function setEmpty(v) {
   S.empty = v;
   $('#home').classList.toggle('show', v);
   $('#app').classList.toggle('is-empty', v);
-  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bCalco', 'bMold', 'bEval']) $('#' + id).disabled = v;
+  for (const id of ['bUndo', 'bRedo', 'bFit', 'bClear', 'bSave', 'bShare', 'bPresent', 'bCalco', 'bMold', 'bLupa', 'bEval']) $('#' + id).disabled = v;
   if (v) { $('#pEval').classList.remove('open'); $('#bEval').classList.remove('on'); }
   if (v) document.body.classList.remove('present');
   if (!v) updUndo();
 }
 function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en Trabajos)
+  if (LUPA.on) setPanel('pLupa', false);
   clearTimeout(saveT); dirty = false;
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null; S.ruler = null; S.mold = null;
@@ -3355,6 +3510,7 @@ function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en 
   accHomeInfo();
 }
 function newDoc(w, h, bg, blob) {
+  if (LUPA.on) setPanel('pLupa', false);
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   setEmpty(false);
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
@@ -3511,13 +3667,14 @@ $('#hGuide').onclick = showGuide;
 /* ---------- paneles laterales: plantillas (izquierda) y etiquetas (derecha) ---------- */
 const narrow = () => window.innerWidth < 900;
 stage.addEventListener('scroll', () => { stage.scrollTop = 0; stage.scrollLeft = 0; });   // el lienzo nunca se desplaza solo
-const PANEL_BTN = { pTpl: '#bTpl', pLbl: '#bLbl', pEval: '#bEval' };
+const PANEL_BTN = { pTpl: '#bTpl', pLbl: '#bLbl', pEval: '#bEval', pLupa: '#bLupa' };
 function setPanel(id, open) {
   const p = $('#' + id); p.classList.toggle('open', open);
   $(PANEL_BTN[id]).classList.toggle('on', open);
   if (open) for (const k in PANEL_BTN)   // en el móvil, solo uno a la vez; en la tablet, uno por lado
     if (k !== id && $('#' + k).classList.contains('open') && (narrow() || $('#' + k).classList.contains('right') === p.classList.contains('right'))) setPanel(k, false);
   if (id === 'pEval' && open) evalRender();
+  if (id === 'pLupa') { if (open) lupaOpen(); else lupaClose(); }
 }
 function togglePanel(id) { setPanel(id, !$('#' + id).classList.contains('open')); }
 $('#bTpl').onclick = () => { setTplMode('open'); togglePanel('pTpl'); };
@@ -3604,7 +3761,12 @@ async function openTemplate(t) {
 }
 $('#bExit').onclick = async () => {
   select(null);
-  if (hasWork()) await saveNow(true);
+  let unsaved = 0;
+  if (hasWork()) { try { await saveNow(true); } catch (err) { console.error(err); unsaved = 1; } }   // el trabajo se guarda solo en Trabajos
+  const msg = (unsaved ? TT(`Hay ${unsaved} imagen con cambios sin guardar. ¿Salir igualmente? Se perderán.`, `There is ${unsaved} image with unsaved changes. Exit anyway? They will be lost.`) : TT('Todo está guardado. ¿Salir?', 'Everything is saved. Exit?')) + ' ' + TT('Al salir se borra la caché de la app.', 'Exiting clears the app cache.');
+  if (!(await confirmBox(TT('Salir', 'Exit'), msg, TT('Salir', 'Exit'), unsaved > 0))) return;
+  try { if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } } catch (_) {}   // caché de la app; los ajustes y los trabajos se conservan
+  try { sessionStorage.removeItem('zalestudio-reopen'); } catch (_) {}
   goHome();
   window.close();   // en Android, si el sistema no deja cerrar desde la app, se queda en la pantalla de inicio
   setTimeout(() => toast(TT('Trabajo guardado. Para cerrar del todo, desliza la app hacia arriba', 'Project saved. To close the app completely, swipe it up'), 3500), 300);
