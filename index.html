@@ -249,7 +249,12 @@ body.present #moldbar{display:none}
 #pLupa select{width:100%;padding:9px;border-radius:10px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);font:inherit}
 #pLupa .lbtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 #pLupa .lbtns .pill{width:100%;justify-content:center}
-#luRec.rec{background:#c62828;color:#fff;border-color:#c62828}
+#luRec.rec,#lbRec.rec{background:#c62828;color:#fff;border-color:#c62828}
+#lupabar{position:absolute;right:8px;top:8px;display:none;flex-direction:row;align-items:center;gap:2px;z-index:5;background:rgba(31,29,36,.92);border:1px solid var(--line);border-radius:14px;padding:4px;box-shadow:0 6px 24px rgba(0,0,0,.45);max-width:calc(100% - 16px)}
+#lupabar.show{display:flex}
+#lupabar .btn{min-width:52px;height:46px;font-size:10px;padding:0 4px;flex:none}
+#lupabar .btn svg{width:20px;height:20px}
+body.present #lupabar{display:none}
 #mRuler .mopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #mRuler .mopt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font:600 13px Montserrat,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
 #mRuler .mopt svg{width:100%;height:80px}
@@ -343,6 +348,12 @@ body.present #rulerbar{display:none}
       <button class="btn" id="sOk"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Listo</button>
     </div>
     <div id="toast"></div>
+    <div id="lupabar">
+      <button class="btn" id="lbOpt"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span id="lbOptT">Opciones</span></button>
+      <button class="btn" id="lbRec"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg><span id="lbRecT">Grabar</span></button>
+      <button class="btn" id="lbShot"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="lbShotT">Foto</span></button>
+      <button class="btn" id="lbClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span id="lbCloseT">Cerrar lupa</span></button>
+    </div>
     <div id="moldbar">
       <button class="btn mplace" id="mRotL"><svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 1 1-1 5"/><path d="M5 4v5h5"/></svg>1°</button>
       <button class="btn mplace" id="mRotR"><svg viewBox="0 0 24 24"><path d="M19 9a8 8 0 1 0 1 5"/><path d="M19 4v5h-5"/></svg>1°</button>
@@ -400,7 +411,7 @@ body.present #rulerbar{display:none}
     </aside>
     <aside class="side right" id="pLupa">
       <div class="sidehd"><b id="luT">Lupa</b><button class="x" data-close="pLupa" aria-label="Cerrar">✕</button></div>
-      <p class="hint" id="luHint">Arrastra desde cualquier punto de la foto para mover la lupa: así el dedo no la tapa. Solo es una vista, no cambia la foto.</p>
+      <p class="hint" id="luHint">Arrastra desde cualquier punto de la foto para mover la lupa: así el dedo no la tapa. Con ✕ escondes este panel y la lupa sigue abierta. Solo es una vista, no cambia la foto.</p>
       <h3 id="luTS">Tamaño</h3>
       <div class="lrow"><input type="range" id="luSize" min="80" max="500" step="10" value="200"><span class="lval" id="luSizeV">200 px</span></div>
       <h3 id="luTZ">Aumento</h3>
@@ -2290,7 +2301,7 @@ function drawLupa() {
 }
 function lupaTexts() {
   const T = (id, es, en) => { const el = $('#' + id); if (el) el.textContent = TT(es, en); };
-  T('luT', 'Lupa', 'Magnifier'); T('luHint', 'Arrastra desde cualquier punto de la foto para mover la lupa: así el dedo no la tapa. Solo es una vista, no cambia la foto.', 'Drag from anywhere on the photo to move the magnifier, so your finger does not cover it. It is only a view: it does not change the photo.');
+  T('luT', 'Lupa', 'Magnifier'); T('luHint', 'Arrastra desde cualquier punto de la foto para mover la lupa: así el dedo no la tapa. Con ✕ escondes este panel y la lupa sigue abierta. Solo es una vista, no cambia la foto.', 'Drag from anywhere on the photo to move the magnifier, so your finger does not cover it. ✕ hides this panel and the magnifier stays open. It is only a view: it does not change the photo.');
   T('luTS', 'Tamaño', 'Size'); T('luTZ', 'Aumento', 'Magnification'); T('luTC', 'Color del borde', 'Border color'); T('luTV', 'Vídeo para redes', 'Video for social media');
   T('luRecHint', 'Graba en tiempo real lo que haces con la lupa, hasta que pulsas Parar (máximo 60 s). La foto entera va encajada y el hueco se rellena con la misma foto desenfocada.', 'Records in real time what you do with the magnifier until you tap Stop (60 s max). The whole photo is fitted in and the gap is filled with the same photo, blurred.');
   T('luShot', 'Guardar foto', 'Save photo'); T('luClose', 'Cerrar lupa', 'Close magnifier');
@@ -2313,11 +2324,23 @@ function lupaClose() {
   LUPA.on = false; LUPA.src = null; LUPA.bg = null; req();
 }
 $('#bLupa').onclick = () => { if (S.empty) { toast(TT('Abre primero una foto o una plantilla', 'Open a photo or a template first')); return; } togglePanel('pLupa'); };
+function lupaPanelOpen() { return $('#pLupa').classList.contains('open'); }
+function lupaBarSync() {   // con el panel escondido, una barra pequeña sobre la foto
+  $('#bLupa').classList.toggle('on', LUPA.on);
+  $('#lupabar').classList.toggle('show', LUPA.on && !lupaPanelOpen());
+  $('#lbOptT').textContent = TT('Opciones', 'Options'); $('#lbShotT').textContent = TT('Foto', 'Photo'); $('#lbCloseT').textContent = TT('Cerrar lupa', 'Close');
+  if (!LUPA.rec) $('#lbRecT').textContent = TT('Grabar', 'Record');
+}
+function lupaEnd() { setPanel('pLupa', false); lupaClose(); lupaBarSync(); }
+$('#lbOpt').onclick = () => setPanel('pLupa', true);
+$('#lbRec').onclick = () => $('#luRec').click();
+$('#lbShot').onclick = () => $('#luShot').click();
+$('#lbClose').onclick = () => lupaEnd();
 $('#luSize').oninput = e => { LUPA.size = +e.target.value; lupaSyncUI(); lupaSaveCfg(); req(); };
 $('#luZoom').oninput = e => { LUPA.zoom = +e.target.value; lupaSyncUI(); lupaSaveCfg(); req(); };
 document.querySelectorAll('#luCols .lsw').forEach(b => b.onclick = () => { LUPA.color = b.dataset.c; lupaSyncUI(); lupaSaveCfg(); req(); });
 $('#luFmt').onchange = e => { LUPA.fmt = e.target.value; lupaSaveCfg(); };
-$('#luClose').onclick = () => setPanel('pLupa', false);
+$('#luClose').onclick = () => lupaEnd();
 function lupaDownload(blob, name) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 8000);
@@ -2361,17 +2384,17 @@ $('#luRec').onclick = () => {
   LUPA.rec = { mr, c };
   mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   mr.onstop = () => {
-    LUPA.rec = null; btn.classList.remove('rec'); btn.textContent = TT('● Grabar vídeo', '● Record video'); $('#luFmt').disabled = false;
+    LUPA.rec = null; btn.classList.remove('rec'); btn.textContent = TT('● Grabar vídeo', '● Record video'); $('#luFmt').disabled = false; $('#lbRec').classList.remove('rec'); $('#lbRecT').textContent = TT('Grabar', 'Record');
     const blob = new Blob(chunks, { type: mime || 'video/webm' });
     if (blob.size) { lupaDownload(blob, `zalestudio-lupa-${LUPA.fmt}-${fileStamp()}.${isMp4 ? 'mp4' : 'webm'}`); toast(TT('Vídeo guardado', 'Video saved')); }
   };
-  mr.start(500); btn.classList.add('rec'); $('#luFmt').disabled = true;
+  mr.start(500); btn.classList.add('rec'); $('#luFmt').disabled = true; $('#lbRec').classList.add('rec');
   const tick = () => {
     if (!LUPA.rec || LUPA.rec.mr !== mr) return;
     const secs = (performance.now() - t0) / 1000;
     if (secs >= 60) { lupaRecStop(); toast(TT('Grabación parada: máximo 60 segundos', 'Recording stopped: 60 seconds max')); return; }
     lupaFrame(cx, W2, H2);
-    btn.textContent = `■ ${TT('Parar', 'Stop')} · ${Math.floor(secs)} s`;
+    btn.textContent = `■ ${TT('Parar', 'Stop')} · ${Math.floor(secs)} s`; $('#lbRecT').textContent = `■ ${Math.floor(secs)} s`;
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -3041,6 +3064,7 @@ stage.addEventListener('pointerdown', e => {
   if (act || pinch || blockTouch) return;
 
   const sp = stageXY(e.clientX, e.clientY);
+  if (LUPA.on && narrow() && lupaPanelOpen()) setPanel('pLupa', false);
   if (LUPA.on) { act = { id: e.pointerId, kind: 'lupa', lx: sp.x, ly: sp.y, ptype: e.pointerType, t0: performance.now() }; return; }   // con la lupa abierta, arrastrar mueve la lupa
   if (S.ruler && !S.ruler.fixed && !document.body.classList.contains('present')) {   // regla sin fijar: con el dedo, el lápiz o el ratón sobre ella, se mueve
     const d = toDocS(sp.x, sp.y);
@@ -3502,7 +3526,7 @@ function setEmpty(v) {
   if (!v) updUndo();
 }
 function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en Trabajos)
-  if (LUPA.on) setPanel('pLupa', false);
+  if (LUPA.on) lupaEnd();
   clearTimeout(saveT); dirty = false;
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   S.bg = null; S.bgBlob = null; S.objects = []; S.projectId = null; S.projectName = ''; S.eval = null; S.ruler = null; S.mold = null;
@@ -3510,7 +3534,7 @@ function goHome() { // deja la pantalla limpia (el trabajo ya está guardado en 
   accHomeInfo();
 }
 function newDoc(w, h, bg, blob) {
-  if (LUPA.on) setPanel('pLupa', false);
+  if (LUPA.on) lupaEnd();
   if (S.bg && S.bg.src && S.bg.src.startsWith('blob:')) URL.revokeObjectURL(S.bg.src);
   setEmpty(false);
   S.docW = w; S.docH = h; S.bg = bg; S.bgBlob = blob;
@@ -3674,7 +3698,7 @@ function setPanel(id, open) {
   if (open) for (const k in PANEL_BTN)   // en el móvil, solo uno a la vez; en la tablet, uno por lado
     if (k !== id && $('#' + k).classList.contains('open') && (narrow() || $('#' + k).classList.contains('right') === p.classList.contains('right'))) setPanel(k, false);
   if (id === 'pEval' && open) evalRender();
-  if (id === 'pLupa') { if (open) lupaOpen(); else lupaClose(); }
+  if (id === 'pLupa') { if (open) { if (!LUPA.on) lupaOpen(); else { lupaTexts(); lupaSyncUI(); } } lupaBarSync(); }
 }
 function togglePanel(id) { setPanel(id, !$('#' + id).classList.contains('open')); }
 $('#bTpl').onclick = () => { setTplMode('open'); togglePanel('pTpl'); };
